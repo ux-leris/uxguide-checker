@@ -1,0 +1,65 @@
+.navbar {
+	min-height: 70px;
+	background-color: #8fad88!important;
+}
+
+.progress {
+    height: .65rem;
+    border-radius: 0;
+}
+
+.active {
+	background-color: #007e83!important;
+	border-color: #007175!important;
+}
+
+.disabled-icon {
+    color: #475862;
+    transition: .1s ease;
+}
+
+.active-icon {
+    color: #007e83;
+    transition: .1s ease;
+}
+
+.disabled-icon:hover, .active-icon:hover {
+    color: #007e83;
+    text-decoration: none;
+}
+
+.item-title {
+    margin-bottom: 0;
+}
+
+.content-link {
+    color: #475862;
+}
+
+.content-link:hover {
+    color: #313D44;
+}
+
+.comments {
+    border: 0!important;
+}
+
+.btn-primary {
+	background-color: #007e83!important;
+	border-color: #007175!important;   
+}
+
+.btn-primary:hover {
+	background-color: #007175!important; 
+}
+
+.collapsed-section
+{
+    padding: 15px;
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+.collapsed-section p
+{
+    margin: 0;
+}
