@@ -81,7 +81,7 @@
 
         public function select_authorName($conn, $evaluation_id)
         {
-            $query = "select * from evaluation as e, user as u where e.id = ? and author = u.id";
+            $query = "select u.name from evaluation as e, user as u where e.id = ? and author = u.id";
 
             $stmt = $conn->prepare($query);
 

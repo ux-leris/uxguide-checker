@@ -4,6 +4,25 @@
 
     class Evaluation
     {
+        private $id;
+        private $checklist_id;
+        private $date;
+        private $status;
+        private $author;
+
+        public function loadEvaluation($conn, $evaluation_id)
+        {
+            $evaluationDAO = new EvaluationDAO;
+            $evaluationResult = $evaluationDAO->select_evaluation($conn, $evaluation_id);
+            $evaluationRow = $evaluationResult->fetch_assoc();
+
+            $this->id = $evaluationRow["id"];
+            $this->checklist_id = $evaluationRow["checklist_id"];
+            $this->date = $evaluationRow["date"];
+            $this->status = $evaluationRow['status'];
+            $this->author = $evaluationRow['author'];
+        }
+
         public function insert_evaluation($conn, $checklist_id, $author_id)
         {
             $evaluationDAO = new EvaluationDAO;
@@ -16,14 +35,34 @@
             return $evaluation_id;
         }
 
-        public function get_authorName($conn, $evaluation_id)
+        public function get_authorName($conn)
         {
             $evaluationDAO = new EvaluationDAO;
 
-            $result = $evaluationDAO->select_authorName($conn, $evaluation_id);
+            $result = $evaluationDAO->select_authorName($conn, $this->id);
             $row = $result->fetch_assoc();
 
             return $row["name"];
+        }
+
+        public function get_id() {
+            return $this->id;
+        }
+
+        public function get_checklist_id() {
+            return $this->checklist_id;
+        }
+
+        public function get_date() {
+            return $this->date;
+        }
+
+        public function get_status() {
+            return $this->status;
+        }
+
+        public function get_author() {
+            return $this->author;
         }
     }
 ?>
