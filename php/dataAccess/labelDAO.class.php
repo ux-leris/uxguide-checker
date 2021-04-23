@@ -3,6 +3,8 @@
     {
         public function insert_label($conn, $checklist_id, $title, $hasJustification)
         {
+            $hasJustification = (int) filter_var($hasJustification, FILTER_VALIDATE_BOOLEAN);
+
             $query = "insert into label(checklist_id, title, hasJustification) values(".$checklist_id.", '".$title."', '".$hasJustification."')";
 
             $stmt = $conn->prepare($query);

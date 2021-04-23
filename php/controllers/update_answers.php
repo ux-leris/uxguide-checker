@@ -13,6 +13,9 @@
     if(!isset($_POST["label_id"]))
     {
         $justification = $_POST["justification"];
+        if($justification == "") {
+            $justification = NULL;
+        }
         $itemDAO->update_itemJustificationAnswer($conn, $evaluation_id, $item_id, $justification);
     }
     else
