@@ -1,7 +1,6 @@
 <?php
     require_once("../classes/database.class.php");
     require_once("../classes/checklist.class.php");
-    require_once("../classes/evaluation.class.php");
     require_once("../dataAccess/evaluationDAO.class.php");
 
     session_start();
@@ -19,7 +18,6 @@
     $checklist = new Checklist;
     $checklist->loadChecklist($conn, $checklist_id);
 
-    $evaluation = new Evaluation;
     $evaluationDAO = new EvaluationDAO;
 ?>
 
@@ -43,30 +41,7 @@
 
 	<body>
 		<!-- Navbar -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light shadow" id="navbar">
-			<a class="navbar-brand text-light" href="#">
-				UXTools
-			</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="../../index.php">
-                            Initial Page
-                        </a>
-                    </li>
-                </ul>
-			    <ul class="navbar-nav ml-auto">
-					<li class="nav-item">
-						<a class="nav-link text-light" href="../controllers/disconnect_user.php">
-							Log out
-						</a>						
-					</li>
-				</ul>
-			</div>
-        </nav>
+		<?php include('../templates/navbar.php'); ?>
 
         <div class="container mt-5 mb-5">
             <h1><?= $checklist->get_title() ?></h1>
@@ -116,9 +91,12 @@
                                 <?php
                                     $date = date("d/m/Y", strtotime($evaluationRow["date"]));
                                     $time = date("H:i:s", strtotime($evaluationRow["date"]));
+
+                                    $evaluationAuthor = $evaluationDAO->select_authorName($conn, $evaluationRow["id"]);
+                                    $author = $evaluationAuthor->fetch_row();
                                 ?>
 
-                                Evaluated by <?= $evaluation->get_authorName($conn, $evaluationRow["id"]) ?> in <?= $date ?> at <?= $time ?>.
+                                Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?>.
                             </p>
                             <div class="d-flex justify-content-start">
 
@@ -200,9 +178,12 @@
                                 <?php
                                     $date = date("d/m/Y", strtotime($evaluationRow["date"]));
                                     $time = date("H:i:s", strtotime($evaluationRow["date"]));
+
+                                    $evaluationAuthor = $evaluationDAO->select_authorName($conn, $evaluationRow["id"]);
+                                    $author = $evaluationAuthor->fetch_row();
                                 ?>
 
-                                Evaluated by <?= $evaluation->get_authorName($conn, $evaluationRow["id"]) ?> in <?= $date ?> at <?= $time ?>.
+                                Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?>.
                             </p>
                             <div class="d-flex justify-content-start">
 
