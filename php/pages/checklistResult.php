@@ -23,7 +23,7 @@ $evaluation->loadEvaluation($conn, $evaluation_id);
 $checklist = new Checklist;
 $checklist->loadChecklist($conn, $evaluation->get_checklist_id());
 
-if(!$evalution->get_id() || !$checklist->get_id() || ($evaluation->get_author() != $_SESSION["USER_ID"] && $checklist->get_author() != $_SESSION["USER_ID"])) {
+if(!$evaluation->get_id() || !$checklist->get_id() || ($evaluation->get_author() != $_SESSION["USER_ID"] && $checklist->get_author() != $_SESSION["USER_ID"])) {
     header("HTTP/1.0 404 Not Found");
     echo "<h1>404 Not Found</h1>";
     echo "The page that you have requested could not be found.";
@@ -140,12 +140,20 @@ $labelDAO = new LabelDAO;
                         $itemAnswerResult = $itemDAO->select_itemAnswer($conn, $evaluation->get_id(), $itemRow["id"]);
 
                         $itemAnswerRow = $itemAnswerResult->fetch_assoc();
+
+                        if($itemAnswerRow) {
+                            $labelTitle = $labelDAO->select_labelTitle($conn, $itemAnswerRow["label"]);
+                        } else {
+                            $labelTitle = "Não respondido";
+                        }
+
+                        
                     ?>
 
                         <div class="card mt-3 mb-3">
                             <div class="card-body text-justify">
                                 <h5 class="text-muted">
-                                    <?= $labelDAO->select_labelTitle($conn, $itemAnswerRow["label"]) ?>
+                                    <?= $labelTitle ?>
                                 </h5>
                                 <?= $itemRow["text"] ?>
                             </div>

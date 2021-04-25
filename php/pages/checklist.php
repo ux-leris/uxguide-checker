@@ -298,7 +298,7 @@ if (isset($_GET["e_id"])) {
 
 			for (var i = 0; i < hasJustify.length; i++) {
 				if (hasJustify[i] == lId) {
-                    $('#inputJustify-' + item).prop("value", "");
+          $('#inputJustify-' + item).prop("value", "");
 					$('#collapseJustify-' + item).collapse('show');
 					$('#inputJustify-' + item).prop("disabled", false);
 
@@ -310,8 +310,8 @@ if (isset($_GET["e_id"])) {
 
 			if (!find) {
 				$('#collapseJustify-' + item).collapse('hide');
-                $('#inputJustify-' + item).prop("disabled", true);
-                $('#inputJustify-' + item).prop("value", "").trigger("change");
+        $('#inputJustify-' + item).prop("disabled", true);
+        $('#inputJustify-' + item).prop("value", "").trigger("change");
 			}
 		}
 	</script>
@@ -323,38 +323,31 @@ if (isset($_GET["e_id"])) {
 	</script>
 
 	<script type="text/javascript">
-		var selects = document.getElementsByClassName("selectInput");
-		var justifications = document.getElementsByClassName("justificationInput");
 
-		for (var i = 0; i < selects.length; i++) {
-			selects[i].addEventListener("change", function() {
-                console.log("entrei select");
+		$('.selectInput').on('change', function() {
 
-				$.ajax({
+			$.ajax({
 					type: "POST",
 					url: "../controllers/update_answers.php",
 					data: {
 						evaluation_id: <?= $evaluation_id ?>,
 						item_id: filterId(this.id),
-						label_id: this.value
+						label_id: this.value,
 					}
 				});
+		});
 
-			});
-		}
-
-        $('.justificationInput').on('change', function() {
-            console.log("entrei justify");
-            $.ajax({
-                type: "POST",
-                url: "../controllers/update_answers.php",
-                data: {
-                    evaluation_id: <?= $evaluation_id ?>,
-                    item_id: filterId(this.id),
-                    justification: this.value
-                }
-            });
-        });
+		$('.justificationInput').on('change', function() {
+				$.ajax({
+						type: "POST",
+						url: "../controllers/update_answers.php",
+						data: {
+								evaluation_id: <?= $evaluation_id ?>,
+								item_id: filterId(this.id),
+								justification: this.value
+						},
+				});
+		});
 
 	</script>
 

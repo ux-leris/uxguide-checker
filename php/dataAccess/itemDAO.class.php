@@ -34,15 +34,6 @@
             }
         }
 
-        public function insert_itemAnswer($conn, $evaluation_id, $item_id, $label, $justification, $dueDate)
-        {
-            $query = "insert into checklist_item_data(evaluation_id, checklist_item_id, label, justification, dueDate) values(".$evaluation_id.", ".$item_id.", ".$label.", ".$justification.", ".$dueDate.")";
-
-            $stmt = $conn->prepare($query);
-
-            $stmt->execute();
-        }
-
         public function update_item($conn, $item_id, $text, $link)
         {
             $query = "update checklist_item set text = ?, link = ? where id = ?";
@@ -62,6 +53,15 @@
 
             $stmt->bind_param("sss", $label_id, $evaluation_id, $item_id);
             $stmt->execute();
+
+            if($stmt->affected_rows == 0) {
+                $query = "INSERT INTO checklist_item_data(evaluation_id, checklist_item_id, label) VALUES(?, ?, ?)";
+
+                $stmt = $conn->prepare($query);
+
+                $stmt->bind_param("sss", $evaluation_id, $item_id, $label_id);
+                $stmt->execute();
+            }
         }
 
         public function update_itemJustificationAnswer($conn, $evaluation_id, $item_id, $justification)
@@ -72,6 +72,15 @@
 
             $stmt->bind_param("sss", $justification, $evaluation_id, $item_id);
             $stmt->execute();
+
+            if($stmt->affected_rows == 0) {
+                $query = "INSERT INTO checklist_item_data(evaluation_id, checklist_item_id, justification) VALUES(?, ?, ?)";
+
+                $stmt = $conn->prepare($query);
+
+                $stmt->bind_param("sss", $evaluation_id, $item_id, $justification);
+                $stmt->execute();
+            }
         }
 
         public function delete_item($conn, $item_id)

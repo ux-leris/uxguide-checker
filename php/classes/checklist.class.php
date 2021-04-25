@@ -85,15 +85,16 @@
 
         public function userHasAccess($conn, $user_id) {
             $checklistDAO = new ChecklistDAO;
+            
+            if($this->author != $user_id) {
+                $result = $checklistDAO->verifyAccess($conn, $user_id, $this->id);
+                $row = $result->fetch_assoc();
 
-            $result = $checklistDAO->verifyAccess($conn, $user_id, $this->id);
-            $row = $result->fetch_assoc();
-
-            if(!$row) {
-                return false;
-            } else {
-                return true;
-            }
+                if(!$row) {
+                    return false;
+                }
+            } 
+            return true;
         }
     }
 ?>

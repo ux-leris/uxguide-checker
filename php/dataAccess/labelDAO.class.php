@@ -25,6 +25,10 @@
 
             $row = $result->fetch_assoc();
 
+            if(!$row) {
+                return NULL;
+            }
+
             return $row["title"];
         }
 
