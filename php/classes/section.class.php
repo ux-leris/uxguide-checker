@@ -16,10 +16,15 @@
 
             $row = $result->fetch_assoc();
 
-            $this->set_id($row["id"]);
-            $this->set_checklist_id($row["checklist_id"]);
-            $this->set_title($row["title"]);
-            $this->set_position($row["position"]);
+            if($row) {
+                $this->id = $row["id"];
+                $this->checklist_id = $row["checklist_id"];
+                $this->title = $row["title"];
+                $this->position = $row["position"];
+            } else {
+                $this->id = NULL;
+            }
+
         }
 
         public function loadSectionItems($conn, $section_id)

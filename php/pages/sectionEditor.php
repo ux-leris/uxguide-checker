@@ -17,6 +17,23 @@
 
     $section = new Section;
     $section->loadSection($conn, $id);
+
+    if(!$section->get_id()) {
+        header("HTTP/1.0 404 Not Found");
+        echo "<h1>404 Not Found</h1>";
+        echo "The page that you have requested could not be found.";
+        exit();
+    }
+
+    $checklist = new Checklist;
+    $checklist->loadChecklist($conn, $section->get_checklist_id());
+
+    if(!$checklist->get_id() || $checklist->get_author() != $_SESSION["USER_ID"]) {
+        header("HTTP/1.0 404 Not Found");
+        echo "<h1>404 Not Found</h1>";
+        echo "The page that you have requested could not be found.";
+        exit();
+    }
 ?>
 
 <!doctype html>
