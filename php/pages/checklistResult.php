@@ -17,12 +17,18 @@ $conn = $db->connect();
 
 $evaluation_id = $_GET["e_id"];
 
-
 $evaluation = new Evaluation;
 $evaluation->loadEvaluation($conn, $evaluation_id);
 
 $checklist = new Checklist;
 $checklist->loadChecklist($conn, $evaluation->get_checklist_id());
+
+if(!$evalution->get_id() || !$checklist->get_id() || ($evaluation->get_author() != $_SESSION["USER_ID"] && $checklist->get_author() != $_SESSION["USER_ID"])) {
+    header("HTTP/1.0 404 Not Found");
+    echo "<h1>404 Not Found</h1>";
+    echo "The page that you have requested could not be found.";
+    exit();
+}
 
 $section = new Section;
 
