@@ -18,6 +18,13 @@
     $checklist = new Checklist;
     $checklist->loadChecklist($conn, $checklist_id);
 
+    if(!$checklist->get_id() || !$checklist->userHasAccess($conn, $_SESSION["USER_ID"])) {
+        header("HTTP/1.0 404 Not Found");
+        echo "<h1>404 Not Found</h1>";
+        echo "The page that you have requested could not be found.";
+        exit();
+    }
+
     $evaluationDAO = new EvaluationDAO;
 ?>
 

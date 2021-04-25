@@ -16,11 +16,15 @@
             $evaluationResult = $evaluationDAO->select_evaluation($conn, $evaluation_id);
             $evaluationRow = $evaluationResult->fetch_assoc();
 
-            $this->id = $evaluationRow["id"];
-            $this->checklist_id = $evaluationRow["checklist_id"];
-            $this->date = $evaluationRow["date"];
-            $this->status = $evaluationRow['status'];
-            $this->author = $evaluationRow['author'];
+            if($evaluationRow) {
+                $this->id = $evaluationRow["id"];
+                $this->checklist_id = $evaluationRow["checklist_id"];
+                $this->date = $evaluationRow["date"];
+                $this->status = $evaluationRow['status'];
+                $this->author = $evaluationRow['author'];
+            } else {
+                $this->id = NULL;
+            }
         }
 
         public function insert_evaluation($conn, $checklist_id, $author_id)
