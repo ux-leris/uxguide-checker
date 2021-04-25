@@ -111,5 +111,16 @@
 
             return $stmt->get_result();
         }
+
+        public function verifyAccess($conn, $user_id, $checklist_id) {
+            $query = "select user_id from access where user_id = ? and checklist_id = ? limit 1";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("ss", $user_id, $checklist_id);
+            $stmt->execute();
+            
+            return $stmt->get_result();
+        }
     }
 ?>
