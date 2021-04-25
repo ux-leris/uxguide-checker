@@ -23,13 +23,30 @@ $checklist->loadChecklist($conn, $checklist_id);
 $section = new Section;
 $item = new Item;
 $label = new Label;
+$evaluation = new Evaluation;
 
 if (isset($_GET["e_id"])) {
+
 	$evaluation_id = $_GET["e_id"];
+	$evaluation->loadEvaluation($conn, $evaluation_id);
+	
+	if(!$checklist->get_id() || !$evaluation->get_id() || $evaluation->get_author() != $_SESSION["USER_ID"] || !$checklist->userHasAccess($conn, $_SESSION["USER_ID"])) {
+		header("HTTP/1.0 404 Not Found");
+    echo "<h1>404 Not Found</h1>";
+    echo "The page that you have requested could not be found.";
+    exit();
+	}
 
 	$initialEvaluation = false;
 } else {
-	$evaluation = new Evaluation;
+
+	if(!$checklist->get_id() || !$checklist->userHasAccess($conn, $_SESSION["USER_ID"])) {
+		header("HTTP/1.0 404 Not Found");
+    echo "<h1>404 Not Found</h1>";
+    echo "The page that you have requested could not be found.";
+    exit();
+	}
+
 	$evaluation_id = $evaluation->insert_evaluation($conn, $checklist_id, $_SESSION["USER_ID"]);
 
 	$initialEvaluation = true;

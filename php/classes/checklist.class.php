@@ -16,10 +16,14 @@
 
             $row = $result->fetch_assoc();
 
-            $this->set_id($row["id"]);
-            $this->set_title($row["title"]);
-            $this->set_description($row["description"]);
-            $this->set_author($row["author_id"]);
+            if($row) {
+                $this->id = $row["id"];
+                $this->title = $row["title"];
+                $this->description = $row["description"];
+                $this->author = $row["author_id"];
+            } else {
+                $this->id = NULL;
+            }
         }
 
         function loadSectionsOfChecklist($conn, $checklist_id)
@@ -77,6 +81,19 @@
             $row = $result->fetch_assoc();
 
             return $row["name"];
+        }
+
+        public function userHasAccess($conn, $user_id) {
+            $checklistDAO = new ChecklistDAO;
+
+            $result = $checklistDAO->verifyAccess($conn, $user_id, $this->id);
+            $row = $result->fetch_assoc();
+
+            if(!$row) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 ?>
