@@ -89,7 +89,10 @@
         </div>
 
         <div class="container mt-5 mb-5">
-            <h1>Section <?= $section->get_position() + 1 ?></h1>
+            <div style="display: flex; align-items: center;">
+                <a href="./checklistManager.php?c_id=<?= $checklist->get_id() ?>"><i class="fas fa-chevron-left fa-lg mr-3" style="color:#8FAD88;"></i></a>
+                <h1>Section <?= $section->get_position() + 1 ?></h1>
+            </div>
             <p class="lead text-muted text-justify"><?= $section->get_title() ?></p>
             <hr>
             <h4 class="mb-4">Checklist Items</h4>
@@ -116,7 +119,7 @@
                         {
                 ?>
 
-                <div id="item-<?= $itemRow["id"] ?>" class="col-md-10">
+                <div id="item-<?= $itemRow["id"] ?>" class="col-md-<?= $checklist->isPublished() ?12 : 10 ?>">
                     <div class="card mt-2 mb-2">
                         <div class="card-body text-justify">
                             
@@ -139,20 +142,22 @@
                         </div>
                     </div>
                 </div>
-                <div id="btnGroup-<?= $itemRow["id"] ?>" class="col-md-2 d-flex justify-content-evenly align-items-center mt-2 mb-2">
-                    <button type="button" id="editBtn-<?= $itemRow["id"] ?>" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#edit-modal" onClick="showItemEditModal(this.id)">
-                        <span>
-                            <i class="fas fa-edit"></i>
-                        </span>
-                        Edit
-                    </button>
-                    <button type="button" id="<?= $itemRow["id"] ?>" class="btn btn-danger ml-1" onClick="deleteItem(this.id)">
-                        <span>
-                            <i class="fas fa-trash-alt"></i>
-                        </span>
-                        Delete
-                    </button>
-                </div>
+                <?php if(!$checklist->isPublished()) { ?>
+                    <div id="btnGroup-<?= $itemRow["id"] ?>" class="col-md-2 d-flex justify-content-evenly align-items-center mt-2 mb-2">
+                        <button type="button" id="editBtn-<?= $itemRow["id"] ?>" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#edit-modal" onClick="showItemEditModal(this.id)">
+                            <span>
+                                <i class="fas fa-edit"></i>
+                            </span>
+                            Edit
+                        </button>
+                        <button type="button" id="<?= $itemRow["id"] ?>" class="btn btn-danger ml-1" onClick="deleteItem(this.id)">
+                            <span>
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                            Delete
+                        </button>
+                    </div>
+                <?php } ?>
 
                 <?php
                         }
@@ -160,6 +165,7 @@
                 ?>
 
             </div>
+
             <div class="card p-4 mt-4 mb-4">
                 <h4 class="mb-5">New items</h4>
                 <form class="col-md-12" method="POST" action="../controllers/insert_items.php?c_id=<?= $section->get_checklist_id().'&s_id='.$section->get_id() ?>">
