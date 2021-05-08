@@ -21,6 +21,7 @@
                 $this->title = $row["title"];
                 $this->description = $row["description"];
                 $this->author = $row["author_id"];
+                $this->published = $row["published"];
             } else {
                 $this->id = NULL;
             }
@@ -95,6 +96,34 @@
                 }
             } 
             return true;
+        }
+
+        public function countItems($conn) {
+            $checklistDAO = new ChecklistDAO;
+
+            $result = $checklistDAO->countItems($conn, $this->id);
+
+            $result = $result->fetch_assoc();
+
+            return $result['count'];
+        }
+
+        public function publish($conn) {
+            $checklistDAO = new ChecklistDAO;
+
+            $result = $checklistDAO->publish($conn, $this->id);
+
+            $result = $result->fetch_assoc();
+
+            if(!$result) {
+                return false;
+            } 
+
+            return true;
+        }
+
+        public function isPublished() {
+            return $this->published;
         }
     }
 ?>

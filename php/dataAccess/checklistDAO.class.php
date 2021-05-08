@@ -122,5 +122,27 @@
             
             return $stmt->get_result();
         }
+
+        public function countItems($conn, $checklist_id) {
+            $query = "select count(*) as count from checklist_item where checklist_id= ?";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $checklist_id);
+            $stmt->execute();
+
+            return $stmt->get_result();
+        }
+
+        public function publish($conn, $checklist_id) {
+            $query = "update checklist set published=1 where id=?";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $checklist_id);
+            $stmt->execute();
+
+            $stmt->get_result();
+
+            return $stmt->affected_rows();
+        }
     }
 ?>

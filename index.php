@@ -253,8 +253,13 @@
 							<p class="text-justify"><?= $row["description"] ?></p>
 							<div class="d-flex">
 								<div class="mr-auto">
-									<a class="btn btn-primary mr-1" onClick="setTempLink(<?= $row["id"] ?>)">Evaluate Checklist</a>
-									<a href="./php/pages/checklistEvaluations.php?c_id=<?= $row["id"] ?>" class="btn btn-secondary ml-1">
+									<button class="btn btn-primary mr-1" onClick="setTempLink(<?= $row["id"] ?>)" <?= !boolval($row["published"]) ? "disabled" : null ?>>Evaluate Checklist</button>
+									<a href="./php/pages/checklistEvaluations.php?c_id=<?= $row["id"] ?>" <?php 
+									if(!boolval($row["published"])) { 
+										echo 'class="btn btn-secondary ml-1 disabled"'; 
+									} else { 
+										echo 'class="btn btn-secondary ml-1"'; 
+									} ?>>
 										<span>
 											<i class="fas fa-check-circle"></i>
 										</span>

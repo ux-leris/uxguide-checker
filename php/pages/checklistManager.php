@@ -50,6 +50,25 @@ $section = new Section;
     <!-- Navbar -->
     <?php include('../templates/navbar.php'); ?>
 
+    <?php if(isset($_SESSION['message'])){
+        $message = json_decode($_SESSION['message']);
+        if($message == "success") {
+            $class = 'class="alert alert-success alert-dismissible fade show"';
+            $message = "Your checklist was published successfully";
+        } else {
+            $class = 'class="alert alert-warning alert-dismissible fade show"';
+            $message = $message->error;
+        }
+        unset($_SESSION['message']);
+    ?>
+        <div <?= $class ?> role="alert">
+            <?= $message ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php } ?>
+
     <div id="modal-share" class="modal fade" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -80,16 +99,25 @@ $section = new Section;
     </div>
 
     <div class="container mt-5 mb-5">
-        <h1><?= $checklist->get_title() ?></h1>
+        <div style="display: flex; align-items: center;">
+            <a href="../../index.php" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
+            <h1><?= $checklist->get_title() ?></h1>
+        </div>
         <p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
         <p>Created by <?= $checklist->get_authorName($conn) ?>.</p>
-        <button type="button " class="btn btn-primary" data-toggle="modal" data-target="#modal-share">
-            <span class="ml-1 mr-2">
-                <i class="fas fa-share-alt"></i>
-            </span>
-            Share Checklist
-        </button>
+        <?php if($checklist->isPublished()) { ?>
+            <button type="button " class="btn btn-primary" data-toggle="modal" data-target="#modal-share">
+                <span class="ml-1 mr-2">
+                    <i class="fas fa-share-alt"></i>
+                </span>
+                Share Checklist
+            </button>
+        <?php } ?>
         <hr>
+
+        <?php if(!$checklist->isPublished()) { ?>
+            <span>Edit your checklist sections to add some questions to evaluate before publishing.</span>
+        <?php } ?>
 
         <?php
         $sectionResult = $checklist->loadSectionsOfChecklist($conn, $checklist->get_id());
@@ -120,6 +148,41 @@ $section = new Section;
         }
         ?>
 
+    <?php if(!$checklist->isPublished()) { ?>
+        <div class="text-center">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modal-publish">
+                <span class="ml-1 mr-2">
+                    <i class="fas fa-check"></i>
+                </span>
+                Publish Checklist
+            </button>
+        </div>
+    <?php } ?>
+
+    <div id="modal-publish" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="../controllers/publish_checklist.php?c_id=<?= $checklist->get_id() ?>">
+                    <div class="modal-header">
+                        <h5>Publish Checklist</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You will not be able to remove your checklist questions after publishing, but you can add more questions if you need.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" data-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button class="btn btn-primary">
+                            Publish
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Optional JavaScript -->

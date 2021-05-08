@@ -9,8 +9,12 @@
 	border: 0;
 }
 
-.btn-primary:hover, .btn-primary:focus {
+.btn-primary:hover:enabled, .btn-primary:focus:enabled {
 	background-color: #007175;
+}
+
+.btn-primary:disabled {
+	background-color: #6c757d;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {

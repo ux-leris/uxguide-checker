@@ -49,7 +49,7 @@
 	border-color: #007175!important;   
 }
 
-.btn-primary:hover {
+.btn-primary:hover:enabled {
 	background-color: #007175!important; 
 }
 
