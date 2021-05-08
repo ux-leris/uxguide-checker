@@ -144,7 +144,7 @@ $labelDAO = new LabelDAO;
                         if($itemAnswerRow) {
                             $labelTitle = $labelDAO->select_labelTitle($conn, $itemAnswerRow["label"]);
                         } else {
-                            $labelTitle = "Não respondido";
+                            $labelTitle = "This question did not belong to the checklist when this evaluation was made.";
                         }
 
                         
