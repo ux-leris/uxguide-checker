@@ -113,8 +113,6 @@
 
             $result = $checklistDAO->publish($conn, $this->id);
 
-            $result = $result->fetch_assoc();
-
             if(!$result) {
                 return false;
             } 

@@ -140,9 +140,7 @@
             $stmt->bind_param("s", $checklist_id);
             $stmt->execute();
 
-            $stmt->get_result();
-
-            return $stmt->affected_rows();
+            return $stmt->affected_rows;
         }
     }
 ?>
