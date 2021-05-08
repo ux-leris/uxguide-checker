@@ -47,6 +47,6 @@
 
         $labelLocalId++;
     }
-
-    header("location: ../../index.php");
+    
+    header("location: ../pages/checklistManager.php?c_id=${checklist_id}");
 ?>
