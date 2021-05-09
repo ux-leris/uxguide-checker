@@ -78,7 +78,7 @@
 
         public function select_checklistsOfUser($conn, $user_id)
         {
-            $query = "select * from checklist where author_id = ?";
+            $query = "select * from checklist where author_id = ? order by id desc";
 
             $stmt = $conn->prepare($query);
 
@@ -90,7 +90,7 @@
 
         public function select_checklistsSharedWithUser($conn, $user_id)
         {
-            $query = "select * from access, checklist where user_id = ? and checklist_id = id";
+            $query = "select * from access, checklist where user_id = ? and checklist_id = id order by id desc";
 
             $stmt = $conn->prepare($query);
 

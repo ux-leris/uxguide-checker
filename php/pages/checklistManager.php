@@ -170,7 +170,7 @@ $section = new Section;
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>You will not be able to remove your checklist questions after publishing, but you can add more questions if you need.</p>
+                        <p>You will not be able to remove your checklist items after publishing, but you can add more items if you need.</p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-light" data-dismiss="modal">
