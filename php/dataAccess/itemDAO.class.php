@@ -3,10 +3,12 @@
     {
         public function insert_item($conn, $checklist_id, $section_id, $itemText, $link)
         {
+            $order = $this->count_items_section($conn, $section_id)+1;
+
             if(isset($link))
-                $query = "insert into checklist_item(checklist_id, section_id, text, link) values(".$checklist_id.", ".$section_id.", '".$itemText."', '".$link."')";
+                $query = "insert into checklist_item(checklist_id, section_id, text, link, item_order) values(".$checklist_id.", ".$section_id.", '".$itemText."', '".$link."', '".$order."')";
             else
-                $query = "insert into checklist_item(checklist_id, section_id, text) values(".$checklist_id.", ".$section_id.", '".$itemText."')";
+                $query = "insert into checklist_item(checklist_id, section_id, text, item_order) values(".$checklist_id.", ".$section_id.", '".$itemText."', '".$order."')";
 
             $stmt = $conn->prepare($query);
 
@@ -41,6 +43,16 @@
             $stmt = $conn->prepare($query);
 
             $stmt->bind_param("sss", $text, $link, $item_id);
+
+            return $stmt->execute();
+        }
+
+        public function update_order($conn, $item_id, $item_order) {
+            $query = "update checklist_item set item_order = ? where id = ?";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("ss", $item_order, $item_id);
 
             return $stmt->execute();
         }
@@ -103,6 +115,19 @@
             $stmt->execute();
 
             return $stmt->get_result();
+        }
+
+        public function count_items_section($conn, $section_id) {
+            $query = "select count(*) as counter from checklist_item where section_id = ?";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $section_id);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            return $row['counter'];
         }
     }
 ?>

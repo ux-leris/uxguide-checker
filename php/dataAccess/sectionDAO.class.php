@@ -15,7 +15,7 @@
 
         public function select_sectionItems($conn, $section_id)
         {
-            $query = "select * from checklist_item where section_id = ?";
+            $query = "select * from checklist_item where section_id = ? order by item_order";
 
             $stmt = $conn->prepare($query);
 

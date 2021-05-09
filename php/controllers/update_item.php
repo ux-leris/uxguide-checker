@@ -16,8 +16,15 @@
 
     $itemDAO = new ItemDAO;
 
-    if($itemDAO->update_item($conn, $id, $text, $link))
-    {
-        echo 1;
+    // If item_order is seted, then it is updating just the order.
+    if(isset($_POST["item_order"])) {
+        $itemDAO->update_order($conn, $id, $_POST["item_order"]);
+        unset($_POST["item_order"]);
+    } else {
+        if($itemDAO->update_item($conn, $id, $text, $link)) {
+            echo 1;
+        }    
     }
+
+    
 ?>

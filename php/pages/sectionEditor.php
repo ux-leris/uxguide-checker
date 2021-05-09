@@ -96,7 +96,7 @@
             <p class="lead text-muted text-justify"><?= $section->get_title() ?></p>
             <hr>
             <h4 class="mb-4">Checklist Items</h4>
-            <div class="row">
+            <div class="row" id="checklist-itens">
 
                 <?php
                     $itemResult = $section->loadSectionItems($conn, $section->get_id());
@@ -119,8 +119,8 @@
                         {
                 ?>
 
-                <div id="item-<?= $itemRow["id"] ?>" class="col-md-<?= $checklist->isPublished() ?12 : 10 ?>">
-                    <div class="card mt-2 mb-2">
+                <div id="item-<?= $itemRow["id"] ?>" class="d-flex col-md-12" data-order="<?= $itemRow["item_order"] ?>">
+                    <div class="col-md-<?= $checklist->isPublished() ? 12 : 10 ?> card mt-2 mb-2">
                         <div class="card-body text-justify">
                             
                             <?php
@@ -141,23 +141,23 @@
 
                         </div>
                     </div>
+                    <?php if(!$checklist->isPublished()) { ?>
+                        <div id="btnGroup-<?= $itemRow["id"] ?>" class="col-md-2 d-flex justify-content-evenly align-items-center mt-2 mb-2">
+                            <button type="button" id="editBtn-<?= $itemRow["id"] ?>" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#edit-modal" onClick="showItemEditModal(this.id)">
+                                <span>
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                                Edit
+                            </button>
+                            <button type="button" id="<?= $itemRow["id"] ?>" class="btn btn-danger ml-1" onClick="deleteItem(this.id)">
+                                <span>
+                                    <i class="fas fa-trash-alt"></i>
+                                </span>
+                                Delete
+                            </button>
+                        </div>
+                    <?php } ?>
                 </div>
-                <?php if(!$checklist->isPublished()) { ?>
-                    <div id="btnGroup-<?= $itemRow["id"] ?>" class="col-md-2 d-flex justify-content-evenly align-items-center mt-2 mb-2">
-                        <button type="button" id="editBtn-<?= $itemRow["id"] ?>" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#edit-modal" onClick="showItemEditModal(this.id)">
-                            <span>
-                                <i class="fas fa-edit"></i>
-                            </span>
-                            Edit
-                        </button>
-                        <button type="button" id="<?= $itemRow["id"] ?>" class="btn btn-danger ml-1" onClick="deleteItem(this.id)">
-                            <span>
-                                <i class="fas fa-trash-alt"></i>
-                            </span>
-                            Delete
-                        </button>
-                    </div>
-                <?php } ?>
 
                 <?php
                         }
@@ -208,6 +208,9 @@
         <script src="../../js/jquery-3.5.1.js"></script>
         <script src="../../js/popper-base.js"></script>
         <script src="../../js/bootstrap/bootstrap.js"></script>
+                    
+        <!-- Core SortableJS -->
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
         <script type="text/javascript">
 
@@ -215,6 +218,36 @@
             {
                 return id.substr(id.indexOf("-") + 1);
             }
+
+        </script>
+
+        <script type="text/javascript">
+
+            var el = document.getElementById('checklist-itens');
+            var sortable = Sortable.create(el, {
+                onEnd: function () {
+                    var list = document.getElementById('checklist-itens').children;
+                    var size = list.length;
+                    for(i=0; i<size; i++) {
+                        var item = list.item(i);
+                        var id = item.getAttribute("id").replace("item-", "");
+                        var order = item.getAttribute("data-order");
+                        if(order != i+1) {
+                            $.ajax({
+                                type: "POST",
+                                url: "../controllers/update_item.php",
+                                data: {
+                                    id: id,
+                                    item_order: i+1,
+                                },
+                                success: function() {
+                                    item.setAttribute("data-order", i+1);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
 
         </script>
 
