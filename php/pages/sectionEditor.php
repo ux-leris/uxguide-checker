@@ -122,7 +122,8 @@
                 <div id="item-<?= $itemRow["id"] ?>" class="d-flex col-md-12" data-order="<?= $itemRow["item_order"] ?>">
                     <div class="col-md-<?= $checklist->isPublished() ? 12 : 10 ?> card mt-2 mb-2">
                         <div class="card-body text-justify">
-                            
+                            <i class="fas fa-bars mr-2"></i>
+
                             <?php
                                 if($itemRow["link"] == NULL) {
                             ?>
