@@ -77,7 +77,10 @@ if (isset($_GET["e_id"])) {
 	<?php include('../templates/navbar.php'); ?>
 
 	<div class="container mt-5 mb-5">
-		<h1><?= $checklist->get_title() ?></h1>
+		<div style="display: flex; align-items: center;">
+				<a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
+				<h1><?= $checklist->get_title() ?></h1>
+		</div>
 		<p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
 		<p>Created by <?= $checklist->get_authorName($conn) ?>.</p>
 		<hr>
