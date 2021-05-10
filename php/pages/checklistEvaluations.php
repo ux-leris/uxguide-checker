@@ -116,9 +116,9 @@
 
                                 <a href="./checklist.php?id=<?= $checklist_id ?>&e_id=<?= $evaluationRow["id"] ?>" class="btn btn-primary">
                                     <span class="ml-1 mr-2">
-                                        <i class="fas fa-check"></i>
+                                        <i class="fas fa-play"></i>
                                     </span>
-                                    Finish Evaluation
+                                    Resume Evaluation
                                 </a>
 
                                 <?php
@@ -203,9 +203,9 @@
 
                                 <a href="./checklist.php?id=<?= $checklist_id ?>&e_id=<?= $evaluationRow["id"] ?>" class="btn btn-primary">
                                     <span class="ml-1 mr-2">
-                                        <i class="fas fa-check"></i>
+                                        <i class="fas fa-play"></i>
                                     </span>
-                                    Finish Evaluation
+                                    Resume Evaluation
                                 </a>
 
                                 <?php

@@ -57,7 +57,7 @@
 
         public function select_evaluationsOfChecklist($conn, $checklist_id, $user_id)
         {
-            $query = "select * from evaluation where checklist_id = ? and (status = true or author = ?)";
+            $query = "select * from evaluation where checklist_id = ? and (status = true or author = ?) order by date desc";
 
             $stmt = $conn->prepare($query);
 
@@ -69,7 +69,7 @@
 
         public function select_evaluationsOfUser($conn, $checklist_id, $user_id)
         {
-            $query = "select * from evaluation where checklist_id = ? and author = ?";
+            $query = "select * from evaluation where checklist_id = ? and author = ? order by date desc";
 
             $stmt = $conn->prepare($query);
 
