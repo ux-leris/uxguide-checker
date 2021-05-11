@@ -172,7 +172,7 @@
 								<div class="form-group">
 									<div class="row">
 										<div class="col-md-12 d-flex align-items-center">
-											<label class="mb-0">How many labels does your checklist items have?</label>
+											<label class="mb-0">How many answers options does your checklist items have?</label>
 										</div>
 									</div>
 									<hr>

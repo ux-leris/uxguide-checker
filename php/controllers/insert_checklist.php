@@ -11,7 +11,12 @@
 
     $sectionTitles = $_POST["sectionTitles"];
     $itemLabels = $_POST["itemLabels"];
-    $justifiableLabelsLocalIds = $_POST["hasJustification"];
+
+    $justifiableLabelsLocalIds = NULL;
+
+    if($_POST["hasJustification"]) {
+        $justifiableLabelsLocalIds = $_POST["hasJustification"];
+    }
 
     $db = new Database;
     $conn = $db->connect();
@@ -37,7 +42,7 @@
     {
         $hasJustification = false;
 
-        if($justifiableLabelsLocalIds[$i] == $labelLocalId)
+        if($justifiableLabelsLocalIds && $justifiableLabelsLocalIds[$i] == $labelLocalId)
         {
             $hasJustification = true;
             $i++;
