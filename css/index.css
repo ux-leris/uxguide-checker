@@ -21,6 +21,15 @@
 	background-color: #007175;	
 }
 
+.btn-secondary {
+	background-color: #6f9367;
+	border: 0;
+}
+
+.btn-secondary:not(:disabled):hover, .btn-secondary:not(:disabled):focus {
+	background-color: #55784e;
+}
+
 .dropdown-item:active {
 	background-color: #007175;
 }

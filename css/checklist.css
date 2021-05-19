@@ -53,6 +53,15 @@
 	background-color: #007175!important; 
 }
 
+.btn-secondary {
+	background-color: #6f9367;
+	border: 0;
+}
+
+.btn-secondary:hover {
+	background-color: #55784e;
+}
+
 .collapsed-section
 {
     padding: 15px;
