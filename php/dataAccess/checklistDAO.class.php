@@ -120,7 +120,10 @@
             $stmt->bind_param("ss", $user_id, $checklist_id);
             $stmt->execute();
             
-            return $stmt->get_result();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            return $row;
         }
 
         public function countItems($conn, $checklist_id) {

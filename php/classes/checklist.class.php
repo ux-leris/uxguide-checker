@@ -88,10 +88,9 @@
             $checklistDAO = new ChecklistDAO;
             
             if($this->author != $user_id) {
-                $result = $checklistDAO->verifyAccess($conn, $user_id, $this->id);
-                $row = $result->fetch_assoc();
+                $hasAcces = $checklistDAO->verifyAccess($conn, $user_id, $this->id);
 
-                if(!$row) {
+                if(!$hasAcces) {
                     return false;
                 }
             } 

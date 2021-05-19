@@ -5,6 +5,13 @@
 
     session_start();
 
+    if(!$_SESSION["USER_ID"]) {
+        header("HTTP/1.0 404 Not Found");
+        echo "<h1>404 Not Found</h1>";
+        echo "The page that you have requested could not be found.";
+        exit();
+    }
+
     $title = $_POST["title"];
     $description = $_POST["description"];
     $author_id = $_SESSION["USER_ID"];

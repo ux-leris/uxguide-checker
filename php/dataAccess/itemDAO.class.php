@@ -129,5 +129,18 @@
 
             return $row['counter'];
         }
+
+        public function getChecklist($conn, $item_id) {
+            $query = "select checklist_id from checklist_item where id = ? limit 1";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $item_id);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            return $row['checklist_id'];
+        }
     }
 ?>
