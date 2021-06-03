@@ -57,12 +57,20 @@
             </div>
             <p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
             <p>Created by <?= $checklist->get_authorName($conn) ?>.</p>
-            <hr>
+            
 
             <?php
                 if($checklist->get_author() == $_SESSION["USER_ID"]) {
-            ?>
+            ?>            
 
+            <a href="./checklistAnalytics.php?c_id=<?= $checklist->get_id() ?>" class="btn btn-primary">
+                <span class="ml-1 mr-2">
+                    <i class="fas fa-chart-pie"></i>
+                </span>
+                Checklist Analytics
+            </a>
+
+            <hr>
             <h3>All Evaluations</h3>
 
             <div class="row mt-4 mb-4">

@@ -116,7 +116,7 @@ $labelDAO = new LabelDAO;
                 <span class="ml-1 mr-2">
                     <i class="fas fa-edit"></i>
                 </span>
-                Editar respostas
+                Edit answers
             </a>
         <?php } ?>
 
