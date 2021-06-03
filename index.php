@@ -125,7 +125,7 @@
 								<div class="form-group">
 									<div class="row">
 										<div class="col-md-12 d-flex align-items-center">
-											<label class="mb-0">How many sections does your checklist have?</label>
+											<label class="mb-0">Set up your checklist sections</label>
 										</div>
 									</div>
 									<hr>
@@ -172,13 +172,13 @@
 								<div class="form-group">
 									<div class="row">
 										<div class="col-md-12 d-flex align-items-center">
-											<label class="mb-0">How many answers options does your checklist items have?</label>
+											<label class="mb-0">Set up your checklist answers options</label>
 										</div>
 									</div>
 									<hr>
 									<div class="col-md-12" id="itemLabelFields-area">
 										<div class="form-group">
-											<label>Label 1 - Text</label>
+											<label>Option 1 - Text</label>
 											<input type="text" name="itemLabels[]" class="form-control">											
 										</div>
 										<div class="form-group form-check ml-1">
@@ -186,7 +186,7 @@
 											<label>Need justification.</label>
 										</div>
 										<div class="form-group">
-											<label>Label 2 - Text</label>
+											<label>Option 2 - Text</label>
 											<input type="text" name="itemLabels[]" class="form-control">											
 										</div>
 										<div class="form-group form-check ml-1">
@@ -525,7 +525,7 @@
 						"id": "itemLabelField-" + i,
 						"class": "form-group",
 					}).append($("<label>", {
-						"text": "Label" + " " + i + " - " + "Text",
+						"text": "Option" + " " + i + " - " + "Text",
 					})).append($("<input>", {
 						"type": "text",
 						"name": "itemLabels[]",
