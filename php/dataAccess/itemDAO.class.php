@@ -65,15 +65,6 @@
 
             $stmt->bind_param("sss", $label_id, $evaluation_id, $item_id);
             $stmt->execute();
-
-            if($stmt->affected_rows == 0) {
-                $query = "INSERT INTO checklist_item_data(evaluation_id, checklist_item_id, label) VALUES(?, ?, ?)";
-
-                $stmt = $conn->prepare($query);
-
-                $stmt->bind_param("sss", $evaluation_id, $item_id, $label_id);
-                $stmt->execute();
-            }
         }
 
         public function update_itemJustificationAnswer($conn, $evaluation_id, $item_id, $justification)
@@ -84,15 +75,6 @@
 
             $stmt->bind_param("sss", $justification, $evaluation_id, $item_id);
             $stmt->execute();
-
-            if($stmt->affected_rows == 0) {
-                $query = "INSERT INTO checklist_item_data(evaluation_id, checklist_item_id, justification) VALUES(?, ?, ?)";
-
-                $stmt = $conn->prepare($query);
-
-                $stmt->bind_param("sss", $evaluation_id, $item_id, $justification);
-                $stmt->execute();
-            }
         }
 
         public function delete_item($conn, $item_id)

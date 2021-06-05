@@ -225,14 +225,16 @@ if (isset($_GET["e_id"])) {
 
 				</div>
 			</div>
-			<div class="d-flex justify-content-center mt-3">
-				<button type="submit" class="btn btn-success ml-2">
-					<span class="ml-1 mr-2">
-						<i class="fas fa-check"></i>
-					</span>
-					Submit Answers
-				</button>
-			</div>
+			<?php if(!isset($_GET["edit"])) { ?>
+				<div class="d-flex justify-content-center mt-3">
+					<button type="submit" class="btn btn-success ml-2">
+						<span class="ml-1 mr-2">
+							<i class="fas fa-check"></i>
+						</span>
+						Submit Answers
+					</button>
+				</div>
+			<?php } ?>
 		</form>
 	</div>
 
@@ -347,7 +349,7 @@ if (isset($_GET["e_id"])) {
 						data: {
 								evaluation_id: <?= $evaluation_id ?>,
 								item_id: filterId(this.id),
-								justification: this.value
+								justification: this.value,
 						},
 				});
 		});
@@ -356,6 +358,7 @@ if (isset($_GET["e_id"])) {
 
 	<script type="text/javascript">
 		var seconds = 0;
+		var editing = <?=	isset($_POST["edit"]) ? true : false ?>;
 
 		function startChronometer() {
 			var timer = setInterval(() => {
@@ -365,20 +368,19 @@ if (isset($_GET["e_id"])) {
 			}, 1000);
 		}
 
-		window.addEventListener("beforeunload", function(event) {
-
-			$.ajax({
-				type: "POST",
-				url: "../controllers/insert_pause.php",
-				data: {
-					e_id: <?= $evaluation_id ?>,
-					sec: seconds
-				}
+		if(editing) {
+			window.addEventListener("beforeunload", function(event) {
+				$.ajax({
+					type: "POST",
+					url: "../controllers/insert_pause.php",
+					data: {
+						e_id: <?= $evaluation_id ?>,
+						sec: seconds
+					}
+				});
+				event.returnValue = "Warning Message!";
 			});
-
-			event.returnValue = "Warning Message!";
-
-		});
+		}
 	</script>
 
 	<script type="text/javascript">

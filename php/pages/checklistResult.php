@@ -112,7 +112,7 @@ $labelDAO = new LabelDAO;
         <?php
         if ($evaluation->get_author() == $_SESSION['USER_ID']) {
         ?>
-            <a href="./checklist.php?id=<?= $checklist->get_id() ?>&e_id=<?= $evaluation->get_id() ?>" class="btn btn-primary">
+            <a href="./checklist.php?id=<?= $checklist->get_id() ?>&e_id=<?= $evaluation->get_id() ?>&edit" class="btn btn-primary">
                 <span class="ml-1 mr-2">
                     <i class="fas fa-edit"></i>
                 </span>
