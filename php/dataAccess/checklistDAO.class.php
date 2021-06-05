@@ -145,5 +145,50 @@
 
             return $stmt->affected_rows;
         }
+
+        public function getNumberOfAnswersBySections($conn, $checklist_id) {
+            $query = "
+            -- Selecting answers quantity by section and label
+            SELECT z.section_id as section, z.label_id as label, count(w.label) as qty_answers 
+            FROM 
+                -- Selecting all answers from sections including options that wasn't used (to return count 0 in the answers count)
+                (SELECT * 
+                 FROM 
+                     -- Selecting all checklist labels(answers options)
+                     (SELECT id as label_id 
+                    FROM label 
+                    WHERE checklist_id=?)y 
+                     CROSS JOIN 
+                         -- Selecting all checklist sections
+                         (SELECT id as section_id 
+                        FROM section 
+                        WHERE checklist_id=?)x)z 
+                LEFT OUTER JOIN 
+                    -- Selecting all answers from sections
+                    (SELECT x.section_id as section_id, label 
+                    FROM checklist_item_data 
+                    JOIN 
+                         -- Selecting all items from checklist
+                        (SELECT section_id, id as item_id 
+                        FROM checklist_item 
+                        WHERE section_id 
+                        IN 
+                             -- Selecting all sections from checklist
+                            (SELECT id as section_id 
+                            FROM `section` WHERE checklist_id = ?))x 
+                    ON checklist_item_id=x.item_id 
+                    WHERE label IS NOT NULL)w 
+            ON z.label_id=w.label 
+            AND z.section_id=w.section_id 
+            GROUP BY z.section_id, z.label_id";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("sss", $checklist_id, $checklist_id, $checklist_id);
+            $stmt->execute();
+
+            return $stmt->get_result();
+        }
+
     }
 ?>

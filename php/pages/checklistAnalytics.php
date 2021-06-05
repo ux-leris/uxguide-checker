@@ -50,16 +50,23 @@
     <?php include('../templates/navbar.php'); ?>
 	
     <div class="analytics-container">
-      <h1>Checklist Analytics</h1> 
+      <div style="display: flex; align-items: center;margin-bottom: 2rem;">
+        <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
+        <h1>Checklist Analytics</h1>
+        <h6 style="margin: 0 1rem">• <?= $checklist->get_title() ?></h4>
+      </div>
       <div class="analytics-data">
         <div class="section-graphic">
           <canvas id="answers-by-section"></canvas>
         </div>
-        <div class="overview-graphic">Teste</div>
-        <div class="items-graphic">Teste</div>
+        <div class="overview-graphic">Overview</div>
+        <div class="items-graphic">Answers by items</div>
         <div class="info-graphic">
-          <div>Teste</div>
-          <div>Teste</div>
+          <div class="info-time">Time</div>
+          <div class="info-numbers">
+            <div>Some numbers</div>
+            <div>Some numbers</div>
+          </div>
         </div>
       </div>
      
@@ -81,17 +88,19 @@
     height: 85vh;
     padding: 2rem;
   }
-  h1 {
-    margin-bottom: 2rem;
-  }
   .analytics-data {
     display: grid;
     height: 100%;
     grid-template-columns: 1.5fr 1fr;
-    grid-template-rows: 1.5fr 1fr;
+    grid-template-rows: 1.2fr 1fr;
     grid-gap: 4rem;
   }
   .info-graphic {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 2rem; 
+  }
+  .info-numbers {
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-gap: 2rem; 

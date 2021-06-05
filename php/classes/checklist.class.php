@@ -34,6 +34,13 @@
             return $checklistDAO->select_sectionsOfChecklist($conn, $checklist_id);
         }
 
+        function loadLabelsOfChecklist($conn, $checklist_id)
+        {
+            $checklistDAO = new ChecklistDAO;
+
+            return $checklistDAO->select_checklistLabels($conn, $checklist_id);
+        }
+
         public function set_id($id)
         {
             $this->id = $id;
@@ -121,6 +128,12 @@
 
         public function isPublished() {
             return $this->published;
+        }
+
+        public function getNumberOfAnswersBySections($conn, $checklist_id) {
+            $checklistDAO = new ChecklistDAO;
+
+            return $checklistDAO->getNumberOfAnswersBySections($conn, $checklist_id);
         }
     }
 ?>
