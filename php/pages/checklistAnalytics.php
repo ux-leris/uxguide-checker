@@ -25,6 +25,29 @@
         exit();
     }
 
+    //  Initiate curl
+    $ch = curl_init();
+    // Will return the response, if false it print the response
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    // Set the url
+    $url = "http://localhost/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Accept: application/json'
+    ));
+    // Execute
+    $result = curl_exec($ch);
+    // Closing
+    curl_close($ch);
+    
+    // Removing UTF-8 Bom 
+    $result = str_replace("\xEF\xBB\xBF",'',$result); 
+
+    // Decoding
+    $answersBySections = json_decode($result, true);
+
 ?>
 
 <!doctype html>
@@ -40,7 +63,7 @@
 		<!-- CSS Local -->
 		<link rel="stylesheet" href="../../css/checklist.css">
 
-        <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
 
 		<title><?= $checklist->get_title() ?> checklist</title>
 	</head>
@@ -77,6 +100,7 @@
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../js/popper-base.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 	</body>
 </html>
 
@@ -120,35 +144,85 @@
     If chart is not responsive, add min-width: 0 in the parent div of the chart
   */
 
+  function getColors(){
+    let hue = Math.floor(Math.random() * 360);
+    let saturation = Math.floor(Math.random() * (70 - 50) + 50);
+    let luminosity =  Math.floor(Math.random() * (70 - 60) + 60);
+
+    colors = {
+      backgroundColor: `hsl(${hue}, ${saturation}%, ${luminosity}%)`,
+      hoverColor: `hsl(${hue}, ${saturation}%, ${luminosity-20}%)`
+    }
+
+    return colors;
+  }
+
+  var sections = <?= json_encode($answersBySections["sections"]) ?>;
+  var labels = <?= json_encode($answersBySections["labels"]) ?>;
+  var answers = <?= json_encode($answersBySections["answers"]) ?>;
+  
+  var datasets = [];
+
+  sectionsNumber = sections.length;
+  labelsNumber = labels.length;
+  for(i=0; i<labelsNumber; i++) {
+    data = [];
+    for(j=0; j<sectionsNumber; j++) {
+      data.push(answers[j][i]);
+    }
+
+    randomColors = getColors();
+
+    dataset = {
+      label: labels[i],
+      backgroundColor: randomColors.backgroundColor,
+      hoverBackgroundColor: randomColors.hoverColor,
+      minBarLength: 4,
+      data,
+    }
+    datasets.push(dataset);
+  }
+
   var data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-    datasets: [{
-      label: "Dataset #1",
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 2,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)",
-      data: [65, 59, 20, 81, 56, 55, 40],
-    }]
+    labels: <?= json_encode($answersBySections["sections"]) ?>,
+    datasets
   };
 
   var options = {
     maintainAspectRatio: false,
     scales: {
-      yAxes: [{
-        stacked: true,
-        gridLines: {
-          display: true,
-          color: "rgba(255,99,132,0.2)"
+      y: {
+        grid: {
+          display: true
+        },
+        ticks: {
+          stepSize: 1,
+        },
+        min: 0,
+        afterDataLimits(scale) {
+          scale.max += 1;
         }
-      }],
-      xAxes: [{
-        gridLines: {
+      },
+      x: {
+        grid: {
           display: false
+        },
+      },
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: "Number of answers by sections",
+        align: "start",
+        font: {
+          size: 20,
+          weight: 500,
         }
-      }]
-    }
+      },
+      legend: {
+        align: "end",
+      }
+    },
   };
 
   const config = {
