@@ -65,7 +65,7 @@
 
             <a href="./checklistAnalytics.php?c_id=<?= $checklist->get_id() ?>" class="btn btn-primary">
                 <span class="ml-1 mr-2">
-                    <i class="fas fa-chart-pie"></i>
+                    <i class="fas fa-chart-bar"></i>
                 </span>
                 Checklist Analytics
             </a>

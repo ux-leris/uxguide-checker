@@ -4,9 +4,7 @@ html, body {
     margin: 0;
 }
 
-#navbar {
-    width: 100%;
+.navbar {
     min-height: 70px;
-    position: absolute;
-    background-color: #8FAD88;
+    background-color: #8FAD88!important;
 }
