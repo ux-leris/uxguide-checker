@@ -177,7 +177,7 @@
       label: labels[i],
       backgroundColor: randomColors.backgroundColor,
       hoverBackgroundColor: randomColors.hoverColor,
-      minBarLength: 4,
+      minBarLength: 6,
       data,
     }
     datasets.push(dataset);
@@ -189,11 +189,14 @@
   };
 
   var options = {
+    categoryPercentage: 0.6,
+    indexAxis: 'y',
     maintainAspectRatio: false,
     scales: {
-      y: {
+      x: {
+        stacked: true,
         grid: {
-          display: true
+          display: false
         },
         ticks: {
           stepSize: 1,
@@ -203,9 +206,10 @@
           scale.max += 1;
         }
       },
-      x: {
+      y: {
+        stacked: true,
         grid: {
-          display: false
+          display: true
         },
       },
     },
