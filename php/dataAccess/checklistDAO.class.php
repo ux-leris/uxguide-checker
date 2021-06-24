@@ -136,6 +136,16 @@
             return $stmt->get_result();
         }
 
+        public function countUnfinishedEvaluations($conn, $checklist_id) {
+            $query = "select count(*) as count from evaluation where checklist_id= ? and status=0";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $checklist_id);
+            $stmt->execute();
+
+            return $stmt->get_result();
+        }
+
         public function publish($conn, $checklist_id) {
             $query = "update checklist set published=1 where id=?";
 

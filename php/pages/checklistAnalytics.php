@@ -29,6 +29,7 @@
     $ch = curl_init();
     // Will return the response, if false it print the response
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
     // Set the url
     $url = "http://localhost/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -37,16 +38,26 @@
       'Content-Type: application/json',
       'Accept: application/json'
     ));
-    // Execute
-    $result = curl_exec($ch);
+
+    // Get ansewers by sections
+    $result_answers = curl_exec($ch);
+
+    $url = "http://localhost/uxguide-checker/php/api/infoNumbers.php?c_id=$checklist_id";
+    curl_setopt($ch, CURLOPT_URL, $url);
+
+    // Get info numbers (number of questions and unsfinished evals)
+    $result_infoNumbers = curl_exec($ch);
+
     // Closing
     curl_close($ch);
     
     // Removing UTF-8 Bom 
-    $result = str_replace("\xEF\xBB\xBF",'',$result); 
+    $result_answers = str_replace("\xEF\xBB\xBF",'',$result_answers); 
+    $result_infoNumbers = str_replace("\xEF\xBB\xBF",'',$result_infoNumbers); 
 
     // Decoding
-    $answersBySections = json_decode($result, true);
+    $answersBySections = json_decode($result_answers, true);
+    $infoNumbers = json_decode($result_infoNumbers, true);
 
 ?>
 
@@ -87,8 +98,14 @@
         <div class="info-graphic">
           <div class="info-time">Time</div>
           <div class="info-numbers">
-            <div>Some numbers</div>
-            <div>Some numbers</div>
+            <div>
+              <span>Total<br/> questions</span>
+              <span class="big-number"><?= $infoNumbers["total_questions"] ?></span>
+            </div>
+            <div>
+              <span>Unifinished<br/> evaluations</span>
+              <span class="big-number"><?= $infoNumbers["unfinished_evaluations"] ?></span>
+            </div>
           </div>
         </div>
       </div>
@@ -107,6 +124,7 @@
 <style>
   html, body {
     font-size: 16px;
+    color: #1E1E31;
   }
   .analytics-container {
     height: 85vh;
@@ -129,11 +147,27 @@
     grid-template-rows: 1fr 1fr;
     grid-gap: 2rem; 
   }
+  .info-numbers > div {
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EEECF5;
+    border-radius: 0.6rem;
+  }
+  .big-number {
+    font-size: 3.5rem;
+    margin-left: 2rem;
+  }
   .section-graphic {
     position: relative;
     width: 100%;
     height: 100%;
     min-width: 0;
+    background-color: #EEECF5;
+    border-radius: 0.6rem;
+    padding: 2rem;
   }
 
 </style>
