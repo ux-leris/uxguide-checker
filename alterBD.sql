@@ -10,3 +10,4 @@ UPDATE checklist_item JOIN (SELECT id AS sub_id, ROW_NUMBER() OVER (partition by
 
 -- For time elapsed in evaluation (helps the calculation of average time of evalutions in a checklist)
 ALTER TABLE evaluation ADD column time_elapsed decimal default 0
+DROP TABLE pause;

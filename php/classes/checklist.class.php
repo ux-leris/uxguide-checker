@@ -114,14 +114,12 @@
             return $result['count'];
         }
 
-        public function countUnfinishedEvaluations($conn) {
+        public function loadEvaluations($conn) {
             $checklistDAO = new ChecklistDAO;
 
-            $result = $checklistDAO->countUnfinishedEvaluations($conn, $this->id);
+            $result = $checklistDAO->select_checklistEvaluations($conn, $this->id);
 
-            $result = $result->fetch_assoc();
-
-            return $result['count'];
+            return $result;
         }
 
         public function publish($conn) {

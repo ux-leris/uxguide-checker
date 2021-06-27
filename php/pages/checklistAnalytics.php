@@ -25,27 +25,25 @@
         exit();
     }
 
-    //  Initiate curl
     $ch = curl_init();
-    // Will return the response, if false it print the response
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-    // Set the url
-    $url = "http://localhost/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
-    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
       'Content-Type: application/json',
       'Accept: application/json'
     ));
 
-    // Get ansewers by sections
+    // Set the url
+    $url = "http://localhost/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
+    curl_setopt($ch, CURLOPT_URL, $url);
+
+    // Get answers by sections
     $result_answers = curl_exec($ch);
 
     $url = "http://localhost/uxguide-checker/php/api/infoNumbers.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
-
-    // Get info numbers (number of questions and unsfinished evals)
+  
+    // Get info numbers
     $result_infoNumbers = curl_exec($ch);
 
     // Closing
@@ -59,6 +57,18 @@
     $answersBySections = json_decode($result_answers, true);
     $infoNumbers = json_decode($result_infoNumbers, true);
 
+    $avg = $infoNumbers['average_time'];
+    $minutes = floor($avg / 60);
+    $avg -= $minutes*60;
+    $seconds = $avg;
+    $average_time = sprintf("%02d:%02d", $minutes, $seconds);
+
+    $last_evaluation_time = $infoNumbers['finished_evaluations'][$infoNumbers['total_finished_evaluations']-1];
+    $minutes = floor($last_evaluation_time / 60);
+    $last_evaluation_time -= $minutes*60;
+    $seconds = $last_evaluation_time;
+    $last_evaluation_time = sprintf("%02d:%02d", $minutes, $seconds);
+    
 ?>
 
 <!doctype html>
@@ -93,18 +103,36 @@
         <div class="section-graphic">
           <canvas id="answers-by-section"></canvas>
         </div>
-        <div class="overview-graphic">Overview</div>
+        <div class="overview-graphic">
+          <span>Overview</span>
+          <span><?= $infoNumbers["total_evaluations"] ?></span>
+        </div>
         <div class="items-graphic">Answers by items</div>
         <div class="info-graphic">
-          <div class="info-time">Time</div>
-          <div class="info-numbers">
-            <div>
-              <span>Total<br/> questions</span>
-              <span class="big-number"><?= $infoNumbers["total_questions"] ?></span>
+          <div class="info-time">
+            <h4>Average time<br/> to evaluate</h4>
+            <div class="time">
+              <i class="far fa-clock" style="font-size: 2.5rem"></i>
+              <h3><?= $average_time ?></h3>
+              <sub style="font-size: 1.5rem">s</sub>
             </div>
             <div>
-              <span>Unifinished<br/> evaluations</span>
-              <span class="big-number"><?= $infoNumbers["unfinished_evaluations"] ?></span>
+              <span>Last evaluation:</span>
+              <div class="time" style="gap: 0.1rem">
+                <i class="far fa-clock"></i>
+                <span><?= $last_evaluation_time ?></span>
+                <sub>s</sub>
+              </div>
+            </div>
+          </div>
+          <div class="info-numbers">
+            <div>
+              <h4>Total<br/> questions</h4>
+              <h2><?= $infoNumbers["total_questions"] ?></h2>
+            </div>
+            <div>
+              <h4>Unifinished<br/> evaluations</h4>
+              <h2><?= $infoNumbers["total_unfinished_evaluations"] ?></h2>
             </div>
           </div>
         </div>
@@ -127,7 +155,7 @@
     color: #1E1E31;
   }
   .analytics-container {
-    height: 85vh;
+    height: 80vh;
     padding: 2rem;
   }
   .analytics-data {
@@ -148,17 +176,28 @@
     grid-gap: 2rem; 
   }
   .info-numbers > div {
-    font-size: 1.5rem;
-    font-weight: 500;
     display: flex;
+    gap: 1.5rem;
     align-items: center;
     justify-content: center;
     background-color: #EEECF5;
     border-radius: 0.6rem;
+    padding: 1.5rem;
   }
-  .big-number {
-    font-size: 3.5rem;
-    margin-left: 2rem;
+  h2 {
+    font-size: 3.25rem;
+    font-weight: 500;
+    margin: 0;
+  }
+  h3 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin: 0;
+  }
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
   }
   .section-graphic {
     position: relative;
@@ -168,6 +207,20 @@
     background-color: #EEECF5;
     border-radius: 0.6rem;
     padding: 2rem;
+  }
+  .info-time {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 1.5rem;
+    background-color: #EEECF5;
+    border-radius: 0.6rem;
+  }
+  .time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
 </style>

@@ -26,11 +26,33 @@
 
     $total_questions = $checklist->countItems($conn);
 
-    $unfinished_evaluations = $checklist->countUnfinishedEvaluations($conn);
+    $evaluations = $checklist->loadEvaluations($conn);
+
+    $unfinished_evaluations = 0;
+    $finished_evaluations = array();
+    $average_time = 0;
+    while($evaluation = $evaluations->fetch_assoc()) {
+      if($evaluation['status'] == 1) {
+        array_push($finished_evaluations, $evaluation['time_elapsed']);
+        if($evaluation['time_elapsed']) {
+          if($average_time > 0) {
+            $average_time = ($average_time + $evaluation['time_elapsed'])/2;
+          } else {
+            $average_time = $evaluation['time_elapsed'];
+          }
+        }
+      } else {
+        $unfinished_evaluations++;
+      }
+    }
 
     $response = [
       "total_questions" => $total_questions,
-      "unfinished_evaluations" => $unfinished_evaluations,
+      "total_evaluations" => $evaluations->num_rows,
+      "total_finished_evaluations" => sizeof($finished_evaluations),
+      "total_unfinished_evaluations" => $unfinished_evaluations,
+      "finished_evaluations" => $finished_evaluations,
+      "average_time" => $average_time
     ];
 
     $response = json_encode($response);

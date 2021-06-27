@@ -112,6 +112,17 @@
             return $stmt->get_result();
         }
 
+        public function select_checklistEvaluations($conn, $checklist_id) {
+            $query = "select * from evaluation where checklist_id = ?";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("s", $checklist_id);
+            $stmt->execute();
+
+            return $stmt->get_result();
+        }
+
         public function verifyAccess($conn, $user_id, $checklist_id) {
             $query = "select user_id from access where user_id = ? and checklist_id = ? limit 1";
 
@@ -128,16 +139,6 @@
 
         public function countItems($conn, $checklist_id) {
             $query = "select count(*) as count from checklist_item where checklist_id= ?";
-
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("s", $checklist_id);
-            $stmt->execute();
-
-            return $stmt->get_result();
-        }
-
-        public function countUnfinishedEvaluations($conn, $checklist_id) {
-            $query = "select count(*) as count from evaluation where checklist_id= ? and status=0";
 
             $stmt = $conn->prepare($query);
             $stmt->bind_param("s", $checklist_id);
