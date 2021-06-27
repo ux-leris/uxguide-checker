@@ -34,6 +34,16 @@
             $stmt->execute();
         }
 
+        public function update_time($conn, $evaluation_id, $seconds)
+        {
+            $query = "UPDATE evaluation SET time_elapsed = time_elapsed + $seconds WHERE id = ?";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("s", $evaluation_id);
+            $stmt->execute();
+        }
+
         public function update_evaluation($conn, $evaluation_id)
         {
             $query = "UPDATE evaluation SET status = true WHERE id = ?";

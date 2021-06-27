@@ -356,30 +356,41 @@ if (isset($_GET["e_id"])) {
 
 	</script>
 
-	<script type="text/javascript">
+	<script>
 		var seconds = 0;
-		var editing = <?=	isset($_POST["edit"]) ? true : false ?>;
+		var editing = <?=	isset($_GET["edit"]) ? 1 : 0 ?>
 
 		function startChronometer() {
 			var timer = setInterval(() => {
-
 				seconds++;
-
 			}, 1000);
 		}
 
-		if(editing) {
-			window.addEventListener("beforeunload", function(event) {
-				$.ajax({
-					type: "POST",
-					url: "../controllers/insert_pause.php",
-					data: {
-						e_id: <?= $evaluation_id ?>,
-						sec: seconds
-					}
-				});
-				event.returnValue = "Warning Message!";
+		if(!editing) {
+			document.addEventListener('visibilitychange', function saveTime() {
+				if (document.visibilityState === 'hidden') {
+					var data = new FormData();
+					data.append('e_id', <?= $evaluation_id ?>);
+					data.append('seconds', seconds);
+					navigator.sendBeacon("../controllers/update_time.php", data); 
+				}
 			});
+		}
+
+		function start() {
+			
+			if(!editing) {
+				startChronometer();
+			}
+			<?php
+			if (!($initialEvaluation)) {
+			?>
+
+				renderCollapsedAreas();
+
+			<?php
+			}
+			?>
 		}
 	</script>
 
@@ -400,26 +411,9 @@ if (isset($_GET["e_id"])) {
 					}
 				}
 			}
-
-			startChronometer();
 		}
 	</script>
 
-	<script type="text/javascript">
-		function start() {
-			startChronometer();
-
-			<?php
-			if (!($initialEvaluation)) {
-			?>
-
-				renderCollapsedAreas();
-
-			<?php
-			}
-			?>
-		}
-	</script>
 </body>
 
 </html>
