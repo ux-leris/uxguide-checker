@@ -31,20 +31,20 @@
     $unfinished_evaluations = 0;
     $finished_evaluations = array();
     $average_time = 0;
+    $count_avg = 0;
     while($evaluation = $evaluations->fetch_assoc()) {
       if($evaluation['status'] == 1) {
         array_push($finished_evaluations, $evaluation['time_elapsed']);
         if($evaluation['time_elapsed']) {
-          if($average_time > 0) {
-            $average_time = ($average_time + $evaluation['time_elapsed'])/2;
-          } else {
-            $average_time = $evaluation['time_elapsed'];
-          }
+          $count_avg++;
+          $average_time += $evaluation['time_elapsed'];
         }
       } else {
         $unfinished_evaluations++;
       }
     }
+
+    $average_time /= $count_avg;
 
     $response = [
       "total_questions" => $total_questions,
