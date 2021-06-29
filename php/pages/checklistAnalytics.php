@@ -63,7 +63,12 @@
     $seconds = $avg;
     $average_time = sprintf("%02d:%02d", $minutes, $seconds);
 
-    $last_evaluation_time = $infoNumbers['finished_evaluations'][$infoNumbers['total_finished_evaluations']-1];
+    if($infoNumbers['total_finished_evaluations'] > 0) {
+      $last_evaluation_time = $infoNumbers['finished_evaluations'][$infoNumbers['total_finished_evaluations']-1];
+    } else {
+      $last_evaluation_time = 0;
+    }
+    
     $minutes = floor($last_evaluation_time / 60);
     $last_evaluation_time -= $minutes*60;
     $seconds = $last_evaluation_time;
