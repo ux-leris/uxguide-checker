@@ -34,17 +34,22 @@
     ));
 
     // Set the url
-    $url = "http://localhost/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
+    $url = "http://localhost/applications/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
 
     // Get answers by sections
     $result_answers = curl_exec($ch);
 
-    $url = "http://localhost/uxguide-checker/php/api/infoNumbers.php?c_id=$checklist_id";
+    $url = "http://localhost/applications/uxguide-checker/php/api/infoNumbers.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
   
     // Get info numbers
     $result_infoNumbers = curl_exec($ch);
+
+    $url = "http://localhost/applications/uxguide-checker/php/api/overview.php?c_id=$checklist_id";
+    curl_setopt($ch, CURLOPT_URL, $url);
+
+    $resultOverview = curl_exec($ch);
 
     // Closing
     curl_close($ch);
@@ -53,9 +58,13 @@
     $result_answers = str_replace("\xEF\xBB\xBF",'',$result_answers); 
     $result_infoNumbers = str_replace("\xEF\xBB\xBF",'',$result_infoNumbers); 
 
+    $resultOverview = str_replace("\xEF\xBB\xBF", "", $resultOverview); 
+
     // Decoding
     $answersBySections = json_decode($result_answers, true);
     $infoNumbers = json_decode($result_infoNumbers, true);
+
+    $overview = json_decode($resultOverview, true);
 
     $avg = $infoNumbers['average_time'];
     $minutes = floor($avg / 60);
@@ -68,6 +77,10 @@
     $last_evaluation_time -= $minutes*60;
     $seconds = $last_evaluation_time;
     $last_evaluation_time = sprintf("%02d:%02d", $minutes, $seconds);
+
+    $nEvaluations = $overview["nEvaluations"];
+    $labels = $overview["labels"];
+    $answersByLabel = $overview["answersByLabel"];
     
 ?>
 
@@ -103,9 +116,16 @@
         <div class="section-graphic">
           <canvas id="answers-by-section"></canvas>
         </div>
-        <div class="overview-graphic">
-          <span>Overview</span>
-          <span><?= $infoNumbers["total_evaluations"] ?></span>
+        <div class="overview-graphic chart-bg">
+          <div>
+            <canvas id="overview"></canvas>
+          </div>
+          <div class="overview-text">
+            <p>
+              <?= $nEvaluations ?>
+            </p>
+            <p>evaluations</p>
+          </div>
         </div>
         <div class="items-graphic">Answers by items</div>
         <div class="info-graphic">
@@ -146,6 +166,12 @@
     <script src="../../js/popper-base.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/patternomaly/1.3.2/patternomaly.js"
+      integrity="sha512-gNM40ajr/bSi3Af8i6D4dV2CUWZrkm2zhgeWf46H91zOwWoH8Wwsyf6kQ4syfNyOrnjATrjKkP4ybWD7eKp2KA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+    </script>
 	</body>
 </html>
 
@@ -183,6 +209,26 @@
     background-color: #EEECF5;
     border-radius: 0.6rem;
     padding: 1.5rem;
+  }
+  .chart-bg {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: #EEECF5;
+    border-radius: 0.6rem;
+    padding: 1.5rem;
+  }
+  .overview-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 32px;
+  }
+  .overview-text p:first-child {
+    font-weight: bold;
   }
   h2 {
     font-size: 3.25rem;
@@ -333,5 +379,51 @@
   window.addEventListener('afterprint', () => {
     myChart.resize();
   });
+
+</script>
+
+<script type="text/javascript">
+
+  createOverview();
+
+  function createOverview()
+  {
+    const nEvaluations = <?= $nEvaluations ?>;
+    const labels = <?= json_encode($labels) ?>;
+    const answersByLabel = <?= json_encode($answersByLabel) ?>;
+
+    const labelsName = []
+
+    labels.forEach(obj => labelsName.push(obj.text))
+
+    const backgroundColor = []
+
+    answersByLabel.forEach(() => {
+      const color = getColors()
+      backgroundColor.push(color.backgroundColor)
+    })
+
+    const datasets = [{
+      label: "Overview",
+      data: answersByLabel,
+      backgroundColor: pattern.generate(backgroundColor),
+      hoverOffset: 2
+    }]
+
+    const data = {
+      labels: labelsName,
+      datasets
+    }
+
+    const config = {
+      type: "doughnut",
+      data,
+    }
+
+    const overview = new Chart(
+      document.getElementById("overview"),
+      config
+    )
+  }
 
 </script>
