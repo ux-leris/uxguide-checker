@@ -54,6 +54,18 @@
             $stmt->execute();
         }
 
+        public function select_answersByLabel($conn, $label_id)
+        {
+            $query = "select count(*) as total from checklist_item_data as check_data, evaluation as eval, label as lab where check_data.evaluation_id = eval.id and check_data.label = lab.id and lab.id = ?";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("s", $label_id);
+            $stmt->execute();
+
+            return $stmt->get_result();
+        }
+
         public function select_evaluation($conn, $evaluation_id)
         {
             $query = "select * from evaluation where id = ".$evaluation_id;
@@ -72,6 +84,18 @@
             $stmt = $conn->prepare($query);
 
             $stmt->bind_param("ss", $checklist_id, $user_id);
+            $stmt->execute();
+
+            return $stmt->get_result();
+        }
+
+        public function select_checklistEvaluationsQtd($conn, $checklist_id)
+        {
+            $query = "select count(*) as total from evaluation where checklist_id = ?";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param("s", $checklist_id);
             $stmt->execute();
 
             return $stmt->get_result();

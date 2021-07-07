@@ -10,6 +10,26 @@
         private $status;
         private $author;
 
+        public function countEvaluations($conn, $checklist_id)
+        {
+            $evaluationDAO = new EvaluationDAO;
+            
+            $evaluationResult = $evaluationDAO->select_checklistEvaluationsQtd($conn, $checklist_id);
+            $evaluationRow = $evaluationResult->fetch_assoc();
+
+            return $evaluationRow["total"];
+        }
+
+        public function countAnswersByLabel($conn, $label_id)
+        {
+            $evaluationDAO = new EvaluationDAO;
+            
+            $evaluationResult = $evaluationDAO->select_answersByLabel($conn, $label_id);
+            $evaluationRow = $evaluationResult->fetch_assoc();
+
+            return $evaluationRow["total"];
+        }
+
         public function loadEvaluation($conn, $evaluation_id)
         {
             $evaluationDAO = new EvaluationDAO;
