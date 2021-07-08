@@ -101,6 +101,7 @@
 		
 		<!-- CSS Local -->
 		<link rel="stylesheet" href="../../css/checklist.css">
+		<link rel="stylesheet" href="../../css/checklistAnalytics.css">
 
     <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
 
@@ -112,10 +113,16 @@
     <?php include('../templates/navbar.php'); ?>
 	
     <div class="analytics-container">
-      <div style="display: flex; align-items: center;margin-bottom: 2rem;">
-        <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
-        <h1>Checklist Analytics</h1>
-        <h6 style="margin: 0 1rem">• <?= $checklist->get_title() ?></h4>
+      <div class="page-title">
+        <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>">
+          <i class="fas fa-chevron-left fa-lg mr-3"></i>
+        </a>
+        <div class="checklist-infs">
+          <h1>Checklist Analytics</h1>
+          <div class="checklist-name">
+            <p><?= $checklist->get_title() ?></p>
+          </div>
+        </div>
       </div>
       <div class="analytics-data">
         <div class="section-graphic">
@@ -134,35 +141,40 @@
         </div>
         <div class="items-graphic">Answers by items</div>
         <div class="info-graphic">
-          <div class="info-time">
-            <h4>Average time<br/> to evaluate</h4>
+          <div class="info-time chart-bg">
+            <p>Average Time<br/>to Evaluate</p>
             <div class="time">
-              <i class="far fa-clock" style="font-size: 2.5rem"></i>
-              <h3><?= $average_time ?></h3>
-              <sub style="font-size: 1.5rem">s</sub>
-            </div>
-            <div>
-              <span>Last evaluation:</span>
-              <div class="time" style="gap: 0.1rem">
+              <div class="clock-icon">
                 <i class="far fa-clock"></i>
-                <span><?= $last_evaluation_time ?></span>
-                <sub>s</sub>
+              </div>
+              <div class="average-time">
+                <p><?= $average_time ?> <span>sec</span></p>
+              </div>
+            </div>
+            <div class="last-evaluation">
+              <p>Last Evaluation</p>
+              <div>
+                <div class="clock-icon">
+                  <i class="far fa-clock"></i>
+                </div>
+                <div class="last-time">
+                  <p><?= $last_evaluation_time ?> <span>sec</span></p>
+                </div>
               </div>
             </div>
           </div>
           <div class="info-numbers">
-            <div>
-              <h4>Total<br/> questions</h4>
-              <h2><?= $infoNumbers["total_questions"] ?></h2>
+            <div class="total-questions chart-bg">
+              <p>Total<br/>Questions</p>
+              <p><?= $infoNumbers["total_questions"] ?></p>
             </div>
-            <div>
-              <h4>Unifinished<br/> evaluations</h4>
-              <h2><?= $infoNumbers["total_unfinished_evaluations"] ?></h2>
+            <div class="unfinished-evaluations chart-bg">
+              <p>Unfinished<br/>Evaluations</p>
+              <p><?= $infoNumbers["total_unfinished_evaluations"] ?></p>
             </div>
           </div>
         </div>
       </div>
-     
     </div>
 
 		<!-- Optional JavaScript -->
@@ -180,103 +192,7 @@
 	</body>
 </html>
 
-<style>
-  html, body {
-    font-size: 16px;
-    color: #1E1E31;
-  }
-  .analytics-container {
-    height: 80vh;
-    padding: 2rem;
-  }
-  .analytics-data {
-    display: grid;
-    height: 100%;
-    grid-template-columns: 1.5fr 1fr;
-    grid-template-rows: 1.2fr 1fr;
-    grid-gap: 4rem;
-  }
-  .info-graphic {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 2rem; 
-  }
-  .info-numbers {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-gap: 2rem; 
-  }
-  .info-numbers > div {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: center;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 1.5rem;
-  }
-  .chart-bg {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: center;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 1.5rem;
-  }
-  .overview-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 32px;
-  }
-  .overview-text p:first-child {
-    font-weight: bold;
-  }
-  h2 {
-    font-size: 3.25rem;
-    font-weight: 500;
-    margin: 0;
-  }
-  h3 {
-    font-size: 2.5rem;
-    font-weight: 500;
-    margin: 0;
-  }
-  h4 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin: 0;
-  }
-  .section-graphic {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 2rem;
-  }
-  .info-time {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1.5rem;
-    gap: 1.5rem;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-  }
-  .time {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-</style>
-
-<script>
+<script type=text/javascript>
 
   /*
     If chart is not responsive, add min-width: 0 in the parent div of the chart
@@ -338,6 +254,9 @@
         },
         ticks: {
           stepSize: 1,
+          font: {
+            size: 18
+          }
         },
         min: 0,
         afterDataLimits(scale) {
@@ -349,20 +268,31 @@
         grid: {
           display: true
         },
+        ticks: {
+          font: {
+            size: 18
+          }
+        }
       },
     },
     plugins: {
       title: {
         display: true,
-        text: "Number of answers by sections",
+        text: "Number of Answers by Section",
         align: "start",
         font: {
-          size: 20,
-          weight: 500,
+          size: 26,
+          weight: 700
         }
       },
       legend: {
         align: "end",
+        labels: {
+          font: {
+            size: 20,
+            weight: 400
+          }
+        }
       }
     },
   };
@@ -423,6 +353,27 @@
     const config = {
       type: "doughnut",
       data,
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: "Overview",
+            align: "center",
+            font: {
+              size: 26,
+              weight: 700
+            }
+          },
+          legend: {
+            labels: {
+                font: {
+                  size: 20,
+                  weight: 400
+              }
+            }
+          }
+        }
+      }
     }
 
     const overview = new Chart(
