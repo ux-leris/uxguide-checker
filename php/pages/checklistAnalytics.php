@@ -1,9 +1,15 @@
 <?php
-    require_once("../classes/database.class.php");
+
+use Twig\Environment;
+
+require_once("../classes/database.class.php");
     require_once("../classes/checklist.class.php");
     require_once("../dataAccess/evaluationDAO.class.php");
+    require_once("../../enviroment.php");
 
     session_start();
+
+    $baseURL = Enviroment::getBaseURL();
 
     if(!isset($_SESSION["USER_ID"]))
     {
@@ -34,19 +40,19 @@
     ));
 
     // Set the url
-    $url = "http://localhost/applications/uxguide-checker/php/api/answersBySections.php?c_id=$checklist_id";
+    $url = "$baseURL/php/api/answersBySections.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
 
     // Get answers by sections
     $result_answers = curl_exec($ch);
 
-    $url = "http://localhost/applications/uxguide-checker/php/api/infoNumbers.php?c_id=$checklist_id";
+    $url = "$baseURL/php/api/infoNumbers.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
   
     // Get info numbers
     $result_infoNumbers = curl_exec($ch);
 
-    $url = "http://localhost/applications/uxguide-checker/php/api/overview.php?c_id=$checklist_id";
+    $url = "$baseURL/php/api/overview.php?c_id=$checklist_id";
     curl_setopt($ch, CURLOPT_URL, $url);
 
     $resultOverview = curl_exec($ch);
@@ -132,7 +138,46 @@
             <p>evaluations</p>
           </div>
         </div>
-        <div class="items-graphic">Answers by items</div>
+        <div class="items-graphic">
+          <ul class="sections-list">
+            <li class="active">Section 1</li>
+            <li>Section 2</li>
+            <li>Section 3</li>
+            <li>Section 4</li>
+            <li>Section 5</li>
+          </ul>
+          <table>
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Answers</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Aspectos de usabilidade</td>
+                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-0"></canvas></div></td>
+                <td><button class="btn btn-primary">Justifications</button></td>
+              </tr>
+              <tr>
+                <td>Aspectos visuais</td>
+                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-1"></canvas></div></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Qualidade da informação</td>
+                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-2"></canvas></div></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Qualidade da informação</td>
+                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-3"></canvas></div></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="info-graphic">
           <div class="info-time">
             <h4>Average time<br/> to evaluate</h4>
@@ -170,6 +215,7 @@
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../js/popper-base.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/patternomaly/1.3.2/patternomaly.js"
@@ -192,9 +238,9 @@
   .analytics-data {
     display: grid;
     height: 100%;
-    grid-template-columns: 1.5fr 1fr;
+    grid-template-columns: 1.8fr 1fr;
     grid-template-rows: 1.2fr 1fr;
-    grid-gap: 4rem;
+    grid-gap: 3rem;
   }
   .info-graphic {
     display: grid;
@@ -234,6 +280,51 @@
   }
   .overview-text p:first-child {
     font-weight: bold;
+  }
+  .items-graphic {
+    display: flex;
+    flex-direction: column;
+    background-color: #EEECF5;
+    border-radius: 0.6rem;
+    padding: 1.5rem;
+  }
+  ul.sections-list {
+    display: flex;
+    flex-wrap: wrap;
+    
+    white-space: nowrap;
+
+    background-color: #E3DFDF;
+    border-radius: 10px 10px 0 0;
+
+    margin: 0;
+    padding: 0;
+  }
+  ul.sections-list > li { 
+    color: #878799;
+
+    padding: 1rem;
+    list-style-type: none;
+  }
+  ul.sections-list > li:hover, 
+  ul.sections-list > li.active {
+    background-color: #007175;
+    color: #F3F3FC;
+
+    border-radius: 10px 10px 0 0;
+  }
+  table {
+    border-collapse: separate;
+    border-spacing: 0 0.2rem;
+  }
+  tr, thead > tr {
+    background-color: #DEDEDE;
+  } 
+  tbody > tr:nth-child(2n+1) {
+    background-color: #E8E6F0;
+  }
+  th, td {
+    padding: 1rem;
   }
   h2 {
     font-size: 3.25rem;
@@ -378,13 +469,6 @@
     config
   );
 
-  window.addEventListener('beforeprint', () => {
-    myChart.resize(600, 600);
-  });
-  window.addEventListener('afterprint', () => {
-    myChart.resize();
-  });
-
 </script>
 
 <script type="text/javascript">
@@ -430,5 +514,91 @@
       config
     )
   }
+
+</script>
+
+<script>
+
+  create_answersByQuestions();
+
+  function create_answersByQuestions() {
+
+    Chart.defaults.set('plugins.datalabels', {
+      color: '#F3F3FC',
+      font: {
+        weight: 'bold'
+      }
+    });
+
+    const charts_datas = [[8, 10, 15], [4, 12, 4], [5, 20, 10], [16, 5, 400]];
+    const charts_labels = ["Sim", "Não", "Talvez"];
+
+	  var charts = [];
+
+    for(let i=0; i<4; i++) {
+      let datasets = [];
+      
+      charts_labels.forEach((label, index) => {
+        let color = getColors();
+        let dataset = {
+          label: charts_labels[index],
+          data: [charts_datas[i][index]],
+          backgroundColor: color.backgroundColor,
+        }
+        datasets.push(dataset);
+      });
+
+      let data = {
+        labels: ["Answers"],
+        datasets
+      };
+
+      let config = {
+        plugins: [ChartDataLabels],
+        type: 'bar',
+        data,
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              stacked: true,
+              grid: {
+                display: false
+              },
+              display: false,
+            },
+            x: {
+              stacked: true,
+              grid: {
+                display: false
+              },
+              display: false,
+            },
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              enabled: false
+            }
+          }
+        }
+      };
+
+      const chart = new Chart(
+        document.getElementById(`question-${i}`),
+        config,
+      );
+
+      charts.push(chart);
+      
+    }
+
+  }
+
+
 
 </script>
