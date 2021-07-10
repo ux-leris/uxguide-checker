@@ -1,7 +1,5 @@
 <?php
 
-use Twig\Environment;
-
 require_once("../classes/database.class.php");
     require_once("../classes/checklist.class.php");
     require_once("../dataAccess/evaluationDAO.class.php");
@@ -56,9 +54,6 @@ require_once("../classes/database.class.php");
     curl_setopt($ch, CURLOPT_URL, $url);
 
     $resultOverview = curl_exec($ch);
-
-    // Closing
-    curl_close($ch);
     
     // Removing UTF-8 Bom 
     $result_answers = str_replace("\xEF\xBB\xBF",'',$result_answers); 
@@ -69,8 +64,26 @@ require_once("../classes/database.class.php");
     // Decoding
     $answersBySections = json_decode($result_answers, true);
     $infoNumbers = json_decode($result_infoNumbers, true);
-
     $overview = json_decode($resultOverview, true);
+
+    $first_section = $answersBySections['sections_ids'][0];
+    $labels_count = sizeof($answersBySections["labels"]);
+    $sections_count =  sizeof($answersBySections["sections"]);
+
+    $url = "$baseURL/php/api/answersByQuestions.php?section_id=$first_section&labels_number=$labels_count&c_id=$checklist_id";
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+  
+    // Get answers by questions (first section)
+    $result_answersByQuestions = curl_exec($ch);
+
+    // Closing
+    curl_close($ch);
+
+    // Removing UTF-8 Bom 
+    $result_answersByQuestions = str_replace("\xEF\xBB\xBF",'',$result_answersByQuestions); 
+    // Decoding
+    $answersByQuestions = json_decode($result_answersByQuestions, true);
 
     $avg = $infoNumbers['average_time'];
     $minutes = floor($avg / 60);
@@ -139,12 +152,10 @@ require_once("../classes/database.class.php");
           </div>
         </div>
         <div class="items-graphic">
-          <ul class="sections-list">
-            <li class="active">Section 1</li>
-            <li>Section 2</li>
-            <li>Section 3</li>
-            <li>Section 4</li>
-            <li>Section 5</li>
+          <ul class="sections-list" id="sections-list">
+            <?php for($i=0; $i<$sections_count; $i++) { ?>
+              <li id="<?= $answersBySections["sections_ids"][$i]?>" onclick="changeSection(event)"><?= $answersBySections["sections"][$i] ?></li>
+            <?php } ?>
           </ul>
           <table>
             <thead>
@@ -155,26 +166,13 @@ require_once("../classes/database.class.php");
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Aspectos de usabilidade</td>
-                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-0"></canvas></div></td>
-                <td><button class="btn btn-primary">Justifications</button></td>
-              </tr>
-              <tr>
-                <td>Aspectos visuais</td>
-                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-1"></canvas></div></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>Qualidade da informação</td>
-                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-2"></canvas></div></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>Qualidade da informação</td>
-                <td><div style="min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-3"></canvas></div></td>
-                <td></td>
-              </tr>
+              <?php $index = 0; foreach($answersByQuestions["questions_answers"] as $key => $value) { ?>
+                <tr>
+                  <td><?= $value["title"] ?></td>
+                  <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-<?= $index ?>"></canvas></div></td>
+                  <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>">Justifications</button></td>
+                </tr>
+              <?php $index++ ;} ?>
             </tbody>
           </table>
         </div>
@@ -299,6 +297,8 @@ require_once("../classes/database.class.php");
 
     margin: 0;
     padding: 0;
+
+    cursor: pointer;
   }
   ul.sections-list > li { 
     color: #878799;
@@ -319,12 +319,23 @@ require_once("../classes/database.class.php");
   }
   tr, thead > tr {
     background-color: #DEDEDE;
-  } 
+    display: flex;
+    align-items: center;
+  }
+  tr > td:nth-child(2), tr > th:nth-child(2) {
+    min-width: 0;
+    flex: 1;
+  }
+  tr > td:nth-child(3) {
+    display: flex;
+    justify-content: center;
+  }
   tbody > tr:nth-child(2n+1) {
     background-color: #E8E6F0;
   }
   th, td {
     padding: 1rem;
+    flex: 0.5;
   }
   h2 {
     font-size: 3.25rem;
@@ -519,9 +530,14 @@ require_once("../classes/database.class.php");
 
 <script>
 
-  create_answersByQuestions();
+  var question_charts = [];
+  var answersByQuestions = <?= json_encode($answersByQuestions["questions_answers"]) ?>;
 
-  function create_answersByQuestions() {
+  create_answersByQuestions(answersByQuestions);
+
+  function create_answersByQuestions(answersByQuestions) {
+
+    var questionsNumber = Object.keys(answersByQuestions).length;
 
     Chart.defaults.set('plugins.datalabels', {
       color: '#F3F3FC',
@@ -530,12 +546,15 @@ require_once("../classes/database.class.php");
       }
     });
 
-    const charts_datas = [[8, 10, 15], [4, 12, 4], [5, 20, 10], [16, 5, 400]];
-    const charts_labels = ["Sim", "Não", "Talvez"];
+    const charts_datas = [];
 
-	  var charts = [];
+    for(answer of Object.values(answersByQuestions)) {
+      charts_datas.push(answer['count']);
+    };
+    
+    const charts_labels = labels;
 
-    for(let i=0; i<4; i++) {
+    for(let i=0; i<questionsNumber; i++) {
       let datasets = [];
       
       charts_labels.forEach((label, index) => {
@@ -559,7 +578,6 @@ require_once("../classes/database.class.php");
         data,
         options: {
           indexAxis: 'y',
-          responsive: true,
           maintainAspectRatio: false,
           scales: {
             y: {
@@ -593,11 +611,50 @@ require_once("../classes/database.class.php");
         config,
       );
 
-      charts.push(chart);
+      question_charts.push(chart);
       
     }
 
   }
+
+// Change sections
+</script>
+
+
+<script>
+  
+  function changeSection(e) {
+    sectionsList.forEach((element) => {
+      if(e.target === element) {
+        element.classList.add("active");
+      } else {
+        element.classList.remove("active");
+      }
+    });
+
+    question_charts.forEach((chart) => {
+      chart.destroy();
+    });
+
+    // $.ajax({
+    //   type: "GET",
+    //   url: `../api/answersByQuestions.php?section_id=${e.target.id}&labels_number=<?= $labels_count ?>&c_id=<?= $checklist_id ?>`,
+    //   success: function(data) {
+    //     console.log(data);
+    //   },
+    //   error: function(error) {
+    //     console.log(error);
+    //   }
+    // });
+
+  }
+
+  var sectionsList = document.querySelectorAll('#sections-list > li');
+
+  sectionsList = Array.from(sectionsList);
+  sectionsList[0].classList.add("active");
+
+
 
 
 
