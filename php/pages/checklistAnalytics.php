@@ -543,6 +543,11 @@ require_once("../classes/database.class.php");
       color: '#F3F3FC',
       font: {
         weight: 'bold'
+      },
+      display: function(context) {
+        var index = context.dataIndex;
+        var value = context.dataset.data[index];
+        return value > 0; 
       }
     });
 
@@ -563,6 +568,7 @@ require_once("../classes/database.class.php");
           label: charts_labels[index],
           data: [charts_datas[i][index]],
           backgroundColor: color.backgroundColor,
+          minBarLength: 10,
         }
         datasets.push(dataset);
       });
@@ -636,16 +642,30 @@ require_once("../classes/database.class.php");
       chart.destroy();
     });
 
-    // $.ajax({
-    //   type: "GET",
-    //   url: `../api/answersByQuestions.php?section_id=${e.target.id}&labels_number=<?= $labels_count ?>&c_id=<?= $checklist_id ?>`,
-    //   success: function(data) {
-    //     console.log(data);
-    //   },
-    //   error: function(error) {
-    //     console.log(error);
-    //   }
-    // });
+    $.ajax({
+      type: "GET",
+      url: `../api/answersByQuestions.php?section_id=${e.target.id}&labels_number=<?= $labels_count ?>&c_id=<?= $checklist_id ?>`,
+      success: function(data) {
+        let answersByQuestions = data["questions_answers"];
+        let index = 0;
+        let items = '';
+
+        for(answer of Object.entries(answersByQuestions)) {
+          items += `
+            <tr>
+              <td>${answer[1]["title"]}</td>
+              <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
+              <td><button class="btn btn-primary" style="height: 2.5rem;" id="${answer[0]}">Justifications</button></td>
+            </tr>
+          `;
+          index++;
+        };
+
+        $('tbody').html(items);
+
+        create_answersByQuestions(answersByQuestions);
+      },
+    });
 
   }
 
@@ -653,9 +673,5 @@ require_once("../classes/database.class.php");
 
   sectionsList = Array.from(sectionsList);
   sectionsList[0].classList.add("active");
-
-
-
-
 
 </script>

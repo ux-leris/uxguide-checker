@@ -202,11 +202,11 @@
         }
 
         public function getNumberOfAnswersByQuestions($conn, $checklist_id, $section_id) {
-            $query = "SELECT item_id, text, label, count(label) as count FROM (SELECT id as item_id, text FROM checklist_item WHERE checklist_id = ? AND section_id = ? ORDER BY item_order)x JOIN checklist_item_data ON item_id = checklist_item_id GROUP BY item_id, label";
+            $query = "SELECT item_id, text, label_id, count(label) as count FROM (SELECT * FROM (SELECT id as item_id, text FROM checklist_item WHERE checklist_id = ? AND section_id = ? ORDER BY item_order)x JOIN (SELECT id as label_id FROM label WHERE checklist_id = ?)y)z LEFT OUTER JOIN checklist_item_data ON item_id = checklist_item_id AND label_id = label GROUP BY item_id, label_id";
 
             $stmt = $conn->prepare($query);
 
-            $stmt->bind_param("ss", $checklist_id, $section_id);
+            $stmt->bind_param("sss", $checklist_id, $section_id, $checklist_id);
             $stmt->execute();
 
             return $stmt->get_result();
