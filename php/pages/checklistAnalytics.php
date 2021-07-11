@@ -141,7 +141,7 @@ require_once("../classes/database.class.php");
           <canvas id="answers-by-section"></canvas>
         </div>
         <div class="overview-graphic chart-bg">
-          <div>
+          <div class="overview-chart">
             <canvas id="overview"></canvas>
           </div>
           <div class="overview-text">
@@ -274,10 +274,15 @@ require_once("../classes/database.class.php");
     justify-content: center;
     align-items: center;
 
-    font-size: 32px;
+    font-size: 2rem;
   }
   .overview-text p:first-child {
     font-weight: bold;
+  }
+  .overview-chart {
+    position: relative; 
+    min-width: 0; 
+    height: 20rem;
   }
   .items-graphic {
     display: flex;
@@ -361,6 +366,10 @@ require_once("../classes/database.class.php");
     border-radius: 0.6rem;
     padding: 2rem;
   }
+  .overview-graphic {
+    width: 100%;
+    height: 100%;
+  }
   .info-time {
     display: flex;
     flex-direction: column;
@@ -375,6 +384,43 @@ require_once("../classes/database.class.php");
     align-items: center;
     gap: 0.5rem;
   }
+
+</style>
+
+<style>
+
+  @media(max-width: 1200px) {
+    html, body {
+      font-size: 14px;
+    }
+    .analytics-data {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+    } 
+  }
+  @media(max-width: 690px) {
+    html, body {
+      font-size: 12px;
+    }
+    .analytics-container {
+      padding: 0.5rem;
+    }
+    .chart-bg {
+      flex-direction: column;
+      padding: 1.5rem 0;
+    }
+    .items-graphic {
+      padding: 1rem;
+    }
+    .info-numbers > div {
+      padding: 1.5rem 0.5rem;
+    }
+    .info-time {
+      padding: 1.5rem 0.5rem;
+      align-items: center;
+    }
+  }
+
 
 </style>
 
@@ -518,6 +564,9 @@ require_once("../classes/database.class.php");
     const config = {
       type: "doughnut",
       data,
+      options: {
+        maintainAspectRatio: false,
+      }
     }
 
     const overview = new Chart(
@@ -568,7 +617,6 @@ require_once("../classes/database.class.php");
           label: charts_labels[index],
           data: [charts_datas[i][index]],
           backgroundColor: color.backgroundColor,
-          minBarLength: 10,
         }
         datasets.push(dataset);
       });
