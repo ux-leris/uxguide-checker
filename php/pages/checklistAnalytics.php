@@ -21,6 +21,14 @@ require_once("../classes/database.class.php");
 
     $checklist = new Checklist;
     $checklist->loadChecklist($conn, $checklist_id);
+    
+    $evaluationDAO = new EvaluationDAO;
+    $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
+    
+    if($evaluationResult->num_rows <= 0) {
+      echo "<h1 style='height: 100vh; display: flex; justify-content: center; align-items: center;'>Your checklist doensn't have evaluations.<h1>";
+      exit();
+    }
 
     if(!$checklist->get_id() || $checklist->get_author() != $_SESSION["USER_ID"]) {
         header("HTTP/1.0 404 Not Found");
