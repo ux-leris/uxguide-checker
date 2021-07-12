@@ -161,8 +161,13 @@ require_once("../classes/database.class.php");
             <thead>
               <tr>
                 <th>Question</th>
-                <th>Answers</th>
-                <th></th>
+                <th>
+                  Answers 
+                  <?php $index = 0; foreach($labels as $label) { 
+                    echo "<span class='questions-labels'><div class='label-marker' id='marker-$index'></div>".$label['text']."</span>";
+                    $index++;
+                  }?>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -327,9 +332,15 @@ require_once("../classes/database.class.php");
     display: flex;
     align-items: center;
   }
-  tr > td:nth-child(2), tr > th:nth-child(2) {
+  tr > td:nth-child(2) {
     min-width: 0;
     flex: 1;
+  }
+  tr > th:nth-child(2) {
+    min-width: 0;
+    flex: 1.5;
+    display: flex;
+    flex-wrap: wrap;
   }
   tr > td:nth-child(3) {
     display: flex;
@@ -341,6 +352,18 @@ require_once("../classes/database.class.php");
   th, td {
     padding: 1rem;
     flex: 0.5;
+  }
+  .label-marker {
+    height: 1rem;
+    width: 1rem;
+    border-radius: 360px;
+    background-color: red;
+    align-self: center;
+    margin: 0 0.2rem 0 1rem;
+  }
+  .questions-labels {
+    display: flex;
+    align-items: center;
   }
   h2 {
     font-size: 3.25rem;
