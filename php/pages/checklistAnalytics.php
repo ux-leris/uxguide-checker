@@ -349,9 +349,13 @@ require_once("../classes/database.class.php");
   tbody > tr:nth-child(2n+1) {
     background-color: #E8E6F0;
   }
-  th, td {
+  td {
     padding: 1rem;
     flex: 0.5;
+  }
+  th {
+    padding: 1rem;
+    flex: 0.48;
   }
   .label-marker {
     height: 1rem;
