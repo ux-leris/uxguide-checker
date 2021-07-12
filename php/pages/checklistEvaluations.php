@@ -63,12 +63,18 @@
                 if($checklist->get_author() == $_SESSION["USER_ID"]) {
             ?>            
 
-            <a href="./checklistAnalytics.php?c_id=<?= $checklist->get_id() ?>" class="btn btn-primary">
-                <span class="ml-1 mr-2">
-                    <i class="fas fa-chart-pie"></i>
-                </span>
-                Checklist Analytics
-            </a>
+            <?php 
+                $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
+                if($evaluationResult->num_rows > 0) { ?>
+                    <a href="./checklistAnalytics.php?c_id=<?= $checklist->get_id() ?>" class="btn btn-primary">
+                        <span class="ml-1 mr-2">
+                            <i class="fas fa-chart-pie"></i>
+                        </span>
+                        Checklist Analytics
+                    </a>
+            <?php } ?>
+
+
 
             <hr>
             <h3>All Evaluations</h3>
@@ -76,8 +82,6 @@
             <div class="row mt-4 mb-4">
 
                 <?php
-                    $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
-
                     while($evaluationRow = $evaluationResult->fetch_assoc()) {
                 ?>
 
