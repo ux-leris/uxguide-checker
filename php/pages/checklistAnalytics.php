@@ -4,6 +4,7 @@
     require_once("../classes/checklist.class.php");
     require_once("../dataAccess/evaluationDAO.class.php");
     require_once("../dataAccess/chartColors.php");
+    require_once("../dataAccess/chartPatterns.php");
     require_once("../../enviroment.php");
 
     session_start();
@@ -484,7 +485,8 @@
     
     const datasets = [];
 
-    const colors = <?= json_encode(getColor()) ?>;
+    const colors = <?= json_encode(getColors()) ?>;
+    const patterns = <?= json_encode(getPatterns()) ?>;
 
     labels.forEach((label, i) => {
       const data = [];
@@ -495,7 +497,7 @@
 
       const dataset = {
         label: labels[i],
-        backgroundColor: pattern.generate([colors[i]]),
+        backgroundColor: pattern.draw(patterns[i], colors[i]),
         minBarLength: 6,
         data,
       };
@@ -594,16 +596,19 @@
     const backgroundColor = []
     const backgroundPatterns = []
 
-    const colors = <?= json_encode(getColor()) ?>;
+    const colors = <?= json_encode(getColors()) ?>;
+    const patterns = <?= json_encode(getPatterns()) ?>;
+
+    console.log(patterns)
 
     answersByLabel.forEach((label, i) => {
-      backgroundColor.push(colors[i])
+      backgroundColor.push(pattern.draw(patterns[i], colors[i]))
     })
 
     const datasets = [{
       label: "Overview",
       data: answersByLabel,
-      backgroundColor: pattern.generate(backgroundColor),
+      backgroundColor,
       hoverOffset: 2
     }]
 
@@ -678,7 +683,8 @@
     
     const charts_labels = <?= json_encode($answersBySections["labels"]) ?>;;
 
-    const colors = <?= json_encode(getColor()) ?>;
+    const colors = <?= json_encode(getColors()) ?>;
+    const patterns = <?= json_encode(getPatterns()) ?>;
 
     for(let i=0; i<questionsNumber; i++) {
       let datasets = [];
@@ -687,7 +693,7 @@
         let dataset = {
           label: charts_labels[index],
           data: [charts_datas[i][index]],
-          backgroundColor: pattern.generate([colors[index]]),
+          backgroundColor: pattern.draw(patterns[index], colors[index]),
         }
         datasets.push(dataset);
       });
