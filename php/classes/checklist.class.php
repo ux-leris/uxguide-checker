@@ -143,5 +143,11 @@
 
             return $checklistDAO->getNumberOfAnswersBySections($conn, $checklist_id);
         }
+
+        public function getNumberOfAnswersByQuestions($conn, $checklist_id, $section_id) {
+            $checklistDAO = new ChecklistDAO;
+
+            return $checklistDAO->getNumberOfAnswersByQuestions($conn, $checklist_id, $section_id);
+        }
     }
 ?>

@@ -32,8 +32,10 @@
     $labelsNumber = $labels_result->num_rows;
 
     $sections = array();
+    $sections_ids = array();
     while($section = $sections_result->fetch_assoc()) {
       array_push($sections, $section["title"]);
+      array_push($sections_ids, $section["id"]);
     }
 
     $labels = array();
@@ -54,6 +56,7 @@
     $response = [
       "checklist" => $checklist->get_title(),
       "sections" => $sections,
+      "sections_ids" => $sections_ids,
       "labels" => $labels,
       "answers" => $answers
     ];
