@@ -1,8 +1,9 @@
 <?php
 
-require_once("../classes/database.class.php");
+    require_once("../classes/database.class.php");
     require_once("../classes/checklist.class.php");
     require_once("../dataAccess/evaluationDAO.class.php");
+    require_once("../dataAccess/chartColors.php");
     require_once("../../enviroment.php");
 
     session_start();
@@ -471,121 +472,108 @@ require_once("../classes/database.class.php");
 
 </style>
 
-<script>
+<script type="text/javascript">
 
-  /*
-    If chart is not responsive, add min-width: 0 in the parent div of the chart
-  */
+  createAnswersBySection();
 
-  function getColors(){
-    let hue = Math.floor(Math.random() * 360);
-    let saturation = Math.floor(Math.random() * (70 - 50) + 50);
-    let luminosity =  Math.floor(Math.random() * (70 - 60) + 60);
+  function createAnswersBySection()
+  {
+    const sections = <?= json_encode($answersBySections["sections"]) ?>;
+    const labels = <?= json_encode($answersBySections["labels"]) ?>;
+    const answers = <?= json_encode($answersBySections["answers"]) ?>;
+    
+    const datasets = [];
 
-    colors = {
-      backgroundColor: `hsl(${hue}, ${saturation}%, ${luminosity}%)`,
-      hoverColor: `hsl(${hue}, ${saturation}%, ${luminosity-20}%)`
-    }
+    const colors = <?= json_encode(getColor()) ?>;
 
-    return colors;
-  }
+    labels.forEach((label, i) => {
+      const data = [];
 
-  var sections = <?= json_encode($answersBySections["sections"]) ?>;
-  var labels = <?= json_encode($answersBySections["labels"]) ?>;
-  var answers = <?= json_encode($answersBySections["answers"]) ?>;
-  
-  var datasets = [];
+      sections.forEach((section, j) => {
+        data.push(answers[i][j]);
+      })
 
-  sectionsNumber = sections.length;
-  labelsNumber = labels.length;
-  for(i=0; i<labelsNumber; i++) {
-    data = [];
-    for(j=0; j<sectionsNumber; j++) {
-      data.push(answers[j][i]);
-    }
+      const dataset = {
+        label: labels[i],
+        backgroundColor: pattern.generate([colors[i]]),
+        minBarLength: 6,
+        data,
+      };
 
-    randomColors = getColors();
+      datasets.push(dataset);    
+    })
 
-    dataset = {
-      label: labels[i],
-      backgroundColor: randomColors.backgroundColor,
-      hoverBackgroundColor: randomColors.hoverColor,
-      minBarLength: 6,
+    const data = {
+      labels: <?= json_encode($answersBySections["sections"]) ?>,
+      datasets
+    };
+
+    const options = {
+      categoryPercentage: 0.6,
+      indexAxis: 'y',
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          grid: {
+            display: false
+          },
+          ticks: {
+            stepSize: 1,
+            font: {
+              size: 18
+            }
+          },
+          min: 0,
+          afterDataLimits(scale) {
+            scale.max += 1;
+          }
+        },
+        y: {
+          stacked: true,
+          grid: {
+            display: true
+          },
+          ticks: {
+            font: {
+              size: 18
+            }
+          }
+        },
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: "Number of Answers by Section",
+          align: "start",
+          font: {
+            size: 26,
+            weight: 700
+          }
+        },
+        legend: {
+          align: "end",
+          labels: {
+            font: {
+              size: 20,
+              weight: 400
+            }
+          }
+        }
+      },
+    };
+
+    const config = {
+      type: 'bar',
       data,
-    }
-    datasets.push(dataset);
+      options
+    };
+
+    var answersBySection = new Chart(
+      document.getElementById('answers-by-section'),
+      config
+    );
   }
-
-  var data = {
-    labels: <?= json_encode($answersBySections["sections"]) ?>,
-    datasets
-  };
-
-  var options = {
-    categoryPercentage: 0.6,
-    indexAxis: 'y',
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        stacked: true,
-        grid: {
-          display: false
-        },
-        ticks: {
-          stepSize: 1,
-          font: {
-            size: 18
-          }
-        },
-        min: 0,
-        afterDataLimits(scale) {
-          scale.max += 1;
-        }
-      },
-      y: {
-        stacked: true,
-        grid: {
-          display: true
-        },
-        ticks: {
-          font: {
-            size: 18
-          }
-        }
-      },
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: "Number of Answers by Section",
-        align: "start",
-        font: {
-          size: 26,
-          weight: 700
-        }
-      },
-      legend: {
-        align: "end",
-        labels: {
-          font: {
-            size: 20,
-            weight: 400
-          }
-        }
-      }
-    },
-  };
-
-  const config = {
-    type: 'bar',
-    data,
-    options
-  };
-
-  var answersBySection = new Chart(
-    document.getElementById('answers-by-section'),
-    config
-  );
 
 </script>
 
@@ -604,10 +592,12 @@ require_once("../classes/database.class.php");
     labels.forEach(obj => labelsName.push(obj.text))
 
     const backgroundColor = []
+    const backgroundPatterns = []
 
-    answersByLabel.forEach(() => {
-      const color = getColors()
-      backgroundColor.push(color.backgroundColor)
+    const colors = <?= json_encode(getColor()) ?>;
+
+    answersByLabel.forEach((label, i) => {
+      backgroundColor.push(colors[i])
     })
 
     const datasets = [{
@@ -657,7 +647,7 @@ require_once("../classes/database.class.php");
 
 </script>
 
-<script>
+<script type="text/javascript">
 
   var question_charts = [];
   var answersByQuestions = <?= json_encode($answersByQuestions["questions_answers"]) ?>;
@@ -686,17 +676,18 @@ require_once("../classes/database.class.php");
       charts_datas.push(answer['count']);
     };
     
-    const charts_labels = labels;
+    const charts_labels = <?= json_encode($answersBySections["labels"]) ?>;;
+
+    const colors = <?= json_encode(getColor()) ?>;
 
     for(let i=0; i<questionsNumber; i++) {
       let datasets = [];
       
       charts_labels.forEach((label, index) => {
-        let color = getColors();
         let dataset = {
           label: charts_labels[index],
           data: [charts_datas[i][index]],
-          backgroundColor: color.backgroundColor,
+          backgroundColor: pattern.generate([colors[index]]),
         }
         datasets.push(dataset);
       });
@@ -746,16 +737,12 @@ require_once("../classes/database.class.php");
       );
 
       question_charts.push(chart);
-      
     }
-
   }
 
-// Change sections
 </script>
 
-
-<script>
+<script type="text/javascript"> 
   
   function changeSection(e) {
     sectionsList.forEach((element) => {
