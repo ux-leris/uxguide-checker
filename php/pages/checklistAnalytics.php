@@ -155,9 +155,21 @@
       </div>
       <div class="analytics-data">
         <div class="section-graphic">
+          <i
+            class="fas fa-question-circle"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Describe the number of each option responses per section in all checklist evaluations">
+          </i>
           <canvas id="answers-by-section"></canvas>
         </div>
         <div class="overview-graphic chart-bg">
+          <i
+            class="fas fa-question-circle"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Describe the number of responses per option in all checklist evaluations">
+          </i>
           <div class="overview-chart">
             <canvas id="overview"></canvas>
           </div>
@@ -169,6 +181,13 @@
           </div>
         </div>
         <div class="items-graphic">
+          <i
+            id="help-icon"
+            class="fas fa-question-circle"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Describe the number of responses per option by section questions in all checklist evaluations">
+          </i>
           <ul class="sections-list" id="sections-list">
             <?php for($i=0; $i<$sections_count; $i++) { ?>
               <li id="<?= $answersBySections["sections_ids"][$i]?>" onclick="changeSection(event)"><?= $answersBySections["sections"][$i] ?></li>
@@ -200,6 +219,13 @@
         </div>
         <div class="info-graphic">
           <div class="info-time chart-bg">
+            <i
+              id="help-icon"
+              class="fas fa-question-circle"
+              data-toggle="tooltip"
+              data-placement="left"
+              title="Describe the response average time of checklist and the time taken in the last response">
+            </i>
             <p>Average Time<br/>to Evaluate</p>
             <div class="time">
               <div class="clock-icon">
@@ -223,10 +249,22 @@
           </div>
           <div class="info-numbers">
             <div class="total-questions chart-bg">
+              <i
+                class="fas fa-question-circle"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Describe the number of questions of checklist">
+              </i>
               <p>Total<br/>Questions</p>
               <p><?= $infoNumbers["total_questions"] ?></p>
             </div>
             <div class="unfinished-evaluations chart-bg">
+              <i
+                class="fas fa-question-circle"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Describe the number of unfinished evaluations of checklist">
+              </i>
               <p>Unfinished<br/>Evaluations</p>
               <p><?= $infoNumbers["total_unfinished_evaluations"] ?></p>
             </div>
@@ -236,12 +274,12 @@
     </div>
 
 		<!-- Optional JavaScript -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS and ChartJS -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS, ChartJS and PatternomalyJS -->
     <script src="../../js/jquery-3.5.1.js"></script>
-    <script src="../../js/popper-base.js"></script>
+    <script src="../../js/bootstrap/bootstrap.bundle.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/patternomaly/1.3.2/patternomaly.js"
       integrity="sha512-gNM40ajr/bSi3Af8i6D4dV2CUWZrkm2zhgeWf46H91zOwWoH8Wwsyf6kQ4syfNyOrnjATrjKkP4ybWD7eKp2KA=="
@@ -317,6 +355,17 @@
     background-color: #EEECF5;
     border-radius: 0.6rem;
     padding: 1.5rem;
+    padding-top: 3.5rem; /*Sofrerá alteração na inserção do título*/
+
+    position: relative;
+  }
+  .items-graphic i {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    font-size: 24px;
+    color: #666;
   }
   ul.sections-list {
     display: flex;
@@ -414,11 +463,33 @@
     background-color: #EEECF5;
     border-radius: 0.6rem;
     padding: 2rem;
+
+    position: relative;
   }
+  .section-graphic i {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    font-size: 24px;
+    color: #666;
+  }
+
   .overview-graphic {
     width: 100%;
     height: 100%;
+
+    position: relative;
   }
+  .overview-graphic i {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    font-size: 24px;
+    color: #666;
+  }
+
   .info-time {
     display: flex;
     flex-direction: column;
@@ -598,8 +669,6 @@
 
     const colors = <?= json_encode(getColors()) ?>;
     const patterns = <?= json_encode(getPatterns()) ?>;
-
-    console.log(patterns)
 
     answersByLabel.forEach((label, i) => {
       backgroundColor.push(pattern.draw(patterns[i], colors[i]))
@@ -794,5 +863,13 @@
 
   sectionsList = Array.from(sectionsList);
   sectionsList[0].classList.add("active");
+
+</script>
+
+<script type="text/javascript">
+
+  $(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+  })
 
 </script>
