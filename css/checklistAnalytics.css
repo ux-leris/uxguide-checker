@@ -1,143 +1,174 @@
 .page-title {
-margin-bottom: 25px;
+  margin-bottom: 25px;
 
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 }
 .page-title a {
-color: #8fad88;
+  color: #8fad88;
 }
 
 .checklist-infs {
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 }
 .checklist-name {
-display: flex;
-align-items: flex-end;
+  display: flex;
+  align-items: flex-end;
 }
 .checklist-infs p::before {
-content: "●";
+  content: "●";
 }
 .checklist-infs p {
-margin: 0 0 0 10px;
+  margin: 0 0 0 10px;
 
-font-size: 24px;
-color: #666;
+  font-size: 24px;
+  color: #666;
 }
 
-html, body {
-font-size: 16px;
-color: #1E1E31;
+html,
+body {
+  font-size: 16px;
+  color: #1e1e31;
 }
 .analytics-container {
-height: 80vh;
-padding: 2rem;
+  height: 80vh;
+  padding: 2rem;
 }
 .analytics-data {
-display: grid;
-height: 100%;
-grid-template-columns: 1.5fr 1fr;
-grid-template-rows: 1.2fr 1fr;
-grid-gap: 4rem;
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: 1.2fr 1fr;
+  grid-gap: 4rem;
 }
 .info-graphic {
-display: grid;
-grid-template-columns: 1fr 1fr;
-grid-gap: 2rem; 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 2rem;
 }
 .info-numbers {
-display: grid;
-grid-template-rows: 1fr 1fr;
-grid-gap: 2rem;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 2rem;
 }
 .info-numbers > div {
-display: flex;
-justify-content: center;
-align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-color: #666;
+  color: #666;
 }
-.total-questions p:first-child, .unfinished-evaluations p:first-child {
-text-align: center;
+.total-questions p,
+.unfinished-evaluations p {
+  text-align: center;
 
-font-size: 26px;
-font-weight: bold;
+  font-size: 26px;
+  font-weight: bold;
 }
-.total-questions p:last-child, .unfinished-evaluations p:last-child {
-font-size: 48px;
+.total-questions p:last-child,
+.unfinished-evaluations p:last-child {
+  font-size: 48px;
+  font-weight: normal;
+}
+
+.total-questions,
+.unfinished-evaluations {
+  position: relative;
+}
+.total-questions i,
+.unfinished-evaluations i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  color: #666;
 }
 
 .chart-bg {
-display: flex;
-gap: 1.5rem;
-align-items: center;
-justify-content: center;
-background-color: #EEECF5;
-border-radius: 0.6rem;
-padding: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  background-color: #eeecf5;
+  border-radius: 0.6rem;
+  padding: 1.5rem;
 }
 .overview-text {
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-font-size: 32px;
-color: #666;
+  font-size: 32px;
+  color: #666;
 }
 .overview-text p:first-child {
-font-size: 48px;
-font-weight: bold;
+  font-size: 48px;
+  font-weight: bold;
 }
 
 .section-graphic {
-position: relative;
-width: 100%;
-height: 100%;
-min-width: 0;
-background-color: #EEECF5;
-border-radius: 0.6rem;
-padding: 2rem;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  background-color: #eeecf5;
+  border-radius: 0.6rem;
+  padding: 2rem;
 }
 .info-time {
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+.info-time #help-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  color: #666;
 }
 .info-time p {
-text-align: center;
+  text-align: center;
 
-font-size: 26px;
-font-weight: bold;
-color: #666;
+  font-size: 26px;
+  font-weight: bold;
+  color: #666;
 }
 
-.time, .last-evaluation > div {
-display: flex;
-justify-content: center;
-align-items: center;
+.time,
+.last-evaluation > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .time > div {
-height: inherit;
+  height: inherit;
 
-display: flex;
-justify-content: center;
-align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .clock-icon {
-margin-right: 10px;
+  margin-right: 10px;
 
-font-size: 32px;
-color: #666;
+  font-size: 32px;
+  color: #666;
 }
-.average-time p, .last-time p {
-margin: 0;
+.average-time p,
+.last-time p {
+  margin: 0;
 
-font-size: 22px;
+  font-size: 22px;
 }
-.average-time span, .last-time span {
-font-size: 20px;
-font-weight: normal;
+.average-time span,
+.last-time span {
+  font-size: 20px;
+  font-weight: normal;
 }
