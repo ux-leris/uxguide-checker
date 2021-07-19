@@ -99,6 +99,19 @@
             return $stmt->get_result();
         }
 
+        public function select_itemJustifications($conn, $item_id)
+        {
+            $query = "SELECT * FROM checklist_item_data WHERE checklist_item_id = ? AND justification IS NOT NULL";
+
+            $stmt = $conn->prepare($query);
+
+            $stmt->bind_param('s', $item_id);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            return $result->fetch_all();
+        }
+
         public function count_items_section($conn, $section_id) {
             $query = "select count(*) as counter from checklist_item where section_id = ?";
 

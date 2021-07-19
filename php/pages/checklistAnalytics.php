@@ -138,6 +138,21 @@
 	</head>
 
 	<body style="height: 100vh">
+
+    <div id="justifications-modal" class="modal fade" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="class">Question Justifications</h5>
+            <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body"></div>
+        </div>
+      </div>
+    </div>
+
 		<!-- Navbar -->
     <?php include('../templates/navbar.php'); ?>
 	
@@ -211,7 +226,7 @@
                 <tr>
                   <td><?= $value["title"] ?></td>
                   <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-<?= $index ?>"></canvas></div></td>
-                  <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>">Justifications</button></td>
+                  <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>" onClick="getJustifications(this.id)">Justifications</button></td>
                 </tr>
               <?php $index++ ;} ?>
             </tbody>
@@ -845,7 +860,7 @@
             <tr>
               <td>${answer[1]["title"]}</td>
               <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
-              <td><button class="btn btn-primary" style="height: 2.5rem;" id="${answer[0]}">Justifications</button></td>
+              <td><button class="btn btn-primary" style="height: 2.5rem;" id="${answer[0]}" onClick="getJustifications(this.id)">Justifications</button></td>
             </tr>
           `;
           index++;
@@ -871,5 +886,45 @@
   $(function() {
     $('[data-toggle="tooltip"]').tooltip();
   })
+
+</script>
+
+<script type="text/javascript">
+
+  function getJustifications(questionId)
+  {
+    const justifications = [];
+
+    $.ajax({
+      type: "GET",
+      url: "../controllers/select_justifications.php",
+      data: {
+        i_id: questionId
+      },
+      success: function(res) {
+        const rows = eval(res);
+        rows.forEach(row => justifications.push(row[4]));
+
+        showJustifications(justifications);
+      }
+    })
+  }
+
+  function showJustifications(justifications)
+  {
+    let justificationsModalBody = document.querySelector('#justifications-modal .modal-body');
+
+    justificationsModalBody.innerHTML = "";
+
+    justifications.forEach((justification, i) => {
+      justificationsModalBody.innerHTML += `
+        <div class="card mb-3">
+          <div class="card-body">${justification}</div>
+        </div>
+      `;
+    })
+
+    $('#justifications-modal').modal('show');
+  }
 
 </script>
