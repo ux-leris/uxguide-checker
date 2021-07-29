@@ -232,7 +232,7 @@
 
 		<!-- Seção minhas checklists -->
 		<div class="container mt-5 mb-5">
-            <h1>Your checklists</h1>
+            <h1>My checklists</h1>
             
             <?php
                 $result = $checklistDAO->select_checklistsOfUser($conn, $_SESSION["USER_ID"]);

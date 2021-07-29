@@ -1,5 +1,5 @@
 .page-title {
-  margin-bottom: 25px;
+  margin-bottom: 1.5rem;
 
   display: flex;
   align-items: center;
@@ -20,9 +20,9 @@
   content: "●";
 }
 .checklist-infs p {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 0.6rem;
 
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #666;
 }
 
@@ -30,20 +30,25 @@ html,
 body {
   font-size: 16px;
   color: #1e1e31;
+  height: 100%;
+  width: 100vw;
 }
 .analytics-container {
   height: 80vh;
+  width: 100%;
   padding: 2rem;
 }
 .analytics-data {
   display: grid;
   height: 100%;
+  width: 100%;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1.2fr 1fr;
   grid-gap: 4rem;
 }
 .info-graphic {
   display: grid;
+  width: 100%;
   grid-template-columns: 1fr 1fr;
   grid-gap: 2rem;
 }
@@ -63,12 +68,12 @@ body {
 .unfinished-evaluations p {
   text-align: center;
 
-  font-size: 26px;
+  font-size: 1.6rem;
   font-weight: bold;
 }
 .total-questions p:last-child,
 .unfinished-evaluations p:last-child {
-  font-size: 48px;
+  font-size: 3rem;
   font-weight: normal;
 }
 
@@ -82,10 +87,9 @@ body {
   top: 15px;
   right: 15px;
 
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #666;
 }
-
 .chart-bg {
   display: flex;
   gap: 1.5rem;
@@ -95,28 +99,75 @@ body {
   border-radius: 0.6rem;
   padding: 1.5rem;
 }
+.section-bg {
+  background-color: #EEECF5;
+  border-radius: 0.6rem;
+  padding: 1.5rem;
+}
 .overview-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  font-size: 32px;
+  font-size: 2rem;
   color: #666;
 }
+.overview-infos {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  width: auto;
+  gap: 1rem;
+}
 .overview-text p:first-child {
-  font-size: 48px;
+  font-size: 3rem;
   font-weight: bold;
 }
-
-.section-graphic {
+.overview-graphic {
+  width: auto;
+  height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
+}
+.overview-graphic i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  color: #666;
+}
+.chart-view-configs {
+  position: relative; 
+  height: 100%;
+  width: 100%;
+  min-width: 0
+}
+.chart-title {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+.section-graphic {
   width: 100%;
   height: 100%;
   min-width: 0;
-  background-color: #eeecf5;
-  border-radius: 0.6rem;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+}
+.section-graphic i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  color: #666;
 }
 .info-time {
   display: flex;
@@ -131,13 +182,13 @@ body {
   top: 15px;
   right: 15px;
 
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #666;
 }
 .info-time p {
   text-align: center;
 
-  font-size: 26px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #666;
 }
@@ -165,10 +216,121 @@ body {
 .last-time p {
   margin: 0;
 
-  font-size: 22px;
+  font-size: 1.125rem;
 }
 .average-time span,
 .last-time span {
-  font-size: 20px;
+  font-size: 1.125rem;
   font-weight: normal;
+}
+
+.items-graphic {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2.5rem; /*Sofrerá alteração na inserção do título*/
+  width: 100%;
+
+  position: relative;
+}
+.items-graphic i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  color: #666;
+}
+ul.sections-list {
+  display: flex;
+  flex-wrap: wrap;
+  
+  white-space: nowrap;
+
+  background-color: #E3DFDF;
+  border-radius: 10px 10px 0 0;
+
+  margin: 0;
+  padding: 0;
+
+  cursor: pointer;
+}
+ul.sections-list > li { 
+  color: #878799;
+
+  padding: 1rem;
+  list-style-type: none;
+}
+ul.sections-list > li:hover, 
+ul.sections-list > li.active {
+  background-color: #007175;
+  color: #F3F3FC;
+
+  border-radius: 10px 10px 0 0;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0 0.2rem;
+}
+tr, thead > tr {
+  background-color: #DEDEDE;
+  display: flex;
+  align-items: center;
+}
+tr > td:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+tr > th:nth-child(2) {
+  min-width: 0;
+  flex: 1.5;
+  display: flex;
+  flex-wrap: wrap;
+}
+tr > td:nth-child(3) {
+  display: flex;
+  justify-content: center;
+}
+tbody > tr:nth-child(2n+1) {
+  background-color: #E8E6F0;
+}
+td {
+  padding: 1rem;
+  flex: 0.5;
+}
+th {
+  padding: 1rem;
+  flex: 0.48;
+}
+.label-marker {
+  overflow: hidden;
+  height: 1.65rem;
+  width: 1.65rem;
+  border-radius: 360px;
+  align-self: center;
+  margin: 0 0.2rem 0 0.5rem;
+}
+.questions-labels {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+.questions-labels:first-of-type {
+  margin-left: 1rem;
+}
+h2 {
+  font-size: 3.25rem;
+  font-weight: 500;
+  margin: 0;
+}
+h3 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
 }

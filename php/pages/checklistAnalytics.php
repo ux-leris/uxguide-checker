@@ -169,33 +169,40 @@
         </div>
       </div>
       <div class="analytics-data">
-        <div class="section-graphic">
+        <section class="section-graphic section-bg">
           <i
             class="fas fa-question-circle"
             data-toggle="tooltip"
             data-placement="left"
             title="Describe the number of each option responses per section in all checklist evaluations">
           </i>
-          <canvas id="answers-by-section"></canvas>
-        </div>
-        <div class="overview-graphic chart-bg">
+          <h4 class="chart-title">Number of Answers by Questions</h4>
+          <div class="chart-view-configs">
+            <canvas id="answers-by-section"></canvas>
+          </div>
+        </section>
+        <section class="overview-graphic section-bg">
           <i
             class="fas fa-question-circle"
             data-toggle="tooltip"
             data-placement="left"
             title="Describe the number of responses per option in all checklist evaluations">
           </i>
-          <div class="overview-chart">
-            <canvas id="overview"></canvas>
+          <h4 class="chart-title">Overview</h4>
+          <div class="overview-infos">
+            <div class="chart-view-configs">
+              <canvas id="overview"></canvas>
+            </div>
+            <div class="overview-text">
+              <p>
+                <?= $nEvaluations ?>
+              </p>
+              <p>evaluations</p>
+            </div>
           </div>
-          <div class="overview-text">
-            <p>
-              <?= $nEvaluations ?>
-            </p>
-            <p>evaluations</p>
-          </div>
-        </div>
-        <div class="items-graphic">
+        </section>
+        <section class="items-graphic section-bg">
+          <h4 class="chart-title">Number of Answers by Questions</h4>
           <i
             id="help-icon"
             class="fas fa-question-circle"
@@ -215,7 +222,7 @@
                 <th>
                   Answers 
                   <?php $index = 0; foreach($labels as $label) { 
-                    echo "<span class='questions-labels'><div class='label-marker' id='marker-$index'></div>".$label['text']."</span>";
+                    echo "<span class='questions-labels'><div class='label-marker'><canvas width=28 height=28 id='marker-$index'></canvas></div>".$label['text']."</span>";
                     $index++;
                   }?>
                 </th>
@@ -231,8 +238,8 @@
               <?php $index++ ;} ?>
             </tbody>
           </table>
-        </div>
-        <div class="info-graphic">
+        </section>
+        <section class="info-graphic">
           <div class="info-time chart-bg">
             <i
               id="help-icon"
@@ -262,7 +269,7 @@
               </div>
             </div>
           </div>
-          <div class="info-numbers">
+          <section class="info-numbers">
             <div class="total-questions chart-bg">
               <i
                 class="fas fa-question-circle"
@@ -270,7 +277,7 @@
                 data-placement="left"
                 title="Describe the number of questions of checklist">
               </i>
-              <p>Total<br/>Questions</p>
+              <p>Total of<br/>Questions</p>
               <p><?= $infoNumbers["total_questions"] ?></p>
             </div>
             <div class="unfinished-evaluations chart-bg">
@@ -283,13 +290,13 @@
               <p>Unfinished<br/>Evaluations</p>
               <p><?= $infoNumbers["total_unfinished_evaluations"] ?></p>
             </div>
-          </div>
-        </div>
+          </section>
+        </section>
       </div>
     </div>
 
 		<!-- Optional JavaScript -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS, ChartJS and PatternomalyJS -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS, ChartJS, DataLabels and PatternomalyJS -->
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../js/bootstrap/bootstrap.bundle.min.js"></script>
 
@@ -303,224 +310,6 @@
     </script>
 	</body>
 </html>
-
-<style>
-  html, body {
-    font-size: 16px;
-    color: #1E1E31;
-  }
-  .analytics-container {
-    height: 80vh;
-    padding: 2rem;
-  }
-  .analytics-data {
-    display: grid;
-    height: 100%;
-    grid-template-columns: 1.8fr 1fr;
-    grid-template-rows: 1.2fr 1fr;
-    grid-gap: 3rem;
-  }
-  .info-graphic {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 2rem; 
-  }
-  .info-numbers {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-gap: 2rem; 
-  }
-  .info-numbers > div {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: center;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 1.5rem;
-  }
-  .chart-bg {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: center;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 1.5rem;
-  }
-  .overview-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 2rem;
-  }
-  .overview-text p:first-child {
-    font-weight: bold;
-  }
-  .overview-chart {
-    position: relative; 
-    min-width: 0; 
-    height: 20rem;
-  }
-  .items-graphic {
-    display: flex;
-    flex-direction: column;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 1.5rem;
-    padding-top: 3.5rem; /*Sofrerá alteração na inserção do título*/
-
-    position: relative;
-  }
-  .items-graphic i {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-
-    font-size: 24px;
-    color: #666;
-  }
-  ul.sections-list {
-    display: flex;
-    flex-wrap: wrap;
-    
-    white-space: nowrap;
-
-    background-color: #E3DFDF;
-    border-radius: 10px 10px 0 0;
-
-    margin: 0;
-    padding: 0;
-
-    cursor: pointer;
-  }
-  ul.sections-list > li { 
-    color: #878799;
-
-    padding: 1rem;
-    list-style-type: none;
-  }
-  ul.sections-list > li:hover, 
-  ul.sections-list > li.active {
-    background-color: #007175;
-    color: #F3F3FC;
-
-    border-radius: 10px 10px 0 0;
-  }
-  table {
-    border-collapse: separate;
-    border-spacing: 0 0.2rem;
-  }
-  tr, thead > tr {
-    background-color: #DEDEDE;
-    display: flex;
-    align-items: center;
-  }
-  tr > td:nth-child(2) {
-    min-width: 0;
-    flex: 1;
-  }
-  tr > th:nth-child(2) {
-    min-width: 0;
-    flex: 1.5;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  tr > td:nth-child(3) {
-    display: flex;
-    justify-content: center;
-  }
-  tbody > tr:nth-child(2n+1) {
-    background-color: #E8E6F0;
-  }
-  td {
-    padding: 1rem;
-    flex: 0.5;
-  }
-  th {
-    padding: 1rem;
-    flex: 0.48;
-  }
-  .label-marker {
-    height: 1rem;
-    width: 1rem;
-    border-radius: 360px;
-    background-color: red;
-    align-self: center;
-    margin: 0 0.2rem 0 1rem;
-  }
-  .questions-labels {
-    display: flex;
-    align-items: center;
-  }
-  h2 {
-    font-size: 3.25rem;
-    font-weight: 500;
-    margin: 0;
-  }
-  h3 {
-    font-size: 2.5rem;
-    font-weight: 500;
-    margin: 0;
-  }
-  h4 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin: 0;
-  }
-  .section-graphic {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-    padding: 2rem;
-
-    position: relative;
-  }
-  .section-graphic i {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-
-    font-size: 24px;
-    color: #666;
-  }
-
-  .overview-graphic {
-    width: 100%;
-    height: 100%;
-
-    position: relative;
-  }
-  .overview-graphic i {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-
-    font-size: 24px;
-    color: #666;
-  }
-
-  .info-time {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1.5rem;
-    gap: 1.5rem;
-    background-color: #EEECF5;
-    border-radius: 0.6rem;
-  }
-  .time {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-</style>
 
 <style>
 
@@ -554,10 +343,44 @@
       padding: 1.5rem 0.5rem;
       align-items: center;
     }
+    .overview-infos {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 
 
 </style>
+
+<script> 
+
+  Chart.defaults.font.size = 16;
+
+  Chart.defaults.set('plugins.datalabels', {
+    color: '#F3F3FC',
+    backgroundColor: 'black',
+    borderRadius: 6,
+    padding: 6,
+    font: {
+      size: 16,
+      weight: '600'
+    },
+    display: function(context) {
+      var index = context.dataIndex;
+      var value = context.dataset.data[index];
+      return value > 0; 
+    }
+  });
+
+  Chart.defaults.set('plugins', {
+    legend: {
+      labels: {
+        usePointStyle: true,
+      }
+    },
+  });
+
+</script>
 
 <script type="text/javascript">
 
@@ -597,47 +420,27 @@
     };
 
     const options = {
-      categoryPercentage: 0.6,
+      categoryPercentage: 0.8,
       indexAxis: 'y',
       maintainAspectRatio: false,
       scales: {
         x: {
+          display: false,
           stacked: true,
           grid: {
             display: false
           },
-          ticks: {
-            stepSize: 1,
-            font: {
-              size: 18
-            }
-          },
-          min: 0,
-          afterDataLimits(scale) {
-            scale.max += 1;
-          }
         },
         y: {
           stacked: true,
           grid: {
             display: true
           },
-          ticks: {
-            font: {
-              size: 18
-            }
-          }
         },
       },
       plugins: {
         title: {
-          display: true,
-          text: "Number of Answers by Section",
-          align: "start",
-          font: {
-            size: 26,
-            weight: 700
-          }
+          display: false,
         },
         legend: {
           align: "end",
@@ -652,6 +455,7 @@
     };
 
     const config = {
+      plugins: [ChartDataLabels],
       type: 'bar',
       data,
       options
@@ -702,26 +506,21 @@
     }
 
     const config = {
+      plugins: [ChartDataLabels],
       type: "doughnut",
       data,
       options: {
         maintainAspectRatio: false,
         plugins: {
           title: {
-            display: true,
-            text: "Overview",
-            align: "center",
-            font: {
-              size: 26,
-              weight: 700
-            }
+            display: false,
           },
           legend: {
             labels: {
                 font: {
                   size: 20,
                   weight: 400
-              }
+                },
             }
           }
         }
@@ -746,18 +545,6 @@
   function create_answersByQuestions(answersByQuestions) {
 
     var questionsNumber = Object.keys(answersByQuestions).length;
-
-    Chart.defaults.set('plugins.datalabels', {
-      color: '#F3F3FC',
-      font: {
-        weight: 'bold'
-      },
-      display: function(context) {
-        var index = context.dataIndex;
-        var value = context.dataset.data[index];
-        return value > 0; 
-      }
-    });
 
     const charts_datas = [];
 
@@ -792,6 +579,7 @@
         type: 'bar',
         data,
         options: {
+          categoryPercentage: 1,
           indexAxis: 'y',
           maintainAspectRatio: false,
           scales: {
@@ -878,6 +666,20 @@
 
   sectionsList = Array.from(sectionsList);
   sectionsList[0].classList.add("active");
+
+</script>
+
+<script>
+  const colors = <?= json_encode(getColors()) ?>;
+  const patterns = <?= json_encode(getPatterns()) ?>;
+  const labels_count = <?= $labels_count ?>;
+
+  for(let i=0; i<labels_count; i++) {
+    var canvas = document.getElementById(`marker-${i}`);
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = pattern.draw(patterns[i], colors[i]);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
 </script>
 
