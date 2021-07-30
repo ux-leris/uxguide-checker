@@ -360,7 +360,7 @@
     color: '#F3F3FC',
     backgroundColor: 'black',
     borderRadius: 6,
-    padding: 6,
+    padding: 5,
     font: {
       size: 16,
       weight: '600'
@@ -371,6 +371,14 @@
       return value > 0; 
     }
   });
+
+  const mediaQuery = window.matchMedia('(max-width: 690px)')
+  if (mediaQuery.matches) {
+    Chart.defaults.set('plugins.datalabels', {
+      padding: 1,
+      borderRadius: 2,
+    });
+  }
 
   Chart.defaults.set('plugins', {
     legend: {
@@ -407,7 +415,6 @@
       const dataset = {
         label: labels[i],
         backgroundColor: pattern.draw(patterns[i], colors[i]),
-        minBarLength: 6,
         data,
       };
 
@@ -420,7 +427,7 @@
     };
 
     const options = {
-      categoryPercentage: 0.8,
+      categoryPercentage: 0.7,
       indexAxis: 'y',
       maintainAspectRatio: false,
       scales: {
