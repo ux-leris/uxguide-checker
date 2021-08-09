@@ -39,67 +39,23 @@
         exit();
     }
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HTTPGET, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Accept: application/json'
-    ));
+    // Get charts datas
+    $curl = initCurl();
 
-    // Set the url
-    $url = "$baseURL/php/api/answersBySections.php?c_id=$checklist_id";
-    curl_setopt($ch, CURLOPT_URL, $url);
-
-    // Get answers by sections
-    $result_answers = curl_exec($ch);
-
-    $url = "$baseURL/php/api/infoNumbers.php?c_id=$checklist_id";
-    curl_setopt($ch, CURLOPT_URL, $url);
-  
-    // Get info numbers
-    $result_infoNumbers = curl_exec($ch);
-
-    $url = "$baseURL/php/api/overview.php?c_id=$checklist_id";
-    curl_setopt($ch, CURLOPT_URL, $url);
-
-    $resultOverview = curl_exec($ch);
-    
-    // Removing UTF-8 Bom 
-    $result_answers = str_replace("\xEF\xBB\xBF",'',$result_answers); 
-    $result_infoNumbers = str_replace("\xEF\xBB\xBF",'',$result_infoNumbers); 
-
-    $resultOverview = str_replace("\xEF\xBB\xBF", "", $resultOverview); 
-
-    // Decoding
-    $answersBySections = json_decode($result_answers, true);
-    $infoNumbers = json_decode($result_infoNumbers, true);
-    $overview = json_decode($resultOverview, true);
+    $answersBySections = getAnswersBySectionsData($baseURL, $curl, $checklist_id);
+    $overview = getOverviewData($baseURL, $curl, $checklist_id);
+    $infoNumbers = getBigNumbers($baseURL, $curl, $checklist_id);
 
     $first_section = $answersBySections['sections_ids'][0];
     $labels_count = sizeof($answersBySections["labels"]);
+
+    $answersByQuestions = getAnswersByQuestionsData($baseURL, $curl, $checklist_id, $first_section, $labels_count);
+
+    closeCurl($curl);
+
     $sections_count =  sizeof($answersBySections["sections"]);
 
-    $url = "$baseURL/php/api/answersByQuestions.php?section_id=$first_section&labels_number=$labels_count&c_id=$checklist_id";
-
-    curl_setopt($ch, CURLOPT_URL, $url);
-  
-    // Get answers by questions (first section)
-    $result_answersByQuestions = curl_exec($ch);
-
-    // Closing
-    curl_close($ch);
-
-    // Removing UTF-8 Bom 
-    $result_answersByQuestions = str_replace("\xEF\xBB\xBF",'',$result_answersByQuestions); 
-    // Decoding
-    $answersByQuestions = json_decode($result_answersByQuestions, true);
-
-    $avg = $infoNumbers['average_time'];
-    $minutes = floor($avg / 60);
-    $avg -= $minutes*60;
-    $seconds = $avg;
-    $average_time = sprintf("%02d:%02d", $minutes, $seconds);
+    $average_time = formatEvaluationTime($infoNumbers['average_time']);
 
     if($infoNumbers['total_finished_evaluations'] > 0) {
       $last_evaluation_time = $infoNumbers['finished_evaluations'][$infoNumbers['total_finished_evaluations']-1];
@@ -107,15 +63,108 @@
       $last_evaluation_time = 0;
     }
     
-    $minutes = floor($last_evaluation_time / 60);
-    $last_evaluation_time -= $minutes*60;
-    $seconds = $last_evaluation_time;
-    $last_evaluation_time = sprintf("%02d:%02d", $minutes, $seconds);
+    $last_evaluation_time = formatEvaluationTime($last_evaluation_time);
 
-    $nEvaluations = $overview["nEvaluations"];
+    $numberOfEvaluations = $overview["nEvaluations"];
     $labels = $overview["labels"];
     $answersByLabel = $overview["answersByLabel"];
     
+?>
+
+<?php 
+
+    function initCurl() {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_HTTPGET, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Accept: application/json'
+      ));
+
+      return $ch;
+    }
+
+    function closeCurl($curl) {
+      // Closing
+      curl_close($curl);
+    }
+
+    function getAnswersBySectionsData($baseURL, $curl, $checklist_id) {
+      // Set the url
+      $url = "$baseURL/php/api/answersBySections.php?c_id=$checklist_id";
+      curl_setopt($curl, CURLOPT_URL, $url);
+
+      // Get answers by sections
+      $result_answers = curl_exec($curl);
+
+      // Removing UTF-8 Bom 
+      $result_answers = str_replace("\xEF\xBB\xBF",'',$result_answers); 
+
+      // Decoding
+      $answersBySections = json_decode($result_answers, true);
+
+      return $answersBySections;
+    }
+
+    function getOverviewData($baseURL, $curl, $checklist_id) {
+      $url = "$baseURL/php/api/overview.php?c_id=$checklist_id";
+      curl_setopt($curl, CURLOPT_URL, $url);
+  
+      $resultOverview = curl_exec($curl);
+      
+      // Removing UTF-8 Bom 
+      $resultOverview = str_replace("\xEF\xBB\xBF", "", $resultOverview); 
+  
+      // Decoding
+      $overview = json_decode($resultOverview, true);
+
+      return $overview;
+    }
+
+
+    function getAnswersByQuestionsData($baseURL, $curl, $checklist_id, $first_section, $labels_count) {
+      $url = "$baseURL/php/api/answersByQuestions.php?section_id=$first_section&labels_number=$labels_count&c_id=$checklist_id";
+
+      curl_setopt($curl, CURLOPT_URL, $url);
+    
+      // Get answers by questions (first section)
+      $result_answersByQuestions = curl_exec($curl);
+  
+      // Removing UTF-8 Bom 
+      $result_answersByQuestions = str_replace("\xEF\xBB\xBF",'',$result_answersByQuestions); 
+
+      // Decoding
+      $answersByQuestions = json_decode($result_answersByQuestions, true);
+
+      return $answersByQuestions;
+    }
+
+    function getBigNumbers($baseURL, $curl, $checklist_id) {
+      $url = "$baseURL/php/api/infoNumbers.php?c_id=$checklist_id";
+      curl_setopt($curl, CURLOPT_URL, $url);
+    
+      // Get info numbers
+      $result_infoNumbers = curl_exec($curl);
+
+      // Removing UTF-8 Bom 
+      $result_infoNumbers = str_replace("\xEF\xBB\xBF",'',$result_infoNumbers); 
+      
+      // Decoding
+      $infoNumbers = json_decode($result_infoNumbers, true);
+
+      return $infoNumbers;
+    }
+
+    function formatEvaluationTime($averageTimeInSeconds) {
+      $minutes = floor($averageTimeInSeconds / 60);
+      $averageTimeInSeconds -= $minutes*60;
+      $seconds = $averageTimeInSeconds;
+      $average_time = sprintf("%02d:%02d", $minutes, $seconds);
+
+      return $average_time;
+    }
+
 ?>
 
 <!doctype html>
@@ -195,7 +244,7 @@
             </div>
             <div class="overview-text">
               <p>
-                <?= $nEvaluations ?>
+                <?= $numberOfEvaluations ?>
               </p>
               <p>evaluations</p>
             </div>
@@ -354,24 +403,44 @@
 
 <script> 
 
-  Chart.defaults.font.size = 16;
+  // Global configurations for the charts
 
-  Chart.defaults.set('plugins.datalabels', {
-    color: '#F3F3FC',
-    backgroundColor: 'black',
-    borderRadius: 6,
-    padding: 5,
-    font: {
-      size: 16,
-      weight: '600'
+  Chart.defaults.font.size = 16;
+  Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.set('plugins', {
+    title: {
+      display: false,
     },
-    display: function(context) {
-      var index = context.dataIndex;
-      var value = context.dataset.data[index];
-      return value > 0; 
+    legend: {
+      align: "end",
+      labels: {
+        font: {
+          size: 20,
+          weight: 400
+        }
+      },
+      labels: {
+        usePointStyle: true,
+      },
+    },
+    datalabels: {
+      color: '#F3F3FC',
+      backgroundColor: 'black',
+      borderRadius: 6,
+      padding: 5,
+      font: {
+        size: 16,
+        weight: '600'
+      },
+      display: function(context) {
+        var index = context.dataIndex;
+        var value = context.dataset.data[index];
+        return value > 0; 
+      }
     }
   });
 
+  // Resize data labels for smaller screens
   const mediaQuery = window.matchMedia('(max-width: 690px)')
   if (mediaQuery.matches) {
     Chart.defaults.set('plugins.datalabels', {
@@ -379,15 +448,7 @@
       borderRadius: 2,
     });
   }
-
-  Chart.defaults.set('plugins', {
-    legend: {
-      labels: {
-        usePointStyle: true,
-      }
-    },
-  });
-
+  
 </script>
 
 <script type="text/javascript">
@@ -416,6 +477,7 @@
         label: labels[i],
         backgroundColor: pattern.draw(patterns[i], colors[i]),
         data,
+        maxBarThickness: 45,
       };
 
       datasets.push(dataset);    
@@ -426,46 +488,28 @@
       datasets
     };
 
-    const options = {
-      categoryPercentage: 0.7,
-      indexAxis: 'y',
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          display: false,
-          stacked: true,
-          grid: {
-            display: false
-          },
-        },
-        y: {
-          stacked: true,
-          grid: {
-            display: true
-          },
-        },
-      },
-      plugins: {
-        title: {
-          display: false,
-        },
-        legend: {
-          align: "end",
-          labels: {
-            font: {
-              size: 20,
-              weight: 400
-            }
-          }
-        }
-      },
-    };
-
     const config = {
       plugins: [ChartDataLabels],
       type: 'bar',
       data,
-      options
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: {
+            display: false,
+            stacked: true,
+            grid: {
+              display: false
+            },
+          },
+          y: {
+            stacked: true,
+            grid: {
+              display: true
+            },
+          },
+        },
+      }
     };
 
     var answersBySection = new Chart(
@@ -482,7 +526,7 @@
 
   function createOverview()
   {
-    const nEvaluations = <?= $nEvaluations ?>;
+    const numberOfEvaluations = <?= $numberOfEvaluations ?>;
     const labels = <?= json_encode($labels) ?>;
     const answersByLabel = <?= json_encode($answersByLabel) ?>;
 
@@ -516,22 +560,6 @@
       plugins: [ChartDataLabels],
       type: "doughnut",
       data,
-      options: {
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            display: false,
-          },
-          legend: {
-            labels: {
-                font: {
-                  size: 20,
-                  weight: 400
-                },
-            }
-          }
-        }
-      }
     }
 
     const overview = new Chart(
@@ -588,7 +616,6 @@
         options: {
           categoryPercentage: 1,
           indexAxis: 'y',
-          maintainAspectRatio: false,
           scales: {
             y: {
               stacked: true,

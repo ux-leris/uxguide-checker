@@ -9,7 +9,7 @@
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link text-light" href="../../index.php">
-                    Initial Page
+                    Homepage
                 </a>
             </li>
         </ul>
