@@ -26,6 +26,8 @@
     }
 
     $evaluationDAO = new EvaluationDAO;
+
+    $hasFinishedEval = false;
 ?>
 
 <!doctype html>
@@ -66,7 +68,7 @@
             <?php 
                 $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
                 if($evaluationResult->num_rows > 0) { ?>
-                    <a href="./checklistAnalytics.php?c_id=<?= $checklist->get_id() ?>" class="btn btn-primary">
+                    <a href="./checklistAnalytics.php?c_id=<?= $checklist->get_id() ?>" class="btn btn-primary" style="display: none;" id="analytics-btn">
                         <span class="ml-1 mr-2">
                             <i class="fas fa-chart-pie"></i>
                         </span>
@@ -97,6 +99,7 @@
 
                             <?php
                                 } else {
+                                    $hasFinishedEval = true;
                             ?>
 
                             <span class="badge badge-pill badge-success mt-2 mb-2">Done</span>
@@ -184,6 +187,7 @@
 
                             <?php
                                 } else {
+                                    $hasFinishedEval = true;
                             ?>
 
                             <span class="badge badge-pill badge-success mt-2 mb-2">Done</span>
@@ -258,3 +262,13 @@
         <script src="../../js/bootstrap/bootstrap.js"></script>
 	</body>
 </html>
+
+<script>
+    $(document).ready(function() {
+        hasFinishedEval = <?= $hasFinishedEval ?>;
+
+        if(hasFinishedEval) {
+            document.getElementById("analytics-btn").style.display = "inline-block";
+        }
+    });
+</script>

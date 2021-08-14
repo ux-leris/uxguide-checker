@@ -36,7 +36,7 @@
         $labelResult = $item->loadItemLabels($conn, $checklist_id);
 
         while($labelRow = $labelResult->fetch_assoc())
-            array_push($labels, array("id" => $labelRow["id"], "text" => $labelRow["title"]));
+            array_push($labels, array("id" => $labelRow["id"], "text" => $labelRow["title"], "hasJustification" => $labelRow["hasJustification"]));
 
         $answersByLabel = array();
 

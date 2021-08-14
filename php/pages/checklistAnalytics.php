@@ -68,6 +68,14 @@
     $numberOfEvaluations = $overview["nEvaluations"];
     $labels = $overview["labels"];
     $answersByLabel = $overview["answersByLabel"];
+
+    $hasLabelWithJustification = false;
+    foreach($labels as $label) {
+      if($label["hasJustification"] == true) {
+        $hasLabelWithJustification = true;
+        break;
+      }
+    }
     
 ?>
 
@@ -223,7 +231,7 @@
             class="fas fa-question-circle"
             data-toggle="tooltip"
             data-placement="left"
-            title="Describe the number of each option responses per section in all checklist evaluations">
+            title="Describes the number of each response option per section in all checklist evaluations">
           </i>
           <h4 class="chart-title">Number of Answers by Questions</h4>
           <div class="chart-view-configs">
@@ -235,7 +243,7 @@
             class="fas fa-question-circle"
             data-toggle="tooltip"
             data-placement="left"
-            title="Describe the number of responses per option in all checklist evaluations">
+            title="Describes the total number of each response option in all checklist evaluations">
           </i>
           <h4 class="chart-title">Overview</h4>
           <div class="overview-infos">
@@ -257,7 +265,7 @@
             class="fas fa-question-circle"
             data-toggle="tooltip"
             data-placement="left"
-            title="Describe the number of responses per option by section questions in all checklist evaluations">
+            title="Describes the number of each response option per section and question in all checklist evaluations">
           </i>
           <ul class="sections-list" id="sections-list">
             <?php for($i=0; $i<$sections_count; $i++) { ?>
@@ -282,7 +290,9 @@
                 <tr>
                   <td><?= $value["title"] ?></td>
                   <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-<?= $index ?>"></canvas></div></td>
-                  <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>" onClick="getJustifications(this.id)">Justifications</button></td>
+                  <?php if($hasLabelWithJustification) { ?>
+                    <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>" onClick="getJustifications(this.id)">Justifications</button></td>
+                  <?php } ?>
                 </tr>
               <?php $index++ ;} ?>
             </tbody>
@@ -295,7 +305,7 @@
               class="fas fa-question-circle"
               data-toggle="tooltip"
               data-placement="left"
-              title="Describe the response average time of checklist and the time taken in the last response">
+              title="Describes the average time spent to finish an evaluation and the time spent in the last evaluation">
             </i>
             <p>Average Time<br/>to Evaluate</p>
             <div class="time">
@@ -324,7 +334,7 @@
                 class="fas fa-question-circle"
                 data-toggle="tooltip"
                 data-placement="left"
-                title="Describe the number of questions of checklist">
+                title="Describes the total number of questions in the checklist">
               </i>
               <p>Total of<br/>Questions</p>
               <p><?= $infoNumbers["total_questions"] ?></p>
@@ -334,7 +344,7 @@
                 class="fas fa-question-circle"
                 data-toggle="tooltip"
                 data-placement="left"
-                title="Describe the number of unfinished evaluations of checklist">
+                title="Describes the number of unfinished evaluations in the checklist">
               </i>
               <p>Unfinished<br/>Evaluations</p>
               <p><?= $infoNumbers["total_unfinished_evaluations"] ?></p>
@@ -470,7 +480,7 @@
       const data = [];
 
       sections.forEach((section, j) => {
-        data.push(answers[i][j]);
+        data.push(answers[j][i]);
       })
 
       const dataset = {
@@ -676,15 +686,25 @@
         let answersByQuestions = data["questions_answers"];
         let index = 0;
         let items = '';
+        let hasLabelWithJustification = <?php echo json_encode($hasLabelWithJustification) ?>;
 
         for(answer of Object.entries(answersByQuestions)) {
-          items += `
+          if(hasLabelWithJustification) {
+            items += `
             <tr>
               <td>${answer[1]["title"]}</td>
               <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
               <td><button class="btn btn-primary" style="height: 2.5rem;" id="${answer[0]}" onClick="getJustifications(this.id)">Justifications</button></td>
             </tr>
           `;
+          } else {
+            items += `
+            <tr>
+              <td>${answer[1]["title"]}</td>
+              <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
+            </tr>
+          `;
+          }
           index++;
         };
 
