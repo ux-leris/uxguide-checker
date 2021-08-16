@@ -69,50 +69,14 @@ $section = new Section;
         </div>
     <?php } ?>
 
-    <div id="modal-share" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form method="POST" action="../controllers/insert_access.php?c_id=<?= $checklist->get_id() ?>">
-                    <div class="modal-header">
-                        <h5>Share Checklist</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>E-mail</label>
-                            <input type="email" name="email" id="emailAddress" class="form-control">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" onClick="sendChecklistResult()">
-                            <span class="ml-1 mr-2">
-                                <i class="fas fa-user-plus"></i>
-                            </span>
-                            Share
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <div class="container mt-5 mb-5">
-        <div style="display: flex; align-items: center;">
+        <div class="mb-3"style="display: flex; align-items: center;">
             <a href="../../index.php" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
             <h1><?= $checklist->get_title() ?></h1>
         </div>
         <p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
         <p>Created by <?= $checklist->get_authorName($conn) ?>.</p>
-        <?php if($checklist->isPublished()) { ?>
-            <button type="button " class="btn btn-primary" data-toggle="modal" data-target="#modal-share">
-                <span class="ml-1 mr-2">
-                    <i class="fas fa-share-alt"></i>
-                </span>
-                Share Checklist
-            </button>
-        <?php } ?>
+        
         <hr>
 
         <?php if(!$checklist->isPublished()) { ?>

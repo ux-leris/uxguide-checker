@@ -53,7 +53,7 @@
 		<?php include('../templates/navbar.php'); ?>
 
         <div class="container mt-5 mb-5">
-            <div style="display: flex; align-items: center;">
+            <div class="mb-3" style="display: flex; align-items: center;">
                 <a href="../../index.php"><i class="fas fa-chevron-left fa-lg mr-3" style="color:#8FAD88;"></i></a>
                 <h1><?= $checklist->get_title() ?></h1>
             </div>
