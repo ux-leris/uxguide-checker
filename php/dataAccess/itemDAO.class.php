@@ -101,15 +101,14 @@
 
         public function select_itemJustifications($conn, $item_id)
         {
-            $query = "SELECT * FROM checklist_item_data WHERE checklist_item_id = ? AND justification IS NOT NULL";
+            $query = "SELECT label, justification FROM checklist_item_data WHERE checklist_item_id = ? AND justification IS NOT NULL";
 
             $stmt = $conn->prepare($query);
 
             $stmt->bind_param('s', $item_id);
             $stmt->execute();
 
-            $result = $stmt->get_result();
-            return $result->fetch_all();
+            return $stmt->get_result();
         }
 
         public function count_items_section($conn, $section_id) {
