@@ -3,6 +3,7 @@
     require_once("../classes/database.class.php");
     require_once("../classes/checklist.class.php");
     require_once("../dataAccess/evaluationDAO.class.php");
+    require_once("../dataAccess/labelDAO.class.php");
     require_once("../dataAccess/chartColors.php");
     require_once("../dataAccess/chartPatterns.php");
     require_once("../../enviroment.php");
@@ -26,6 +27,8 @@
     
     $evaluationDAO = new EvaluationDAO;
     $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
+
+    $labelDAO = new LabelDAO;
     
     if($evaluationResult->num_rows <= 0) {
       echo "<h1 style='height: 100vh; display: flex; justify-content: center; align-items: center;'>Your checklist doensn't have evaluations.<h1>";
@@ -758,9 +761,7 @@
         i_id: questionId
       },
       success: function(res) {
-        const rows = eval(res);
-        rows.forEach(row => justifications.push(row[4]));
-
+        const justifications = eval(res);
         showJustifications(justifications);
       }
     })
@@ -772,10 +773,11 @@
 
     justificationsModalBody.innerHTML = "";
 
-    justifications.forEach((justification, i) => {
+    justifications.forEach(justification => {
       justificationsModalBody.innerHTML += `
         <div class="card mb-3">
-          <div class="card-body">${justification}</div>
+          <div class="card-header">${justification.label}</div>
+          <div class="card-body">${justification.text}</div>
         </div>
       `;
     })
