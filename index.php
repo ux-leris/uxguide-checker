@@ -249,7 +249,8 @@
 				<div class="col-md-4">
 					<div class="card mt-3 mb-3 shadow">
 						<div class="card-body">
-							<h5><?= $row["title"] ?></h5>
+							<h5 class="text-justify"><?= $row["title"] ?></h5>
+							<hr>
 							<p class="text-justify"><?= $row["description"] ?></p>
 							<div class="d-flex">
 								<div class="mr-auto">

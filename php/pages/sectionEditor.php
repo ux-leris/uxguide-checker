@@ -89,7 +89,7 @@
         </div>
 
         <div class="container mt-5 mb-5">
-            <div style="display: flex; align-items: center;">
+            <div class="mb-3" style="display: flex; align-items: center;">
                 <a href="./checklistManager.php?c_id=<?= $checklist->get_id() ?>"><i class="fas fa-chevron-left fa-lg mr-3" style="color:#8FAD88;"></i></a>
                 <h1>Section <?= $section->get_position() + 1 ?></h1>
             </div>
@@ -121,8 +121,8 @@
 
                 <div id="item-<?= $itemRow["id"] ?>" class="d-flex col-md-12" data-order="<?= $itemRow["item_order"] ?>">
                     <div class="col-md-<?= $checklist->isPublished() ? 12 : 10 ?> card mt-2 mb-2">
-                        <div class="card-body text-justify">
-                            <i class="fas fa-bars mr-2"></i>
+                        <div class="card-body text-justify d-flex align-items-center">
+                            <i class="fas fa-bars mr-3"></i>
 
                             <?php
                                 if($itemRow["link"] == NULL) {
