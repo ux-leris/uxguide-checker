@@ -32,16 +32,18 @@ body {
   color: #1e1e31;
   height: 100%;
   width: 100vw;
+  max-width: 100vw;
 }
 .analytics-container {
   height: 80vh;
-  width: 100%;
+  width: 100vw;
   padding: 2rem;
+  max-width: 100vw;
 }
 .analytics-data {
   display: grid;
   height: 100%;
-  width: 100%;
+  max-width: 100%;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1.2fr 1fr;
   grid-gap: 4rem;
@@ -51,6 +53,7 @@ body {
   width: 100%;
   grid-template-columns: 1fr 1fr;
   grid-gap: 2rem;
+  max-height: 25rem;
 }
 .info-numbers {
   display: grid;
@@ -243,8 +246,6 @@ body {
 ul.sections-list {
   display: flex;
   flex-wrap: wrap;
-  
-  white-space: nowrap;
 
   background-color: #E3DFDF;
   border-radius: 10px 10px 0 0;

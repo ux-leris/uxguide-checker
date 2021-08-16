@@ -228,6 +228,11 @@
           </div>
         </div>
       </div>
+      <ul>
+        <?php for($i=0; $i<$sections_count; $i++) { ?>
+          <li><b>Section <?= $i+1 ?></b> - <?= $answersBySections["sections"][$i] ?></li>
+        <?php } ?>
+      </ul>
       <div class="analytics-data">
         <section class="section-graphic section-bg">
           <i
@@ -272,7 +277,7 @@
           </i>
           <ul class="sections-list" id="sections-list">
             <?php for($i=0; $i<$sections_count; $i++) { ?>
-              <li id="<?= $answersBySections["sections_ids"][$i]?>" onclick="changeSection(event)"><?= $answersBySections["sections"][$i] ?></li>
+              <li id="<?= $answersBySections["sections_ids"][$i]?>" onclick="changeSection(event)">Section <?= $i+1 ?></li>
             <?php } ?>
           </ul>
           <table>
@@ -494,10 +499,40 @@
       };
 
       datasets.push(dataset);    
-    })
+    });
+
+    const numberOfSections = sections.length;
+    const defaultTicks = [];
+    for(i=0; i< numberOfSections; i++) {
+      defaultTicks.push(`Section ${i+1}`);
+    }
+
+    // const sectionsWithLineBreaks = [];
+
+    // for(i=0; i<numberOfSections; i++) {
+    //   let section_line = ""
+    //   let section = [];
+    //   let j=0;
+    //   let numberOfChar = sections[i].length;
+    //   while(j < numberOfChar) {
+    //     section_line += sections[i][j];
+    //     j++;
+    //     if(j % 120 == 0 || j == numberOfChar-1) {
+    //       while(sections[i][j] != " " && j < numberOfChar) {
+    //         section_line += sections[i][j];
+    //         j++;
+    //       }
+    //       j++;
+    //       section.push(section_line);
+    //       section_line = "";    
+    //     }
+    //   }
+    //   sectionsWithLineBreaks.push(section);
+    // }
+    // console.log(sectionsWithLineBreaks);
 
     const data = {
-      labels: <?= json_encode($answersBySections["sections"]) ?>,
+      labels: defaultTicks,
       datasets
     };
 
@@ -518,7 +553,7 @@
           y: {
             stacked: true,
             grid: {
-              display: true
+              display: false
             },
           },
         },
