@@ -173,7 +173,7 @@
                     <div class="col-md-12">
                         <div class="col-md-12 d-flex justify-content-center">
                             <div id="info-newItems" class="alert alert-info">
-                                <strong>Info:</strong> None new item has been added to this checklist.
+                                <strong>Info:</strong> Click (+) to add new items.
                             </div>
                         </div>
                         <div id="item-area" class="row"></div>

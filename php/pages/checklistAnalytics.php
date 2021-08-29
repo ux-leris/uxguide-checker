@@ -73,11 +73,14 @@
     $answersByLabel = $overview["answersByLabel"];
 
     $hasLabelWithJustification = false;
+    $justifiableLabels = [];
+    $i=0;
     foreach($labels as $label) {
       if($label["hasJustification"] == true) {
         $hasLabelWithJustification = true;
-        break;
+        array_push($justifiableLabels, $i);
       }
+      $i++;
     }
     
 ?>
@@ -179,7 +182,7 @@
 ?>
 
 <!doctype html>
-<html lang="pt-BR" style="height: 100vh">
+<html lang="pt-BR">
 	<head>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
@@ -197,7 +200,7 @@
 		<title><?= $checklist->get_title() ?> checklist</title>
 	</head>
 
-	<body style="height: 100vh">
+	<body>
 
     <div id="justifications-modal" class="modal fade" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -228,11 +231,21 @@
           </div>
         </div>
       </div>
-      <ul>
-        <?php for($i=0; $i<$sections_count; $i++) { ?>
-          <li><b>Section <?= $i+1 ?></b> - <?= $answersBySections["sections"][$i] ?></li>
-        <?php } ?>
-      </ul>
+      <section class="sections-title section-bg">
+        <h4 class="chart-title">Checklist sections</h4>
+        <i
+          id="help-icon"
+          class="fas fa-question-circle"
+          data-toggle="tooltip"
+          data-placement="left"
+          title="These are all checklist sections descriptions">
+        </i>
+        <ul>
+          <?php for($i=0; $i<$sections_count; $i++) { ?>
+            <li><b>Section <?= $i+1 ?></b> - <?= $answersBySections["sections"][$i] ?></li>
+          <?php } ?>
+        </ul>
+      </section>
       <div class="analytics-data">
         <section class="section-graphic section-bg">
           <i
@@ -284,7 +297,7 @@
             <thead>
               <tr>
                 <th>Question</th>
-                <th>
+                <th style="<?= $hasLabelWithJustification ? "flex: 1.5" : "flex: 1" ?>">
                   Answers 
                   <?php $index = 0; foreach($labels as $label) { 
                     echo "<span class='questions-labels'><div class='label-marker'><canvas width=28 height=28 id='marker-$index'></canvas></div>".$label['text']."</span>";
@@ -298,11 +311,22 @@
                 <tr>
                   <td><?= $value["title"] ?></td>
                   <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-<?= $index ?>"></canvas></div></td>
-                  <?php if($hasLabelWithJustification) { ?>
-                    <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>" onClick="getJustifications(this.id)">Justifications</button></td>
+                  <?php if($hasLabelWithJustification) {
+                    $hasJustification = false;
+                    foreach($justifiableLabels as $justifiableLabel) {
+                      if($value["count"][$justifiableLabel] > 0) {
+                        $hasJustification = true;
+                      }  
+                    }
+                  ?>
+                    <?php if($hasJustification) { ?>
+                      <td><button class="btn btn-primary" style="height: 2.5rem;" id="<?= $key ?>" onClick="getJustifications(this.id)">Justifications</button></td>
+                    <?php } else { ?>
+                      <td></td>
+                    <?php } ?>
                   <?php } ?>
                 </tr>
-              <?php $index++ ;} ?>
+              <?php $index++; } ?>
             </tbody>
           </table>
         </section>
@@ -725,24 +749,38 @@
         let index = 0;
         let items = '';
         let hasLabelWithJustification = <?php echo json_encode($hasLabelWithJustification) ?>;
+        let justifiableLabels = <?php echo json_encode($justifiableLabels) ?>;
 
         for(answer of Object.entries(answersByQuestions)) {
+          items += `
+            <tr>
+              <td>${answer[1]["title"]}</td>
+              <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
+          `;
+
           if(hasLabelWithJustification) {
-            items += `
-            <tr>
-              <td>${answer[1]["title"]}</td>
-              <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
-              <td><button class="btn btn-primary" style="height: 2.5rem;" id="${answer[0]}" onClick="getJustifications(this.id)">Justifications</button></td>
-            </tr>
-          `;
-          } else {
-            items += `
-            <tr>
-              <td>${answer[1]["title"]}</td>
-              <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-${index}"></canvas></div></td>
-            </tr>
-          `;
+            let hasJustification = false;
+            justifiableLabels.forEach((justifiableLabel) => {
+              if(answer[1]["count"][justifiableLabel] > 0) {
+                hasJustification = true;
+              }  
+            });
+
+            if(hasJustification) {
+              items += `
+                <td><button class="btn btn-primary" style="height: 2.5rem;" id="${answer[0]}" onClick="getJustifications(this.id)">Justifications</button></td>
+              `;
+            } else {
+              items += `
+                <td></td>
+              `;
+            }
           }
+
+          items += `
+            </tr>
+          `;
+
           index++;
         };
 
@@ -807,6 +845,14 @@
     let justificationsModalBody = document.querySelector('#justifications-modal .modal-body');
 
     justificationsModalBody.innerHTML = "";
+
+    console.log(justifications);
+
+    if(justifications.length === 0) {
+      justificationsModalBody.innerHTML += `
+        <p style="padding: 2rem;">No justifications.</p>
+      `;
+    }
 
     justifications.forEach(justification => {
       justificationsModalBody.innerHTML += `

@@ -80,7 +80,7 @@ $section = new Section;
         <hr>
 
         <?php if(!$checklist->isPublished()) { ?>
-            <span>Edit your checklist sections to add some questions to evaluate before publishing.</span>
+            <span><b>Info:</b> Edit your checklist sections to add some questions to evaluate before publishing it.</span>
         <?php } ?>
 
         <?php

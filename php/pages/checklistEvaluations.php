@@ -116,12 +116,15 @@
                                 <?php
                                     $date = date("d/m/Y", strtotime($evaluationRow["date"]));
                                     $time = date("H:i:s", strtotime($evaluationRow["date"]));
+                                    $time_elapsed = $evaluationRow["time_elapsed"];
+                                    $time_elapsed_converted = sprintf("%02d:%02d:%02d", floor($time_elapsed/3600), ($time_elapsed/60)%60, $time_elapsed%60);
 
                                     $evaluationAuthor = $evaluationDAO->select_authorName($conn, $evaluationRow["id"]);
                                     $author = $evaluationAuthor->fetch_row();
                                 ?>
 
-                                Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?>.
+                                Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?>.<br>
+                                Time to evaluate: <?= $time_elapsed_converted ?>.
                             </p>
                             <div class="d-flex justify-content-start">
 
@@ -204,12 +207,15 @@
                                 <?php
                                     $date = date("d/m/Y", strtotime($evaluationRow["date"]));
                                     $time = date("H:i:s", strtotime($evaluationRow["date"]));
+                                    $time_elapsed = $evaluationRow["time_elapsed"];
+                                    $time_elapsed_converted = sprintf("%02d:%02d:%02d", floor($time_elapsed/3600), ($time_elapsed/60)%60, $time_elapsed%60);
 
                                     $evaluationAuthor = $evaluationDAO->select_authorName($conn, $evaluationRow["id"]);
                                     $author = $evaluationAuthor->fetch_row();
                                 ?>
 
-                                Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?>.
+                                Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?>.<br>
+                                Time to evaluate: <?= $time_elapsed_converted ?>.
                             </p>
                             <div class="d-flex justify-content-start">
 

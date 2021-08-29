@@ -9,6 +9,7 @@
         private $date;
         private $status;
         private $author;
+        private $time_elapsed;
 
         public function countEvaluations($conn, $checklist_id)
         {
@@ -42,6 +43,7 @@
                 $this->date = $evaluationRow["date"];
                 $this->status = $evaluationRow['status'];
                 $this->author = $evaluationRow['author'];
+                $this->time_elapsed = $evaluationRow['time_elapsed'];
             } else {
                 $this->id = NULL;
             }
@@ -87,6 +89,10 @@
 
         public function get_author() {
             return $this->author;
+        }
+
+        public function get_time_elapsed() {
+            return $this->time_elapsed;
         }
     }
 ?>

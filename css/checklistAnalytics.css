@@ -35,8 +35,8 @@ body {
   max-width: 100vw;
 }
 .analytics-container {
-  height: 80vh;
   width: 100vw;
+  height: 100%;
   padding: 2rem;
   max-width: 100vw;
 }
@@ -154,6 +154,28 @@ body {
 .chart-title {
   color: #666;
   margin-bottom: 1.5rem;
+}
+.sections-title {
+  margin-top: 3rem;
+  margin-bottom: 4rem;
+
+  position: relative;
+}
+.sections-title i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  font-size: 24px;
+  color: #666;
+}
+.sections-title ul {
+  padding: 0 2rem;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem 4rem;
 }
 .section-graphic {
   width: 100%;
@@ -283,7 +305,6 @@ tr > td:nth-child(2) {
 }
 tr > th:nth-child(2) {
   min-width: 0;
-  flex: 1.5;
   display: flex;
   flex-wrap: wrap;
 }
@@ -300,7 +321,7 @@ td {
 }
 th {
   padding: 1rem;
-  flex: 0.48;
+  flex: 0.5;
 }
 .label-marker {
   overflow: hidden;
