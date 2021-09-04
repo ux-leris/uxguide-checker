@@ -1,24 +1,15 @@
 ﻿<?php
-    class Database
-    {
-        private $server = "127.0.0.1";
-        private $username = "root";
-        private $password = "";
-        private $database = "checklist_tool";
+  class Database {
+    private static $server = "127.0.0.1";
+    private static $username = "root";
+    private static $password = "";
+    private static $database = "checklist_tool";
 
-        public function connect()
-        {
-            $conn = new mysqli($this->server, $this->username, $this->password, $this->database);
+    public static function connect() {
+      $conn = new mysqli(self::$server, self::$username, self::$password, self::$database);
 
-            if($conn->connect_error)
-            {
-                echo "Connection failed.";
-            }
-            else
-            {
-                $conn->set_charset("utf8");
-                return $conn;
-            }
-        }
+      $conn->set_charset("utf8");
+      return $conn;
     }
+  }
 ?>
