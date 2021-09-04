@@ -66,357 +66,46 @@
 			</div>
 		</nav>
 
-		<!-- Seção minhas checklists -->
 		<div class="container mt-5 mb-5">
-            <h1>My checklists</h1>
+			<h1>My checklists</h1>
             
-            <?php
-                $result = $checklistDAO->select_checklistsOfUser($conn, $_SESSION["USER_ID"]);
+			<?php $result = checklistDAO::getUserChecklists($conn, $_SESSION["USER_ID"]); ?>
 
-                if($result->num_rows > 0) {
-			?>
-
-			<div class="row mt-3">
-
-				<?php
-					while($row = $result->fetch_assoc()) {
-				?>
-
-				<div class="col-md-4">
-					<div class="card mt-3 mb-3 shadow">
-						<div class="card-body">
-							<h5 class="text-justify"><?= $row["title"] ?></h5>
-							<hr>
-							<p class="text-justify"><?= $row["description"] ?></p>
-							<div class="d-flex">
-								<div class="mr-auto">
-									<button class="btn btn-primary mr-1" onClick="setTempLink(<?= $row["id"] ?>)" <?= !boolval($row["published"]) ? "disabled" : null ?>>Evaluate Checklist</button>
-									<a href="./php/pages/checklistEvaluations.php?c_id=<?= $row["id"] ?>" <?php 
-									if(!boolval($row["published"])) { 
-										echo 'class="btn btn-secondary ml-1 disabled"'; 
-									} else { 
-										echo 'class="btn btn-secondary ml-1"'; 
-									} ?>>
-										<span>
-											<i class="fas fa-check-circle"></i>
-										</span>
-										Evaluations
-									</a>
-								</div>
-								<div class="ml-auto">
-									<!-- Icons -->
-								</div>
-							</div>
-						</div>
-						<div class="card-footer d-flex justify-content-center">
-							<a href="./php/pages/checklistManager.php?c_id=<?= $row["id"] ?>" class="manage-link">
-								<i class="fas fa-edit"></i>
-								Manage
-							</a>
-						</div>
-					</div>
+			<?php if($result->num_rows > 0) { ?>
+				<div class="row mt-3">
+					<?php
+						while($row = $result->fetch_assoc()) {
+							require("./php/templates/index/checklistCard.php");
+						}
+					?>
 				</div>
+			<?php } ?>
 
-				<?php
-					}
-				?>
+			<?php $result = checklistDAO::getSharedChecklists($conn, $_SESSION["USER_ID"]); ?>
 
-            </div>
-            
-            <?php
-                }
-
-                $result = $checklistDAO->select_checklistsSharedWithUser($conn, $_SESSION["USER_ID"]);
-
-                if($result->num_rows > 0) {
-            ?>
-
-			<h1 class="mt-5">Shared With You</h1>
-
-			<div class="row mt-3">
-
-				<?php
-					while($row = $result->fetch_assoc()) {
-				?>
-
-				<div class="col-md-4">
-					<div class="card mt-3 mb-3 shadow">
-						<div class="card-body">
-							<h5><?= $row["title"] ?></h5>
-							<p class="text-justify"><?= $row["description"] ?></p>
-							<div class="d-flex">
-								<div class="mr-auto">
-									<a class="btn btn-primary mr-1" onClick="setTempLink(<?= $row["id"] ?>)">Evaluate Checklist</a>
-									<a href="./php/pages/checklistEvaluations.php?c_id=<?= $row["id"] ?>" class="btn btn-secondary ml-1">
-										<span>
-											<i class="fas fa-check-circle"></i>
-										</span>
-										Evaluations
-									</a>
-								</div>
-								<div class="ml-auto">
-									<!-- Icons -->
-								</div>
-							</div>
-						</div>
-					</div>
+			<?php if($result->num_rows > 0) { ?>
+				<h1 class="mt-5">Shared With You</h1>
+				<div class="row mt-3">
+					<?php
+						while($row = $result->fetch_assoc()) {
+							require("./php/templates/index/checklistCard.php");
+						}
+					?>
 				</div>
+      <?php } ?>
 
-				<?php
-					}
-				?>
+    </div>
 
-            </div>
-            
-            <?php
-                }
-            ?>
-
-        </div>
-
-		<!-- Optional JavaScript -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="js/jquery-3.5.1.js"></script>
-        <script src="js/popper-base.js"></script>
-        <script src="js/bootstrap/bootstrap.js"></script>
+		<script src="./js/jquery-3.5.1.js"></script>
+		<script src="./js/popper-base.js"></script>
+		<script src="./js/bootstrap/bootstrap.js"></script>
 
-        <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+		<script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
 
-		<script type="text/javascript">
-
-			var currentTab = 0;
-
-			showTab(currentTab);
-
-			function showTab(currentTab)
-			{
-				var tabs = document.getElementsByClassName("tab");
-
-				tabs[currentTab].style.display = "block";
-
-				setStepIndicator(currentTab);
-			}
-
-			function next()
-			{
-				if(!validateForm())
-				{
-					return false;
-				}
-				
-				var tabs = document.getElementsByClassName("tab");
-
-				tabs[currentTab].style.display = "none";
-
-				currentTab += 1;
-
-				showTab(currentTab);
-			}
-
-			function previous()
-			{
-				var tabs = document.getElementsByClassName("tab");
-
-				tabs[currentTab].style.display = "none";
-
-				currentTab -= 1;
-
-				showTab(currentTab);
-			}
-
-			function validateForm()
-			{
-				var valid = true;
-
-				var tabs = document.getElementsByClassName("tab");
-				var inputs = tabs[currentTab].getElementsByTagName("input");
-
-				for(var i = 0; i < inputs.length; i++)
-				{
-					if(inputs[i].value == "")
-					{
-						if(!(inputs[i].classList.contains("is-invalid")))
-						{
-							inputs[i].className += " is-invalid";
-						}
-
-						valid = false;
-					}
-					else
-					{
-						if(inputs[i].classList.contains("is-invalid"))
-						{
-							inputs[i].className = inputs[i].className.replace(" is-invalid", " is-valid");
-						}
-						else
-						{
-							if(!(inputs[i].classList.contains("is-valid")))
-							{
-								inputs[i].className += " is-valid";
-							}
-						}
-					}
-				}
-
-				return valid;
-			}
-
-			function submitForm()
-			{
-				if(validateForm())
-					$("#cadastrarChecklist").submit();
-			}
-
-			function setStepIndicator(currentTab)
-			{
-				var steps = document.getElementsByClassName("step");
-
-				for(var i = 0; i < steps.length; i++)
-				{
-					steps[i].className = steps[i].className.replace("step active", "step");
-				}
-
-				steps[currentTab].className = "step active";
-			}
-
-		</script>
-
-		<script type="text/javascript">
-
-			var lastNSectionTitleFields = 1;
-
-			function sectionTitlefieldsController(nFields)
-			{
-				if(nFields > lastNSectionTitleFields)
-				{
-					addSectionTitleFields(nFields);
-				}
-				else
-				{
-					if(nFields > 0)
-					{
-						delSectionTitleFields(nFields);
-					}
-				}
-			}
-
-			function addSectionTitleFields(nFields)
-			{
-				for(var i = lastNSectionTitleFields + 1; i <= nFields; i++)
-				{
-					var input = $("<div>", {
-						"id": "sectionTitleField-" + i,
-						"class": "form-group",
-					}).append($("<label>", {
-						"text": "Section" + " " + i + " - " + "Title",
-					})).append($("<input>", {
-						"type": "text",
-						"name": "sectionTitles[]",
-						"class": "form-control",
-					}));
-
-					$("#sectionTitleFields-area").append(input);
-				}
-
-				lastNSectionTitleFields = nFields;
-
-				$("#qtdSections").text(lastNSectionTitleFields);
-			}
-
-			function delSectionTitleFields(nFields)
-			{
-				for(var i = (lastNSectionTitleFields); i > nFields; i--)
-				{
-					$("#sectionTitleField-" + i).remove();
-				}
-
-				lastNSectionTitleFields = nFields;
-
-				$("#qtdSections").text(lastNSectionTitleFields);
-			}
-
-		</script>
-
-		<script type="text/javascript">
-
-			var lastNItemLabelFields = 2;
-
-			function itemLabelFieldsController(nFields)
-			{
-				if(nFields > lastNItemLabelFields)
-				{
-					addItemLabelFields(nFields);
-				}
-				else
-				{
-					if(nFields > 1)
-					{
-						delItemLabelFields(nFields);
-					}
-				}
-			}
-
-			function addItemLabelFields(nFields)
-			{
-				for(var i = lastNItemLabelFields + 1; i <= nFields; i++)
-				{
-					var input = $("<div>", {
-						"id": "itemLabelField-" + i,
-						"class": "form-group",
-					}).append($("<label>", {
-						"text": "Option" + " " + i + " - " + "Text",
-					})).append($("<input>", {
-						"type": "text",
-						"name": "itemLabels[]",
-						"class": "form-control",
-					}));
-
-					var checkbox = $("<div>", {
-						id: "justificationCheck-" + i,
-						class: "form-group form-check ml-1"
-					}).append($("<input>", {
-						type: "checkbox",
-						name: "hasJustification[]",
-						class: "form-check-input",
-						value: i - 1
-					})).append($("<label>", {
-						text: "Need justification."
-					}));
-
-					$("#itemLabelFields-area").append(input);
-					$("#itemLabelFields-area").append(checkbox);
-				}
-
-				lastNItemLabelFields = nFields;
-
-				$("#qtdItemLabels").text(lastNItemLabelFields);
-			}
-
-			function delItemLabelFields(nFields)
-			{
-				for(var i = lastNItemLabelFields; i > nFields; i--)
-				{
-					$("#itemLabelField-" + i).remove();
-					$("#justificationCheck-" + i).remove();
-				}
-
-				lastNItemLabelFields = nFields;
-
-				$("#qtdItemLabels").text(lastNItemLabelFields);
-			}
-
-		</script>
-
-		<script>
-
-			function setTempLink(c_id)
-			{
-				$("#checklistEvaluation-link").attr("href", "./php/pages/checklist.php?id=" + c_id);
-
-				$("#evaluationWarning").modal("show");
-			}
-
-		</script>
-
+		<script src="./js/pages/index/createChecklistForm.js"></script>
+		<script src="./js/pages/index/sectionsManager.js"></script>
+		<script src="./js/pages/index/optionsManager.js"></script>
+		<script src="./js/pages/index/setEvaluationLink.js"></script>
 	</body>
 </html>
