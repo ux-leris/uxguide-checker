@@ -1,47 +1,27 @@
 <?php
-    class userDAO
+  class userDAO
+  {
+    public static function signUp($conn, $name, $email, $password)
     {
-        public function insert_user($conn, $name, $email, $password)
-        {
-            $query = "insert into user(name, email, password) values('".$name."', '".$email."', '".$password."')";
+      $query = "INSERT INTO user(name, email, password) VALUES(?, ?, ?)";
 
-            $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("sss", $name, $email, $password);
 
-            $stmt->execute();
-        }
-
-        public function authenticate_user($conn, $email, $password)
-        {
-            $query = "select * from user where email = ? and password = ?";
-
-            $stmt = $conn->prepare($query);
-
-            $stmt->bind_param("ss", $email, $password);
-
-            if($stmt->execute())
-            {
-                $stmt->store_result();
-
-                if($stmt->affected_rows < 1)
-                {
-                    header("location: ../pages/login.php");
-                }
-                else
-                {
-                    $stmt->bind_result($id, $name, $email, $password);
-                    $stmt->fetch();
-
-                    session_start();
-
-                    $_SESSION["USER_ID"] = $id;
-
-                    header("location: ../../index.php");
-                }
-            }
-            else
-            {
-                header("location: ../pages/login.php");
-            }
-        }
+      return $stmt->execute();
     }
+
+    public static function signIn($conn, $email, $password)
+    {
+      $query = "SELECT * FROM user WHERE email = ? AND password = ?";
+
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("ss", $email, $password);
+
+      $stmt->execute();
+      $stmt->store_result();
+
+      return $stmt;
+    }
+  }
 ?>

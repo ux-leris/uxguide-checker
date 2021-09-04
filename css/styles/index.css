@@ -1,0 +1,33 @@
+.tab {
+	display: none;
+}
+
+.step {
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background-color: #007175;
+	opacity: .5;
+	margin: 0 2px;
+	display: inline-block;
+}
+
+.step.active {
+	opacity: 1;
+}
+
+.step.finish {
+	background-color: #5cb85c;
+}
+
+.manage-link {
+	text-decoration: none;
+	color: #475862;
+	transition: opacity .15s;
+}
+
+.manage-link:hover {
+	opacity: .75;
+	text-decoration: none;
+	color: #475862;
+}
