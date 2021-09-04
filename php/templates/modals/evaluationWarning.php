@@ -17,7 +17,7 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Close
         </button>
-        <a href="#" id="checklistEvaluation-link" class="btn btn-primary">
+        <a href="#" id="linktToEvaluation" class="btn btn-primary">
           Continue
         </a>
       </div>
