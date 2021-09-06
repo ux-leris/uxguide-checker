@@ -1,0 +1,23 @@
+.checklist-infos {
+  display: flex;
+  align-items: center;
+
+  position: relative;
+}
+
+.checklist-infos a {
+  position: absolute;
+
+  left: -35px;
+}
+
+.checklist-infos a > i {
+  font-size: 24px;
+  color: #8fad88;
+
+  transition: color 0.15s ease-in-out;
+}
+
+.checklist-infos a > i:hover {
+  filter: brightness(.85);
+}

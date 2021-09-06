@@ -1,36 +1,33 @@
 <?php
-require_once("../classes/database.class.php");
-require_once("../classes/checklist.class.php");
-require_once("../classes/section.class.php");
+  require_once("../classes/database.class.php");
+  require_once("../classes/checklist.class.php");
+  require_once("../classes/section.class.php");
 
-session_start();
+  session_start();
 
-if (!isset($_SESSION["USER_ID"])) {
-    header("location: ./login.php");
-}
+  if (!isset($_SESSION["USER_ID"])) {
+    header("location: ./signIn.php");
+  } else {
+    $conn = Database::connect();
 
-$db = new Database;
-$conn = $db->connect();
+    $checklistId = $_GET["c_id"];
 
-$checklist_id = $_GET["c_id"];
+    $checklist = new Checklist($conn, $checklistId);
 
-$checklist = new Checklist;
-$checklist->loadChecklist($conn, $checklist_id);
+    if(!$checklist->getId() || $_SESSION["USER_ID"] != $checklist->getAuthorId()) {
+      header("HTTP/1.0 404 Not Found");
+      echo "<h1>404 Not Found</h1>";
+      echo "The page that you have requested could not be found.";
+      exit();
+    }
 
-if(!$checklist->get_id() || $_SESSION["USER_ID"] != $checklist->get_author()) {
-    header("HTTP/1.0 404 Not Found");
-    echo "<h1>404 Not Found</h1>";
-    echo "The page that you have requested could not be found.";
-    exit();
-}
-
-$section = new Section;
+    $section = new Section;
+  }
 ?>
 
 <!doctype html>
-<html lang="pt-BR">
-
-<head>
+<html lang="en">
+  <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -39,121 +36,67 @@ $section = new Section;
     <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
 
     <!-- CSS Local -->
-    <link rel="stylesheet" href="../../css/checklist.css">
+    <link rel="stylesheet" href="../../css/styles/global.css">
+    <link rel="stylesheet" href="../../css/styles/checklistManager.css">
 
-    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+    <title>Checklist Manager</title>
+  </head>
 
-    <title><?= $checklist->get_title() ?> checklist</title>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <?php include('../templates/navbar.php'); ?>
-
-    <?php if(isset($_SESSION['message'])){
-        $message = json_decode($_SESSION['message']);
-        if($message == "success") {
-            $class = 'class="alert alert-success alert-dismissible fade show"';
-            $message = "Your checklist was published successfully";
-        } else {
-            $class = 'class="alert alert-warning alert-dismissible fade show"';
-            $message = $message->error;
-        }
-        unset($_SESSION['message']);
+  <body>
+    <?php 
+      require_once('../templates/navbar.php');
+      require_once("../templates/modals/checklistPublication.php");
     ?>
-        <div <?= $class ?> role="alert">
-            <?= $message ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    <?php } ?>
+
+    <div class="checklistHasBeenPublishedMessage"></div>
 
     <div class="container mt-5 mb-5">
-        <div class="mb-3"style="display: flex; align-items: center;">
-            <a href="../../index.php" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
-            <h1><?= $checklist->get_title() ?></h1>
-        </div>
-        <p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
-        <p>Created by <?= $checklist->get_authorName($conn) ?>.</p>
+      
+      <div class="checklist-infos">
+        <a href="../../index.php">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1><?= $checklist->getTitle() ?></h1>
+      </div>
+      <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
+      <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>
         
-        <hr>
+      <hr>
 
-        <?php if(!$checklist->isPublished()) { ?>
-            <span>Edit your checklist sections to add some questions to evaluate before publishing.</span>
-        <?php } ?>
+      <?php if(!$checklist->getIsPublished()) { ?>
+        <div class="alert alert-info">
+          Edit your checklist sections to add some items to evaluate before publishing.
+        </div>
+      <?php } ?>
 
-        <?php
-        $sectionResult = $checklist->loadSectionsOfChecklist($conn, $checklist->get_id());
+      <?php $sectionsResult = $checklist->loadSectionsOfChecklist($conn, $checklist->getId()); ?>
 
-        while ($sectionRow = $sectionResult->fetch_assoc()) {
-        ?>
-
-            <div class="card mt-4 mb-4">
-                <div class="card-header d-flex">
-                    <div class="mr-auto">
-                        <h3>Section <?= $sectionRow["position"] + 1 ?></h3>
-                    </div>
-                    <div class="ml-auto">
-                        <a class="btn btn-secondary" href="sectionEditor.php?id=<?= $sectionRow["id"] ?>">
-                            <span class="ml-1 mr-2">
-                                <i class="fas fa-cog"></i>
-                            </span>
-                            Edit Section
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body text-justify">
-                    <?= $sectionRow["title"] ?>
-                </div>
-            </div>
-
-        <?php
+      <?php
+        while ($sectionRow = $sectionsResult->fetch_assoc()) {
+          require("../templates/checklistManager/sectionCard.php");
         }
-        ?>
+      ?>
 
-    <?php if(!$checklist->isPublished()) { ?>
-        <div class="text-center">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modal-publish">
-                <span class="ml-1 mr-2">
-                    <i class="fas fa-check"></i>
-                </span>
-                Publish Checklist
-            </button>
+      <?php if(!$checklist->getIsPublished()) { ?>
+        <div class="d-flex justify-content-center">
+          <button id="publishChecklistBtn" class="btn btn-primary" data-toggle="modal" data-target="#checklistPublication">
+              <span class="mr-1">
+                  <i class="fas fa-check"></i>
+              </span>
+              Publish Checklist
+          </button>
         </div>
-    <?php } ?>
+      <?php } ?>
 
-    <div id="modal-publish" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form method="POST" action="../controllers/publish_checklist.php?c_id=<?= $checklist->get_id() ?>">
-                    <div class="modal-header">
-                        <h5>Publish Checklist</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>You will not be able to remove your checklist items after publishing, but you can add more items if you need.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-light" data-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button class="btn btn-primary">
-                            Publish
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../js/popper-base.js"></script>
     <script src="../../js/bootstrap/bootstrap.js"></script>
-</body>
 
+    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+
+    <script src="../../js/pages/checklistManager/publishChecklist.js"></script>
+  </body>
 </html>

@@ -42,17 +42,17 @@
           $stmt->execute();
       }
 
-      public function select_checklist($conn, $checklist_id)
-      {
-          $query = "select * from checklist where id = ?";
+    public static function getChecklistInfos($conn, $checklistId)
+    {
+      $query = "SELECT * FROM checklist WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
 
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
 
       public function select_sectionsOfChecklist($conn, $checklist_id)
       {
@@ -139,15 +139,16 @@
           return $row;
       }
 
-      public function countItems($conn, $checklist_id) {
-          $query = "select count(*) as count from checklist_item where checklist_id= ?";
+    public static function countChecklistItems($conn, $checklistId) {
+      $query = "SELECT COUNT(*) AS count FROM checklist_item WHERE checklist_id = ?";
 
-          $stmt = $conn->prepare($query);
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
+      
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
 
       public function publish($conn, $checklist_id) {
           $query = "update checklist set published=1 where id=?";
