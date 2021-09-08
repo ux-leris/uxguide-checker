@@ -1,77 +1,72 @@
 <?php
-    require_once("../dataAccess/sectionDAO.class.php");
+  chdir(dirname(__FILE__));
+  require_once("../dataAccess/sectionDAO.class.php");
 
-    class Section
+  class Section
+  {
+    private $id;
+    private $checklistId;
+    private $title;
+    private $position;
+
+    function __construct($conn, $sectionId)
     {
-        private $id;
-        private $checklist_id;
-        private $title;
-        private $position;
+      $result = sectionDAO::getSectionInfos($conn, $sectionId);
+      $row = $result->fetch_assoc();
 
-        public function loadSection($conn, $id)
-        {
-            $sectionDAO = new SectionDAO;
-
-            $result = $sectionDAO->select_section($conn, $id);
-
-            $row = $result->fetch_assoc();
-
-            if($row) {
-                $this->id = $row["id"];
-                $this->checklist_id = $row["checklist_id"];
-                $this->title = $row["title"];
-                $this->position = $row["position"];
-            } else {
-                $this->id = NULL;
-            }
-
-        }
-
-        public function loadSectionItems($conn, $section_id)
-        {
-            $sectionDAO = new SectionDAO;
-
-            return $sectionDAO->select_sectionItems($conn, $section_id);
-        }
-
-        public function set_id($id)
-        {
-            $this->id = $id;
-        }
-
-        public function set_checklist_id($checklist_id)
-        {
-            $this->checklist_id = $checklist_id;
-        }
-
-        public function set_title($title)
-        {
-            $this->title = $title;
-        }
-
-        public function set_position($position)
-        {
-            $this->position = $position;
-        }
-
-        public function get_id()
-        {
-            return $this->id;
-        }
-
-        public function get_checklist_id()
-        {
-            return $this->checklist_id;
-        }
-
-        public function get_title()
-        {
-            return $this->title;
-        }
-
-        public function get_position()
-        {
-            return $this->position;
-        }
+      if ($row) {
+        $this->id = $row["id"];
+        $this->checklistId = $row["checklist_id"];
+        $this->title = $row["title"];
+        $this->position = $row["position"];
+      } else {
+        $this->id = NULL;
+      }
     }
+
+    public function getSectionItems($conn, $sectionId)
+    {
+      return sectionDAO::getSectionItems($conn, $sectionId);
+    }
+
+    public function setId($id)
+    {
+      $this->id = $id;
+    }
+
+    public function setChecklistId($checklistId)
+    {
+      $this->checklistId = $checklistId;
+    }
+
+    public function setTitle($title)
+    {
+      $this->title = $title;
+    }
+
+    public function setPosition($position)
+    {
+      $this->position = $position;
+    }
+
+    public function getId()
+    {
+      return $this->id;
+    }
+
+    public function getChecklistId()
+    {
+      return $this->checklistId;
+    }
+
+    public function getTitle()
+    {
+      return $this->title;
+    }
+
+    public function getPosition()
+    {
+      return $this->position;
+    }
+  }
 ?>

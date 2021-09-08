@@ -9,17 +9,30 @@
   $conn = Database::connect();
 
   $checklist = new Checklist($conn, $checklistId);
+
+  $wasSuccess = false;
   
   if($_SESSION["USER_ID"] == $checklist->getAuthorId()) {
     $response = array();
 
     if($checklist->countChecklistItems($conn, $checklistId) > 0) {
-      $response["status"] = "success";
-      $response["message"] = "Your checklist has been successfully published.";
+      if($checklist->publish($conn)) {
+        $response["status"] = "success";
+        $response["message"] = "Your checklist has been successfully published.";
+
+        $wasSuccess = true;
+      } else {
+        $response["message"] = "Internal server error.";
+      }
     } else {
-      $response["status"] = "error";
-      $response["message"] = "You need add at least one checklist item before publish it.";
+      $response["message"] = "You must add at least one item to your checklist before publish it.";
     }
+  } else {
+    $response["message"] = "You cannot add items to this checklist.";
+  }
+
+  if (!$wasSuccess) {
+    $response["status"] = "error";
   }
 
   echo json_encode($response, JSON_UNESCAPED_UNICODE);

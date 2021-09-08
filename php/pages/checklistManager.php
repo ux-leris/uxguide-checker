@@ -20,8 +20,6 @@
       echo "The page that you have requested could not be found.";
       exit();
     }
-
-    $section = new Section;
   }
 ?>
 
@@ -56,7 +54,7 @@
         <a href="../../index.php">
           <i class="fas fa-chevron-left"></i>
         </a>
-        <h1><?= $checklist->getTitle() ?></h1>
+        <h1 class="text-justify"><?= $checklist->getTitle() ?></h1>
       </div>
       <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
       <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>

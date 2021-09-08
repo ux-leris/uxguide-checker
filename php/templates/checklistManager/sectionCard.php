@@ -4,7 +4,7 @@
       <h3>Section <?= $sectionRow["position"] + 1 ?></h3>
     </div>
     <div class="ml-auto">
-      <a class="btn btn-secondary" href="./sectionEditor.php?id=<?= $sectionRow["id"] ?>">
+      <a class="btn btn-secondary" href="./sectionEditor.php?s_id=<?= $sectionRow["id"] ?>">
         <span class="mr-1">
           <i class="fas fa-cog"></i>
         </span>

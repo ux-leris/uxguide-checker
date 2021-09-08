@@ -150,15 +150,14 @@
       return $stmt->get_result();
     }
 
-      public function publish($conn, $checklist_id) {
-          $query = "update checklist set published=1 where id=?";
+    public static function publish($conn, $checklistId) {
+      $query = "UPDATE checklist SET published = 1 WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
 
-          return $stmt->affected_rows;
-      }
+      return $stmt->execute();
+    }
 
       public function getNumberOfAnswersBySections($conn, $checklist_id) {
           $query = "

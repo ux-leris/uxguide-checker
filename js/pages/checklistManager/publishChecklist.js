@@ -7,6 +7,7 @@ function publishChecklist(checklistId) {
     },
   }).done((data) => {
     const response = JSON.parse(data);
+    console.log(response);
 
     const wasSuccess = response.status === "success";
     const message = response.message;
@@ -28,7 +29,9 @@ function publishChecklist(checklistId) {
     `;
 
     if (wasSuccess) {
-      const publishChecklistBtn = document.querySelector("#publishChecklistBtn");
+      const publishChecklistBtn = document.querySelector(
+        "#publishChecklistBtn"
+      );
       publishChecklistBtn.style.display = "none";
     }
 

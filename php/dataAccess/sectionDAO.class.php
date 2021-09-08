@@ -1,28 +1,28 @@
 <?php
-    class SectionDAO
+  class SectionDAO
+  {
+    public static function getSectionInfos($conn, $sectionId)
     {
-        public function select_section($conn, $section_id)
-        {
-            $query = "select * from section where id = ?";
+      $query = "SELECT * FROM section WHERE id = ?";
 
-            $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $sectionId);
 
-            $stmt->bind_param("s", $section_id);
-            $stmt->execute();
+      $stmt->execute();
 
-            return $stmt->get_result();
-        }
-
-        public function select_sectionItems($conn, $section_id)
-        {
-            $query = "select * from checklist_item where section_id = ? order by item_order";
-
-            $stmt = $conn->prepare($query);
-
-            $stmt->bind_param("s", $section_id);
-            $stmt->execute();
-
-            return $stmt->get_result();
-        }
+      return $stmt->get_result();
     }
+
+    public static function getSectionItems($conn, $sectionId)
+    {
+      $query = "SELECT * FROM checklist_item WHERE section_id = ? ORDER BY item_order";
+
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $sectionId);
+
+      $stmt->execute();
+
+      return $stmt->get_result();
+    }
+  }
 ?>

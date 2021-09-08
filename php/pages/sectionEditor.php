@@ -1,443 +1,158 @@
 <?php
-    require_once("../classes/database.class.php");
-    require_once("../classes/checklist.class.php");
-    require_once("../classes/section.class.php");
+  require_once("../classes/database.class.php");
+  require_once("../classes/checklist.class.php");
+  require_once("../classes/section.class.php");
 
-    session_start();
+  session_start();
 
-	if(!isset($_SESSION["USER_ID"]))
-	{
-		header("location: ./login.php");
-	}
+  if(!isset($_SESSION["USER_ID"])) {
+    header("location: ./signIn.php");
+  } else {
+    $conn = Database::connect();
 
-    $db = new Database;
-    $conn = $db->connect();
+    $sectionId = $_GET["s_id"];
 
-    $id = $_GET["id"];
+    $section = new Section($conn, $sectionId);
 
-    $section = new Section;
-    $section->loadSection($conn, $id);
-
-    if(!$section->get_id()) {
+    if(!$section->getId()) {
         header("HTTP/1.0 404 Not Found");
         echo "<h1>404 Not Found</h1>";
         echo "The page that you have requested could not be found.";
         exit();
     }
 
-    $checklist = new Checklist;
-    $checklist->loadChecklist($conn, $section->get_checklist_id());
+    $checklist = new Checklist($conn, $section->getChecklistId());
 
-    if(!$checklist->get_id() || $checklist->get_author() != $_SESSION["USER_ID"]) {
-        header("HTTP/1.0 404 Not Found");
-        echo "<h1>404 Not Found</h1>";
-        echo "The page that you have requested could not be found.";
-        exit();
+    if(!$checklist->getId() || $_SESSION["USER_ID"] != $checklist->getAuthorId()) {
+      header("HTTP/1.0 404 Not Found");
+      echo "<h1>404 Not Found</h1>";
+      echo "The page that you have requested could not be found.";
+      exit();
     }
+  }
 ?>
 
 <!doctype html>
-<html lang="pt-BR">
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
-		
-		<!-- CSS Local -->
-		<link rel="stylesheet" href="../../css/sectionEditor.css">
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
 
-		<title>Section Editor</title>
-	</head>
+    <!-- CSS Local -->
+    <link rel="stylesheet" href="../../css/styles/global.css">
+    <link rel="stylesheet" href="../../css/styles/sectionEditor.css">
 
-	<body>
-		<!-- Navbar -->
-		<?php include('../templates/navbar.php'); ?>
+    <title>Section Editor</title>
+  </head>
 
-        <div id="edit-modal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Item Edit</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label>Item Text</label>
-                                <input type="text" id="textItemEdit-input" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label>Item Link</label>
-                                <small class="text-muted">Optional field</small>
-                                <input type="text" id="linkItemEdit-input" class="form-control">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button id="updateItemBtn-null" type="button" class="btn btn-primary" onClick="editItem(this.id)">Save changes</button>
-                    </div>
-                </div>
-            </div>
+  <body>
+    <?php 
+      require_once("../templates/modals/editItem.php"); 
+      require_once("../templates/modals/deleteItemConfirmation.php"); 
+    ?>
+    
+    <?php require_once("../templates/navbar.php"); ?>
+
+    <div class="itemHasBeenUpdatedMessage"></div>
+
+    <div class="container mt-5">
+      <div class="checklist-infos">
+        <a href="./checklistManager.php?c_id=<?= $checklist->getId() ?>">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1>Section <?= $section->getPosition() + 1 ?></h1>
+      </div>
+      <p class="lead text-justify"><?= $section->getTitle() ?></p>
+
+      <hr>
+
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Information!</strong> You can add more items to your checklist using the form in end of page.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <h3 class="text-muted mb-3">Checklist Items</h3>
+
+      <?php $sectionResult = $section->getSectionItems($conn, $section->getId()); ?>
+
+      <?php if ($sectionResult->num_rows == 0) { ?>
+        <div class="col-md-12 d-flex justify-content-center">
+          <p class="text-muted">This checklist doesn't have any items yet.</p>
         </div>
+      <?php } else { ?>
+        <?php
+          while($sectionRow = $sectionResult->fetch_assoc()) {
+            require("../templates/sectionEditor/itemCard.php");
+          }
+        ?>
+      <?php } ?>
 
-        <div class="container mt-5 mb-5">
-            <div class="mb-3" style="display: flex; align-items: center;">
-                <a href="./checklistManager.php?c_id=<?= $checklist->get_id() ?>"><i class="fas fa-chevron-left fa-lg mr-3" style="color:#8FAD88;"></i></a>
-                <h1>Section <?= $section->get_position() + 1 ?></h1>
-            </div>
-            <p class="lead text-muted text-justify"><?= $section->get_title() ?></p>
-            <hr>
-            <h4 class="mb-4">Checklist Items</h4>
-            <div class="row" id="checklist-itens">
-
-                <?php
-                    $itemResult = $section->loadSectionItems($conn, $section->get_id());
-
-                    if($itemResult->num_rows == 0)
-                    {
-                ?>
-
-                <div class="col-md-12 d-flex justify-content-center">
-                    <div id="info-items" class="alert alert-info">
-                        <strong>Info:</strong> This checklist doesn't have any item.
-                    </div>
-                </div>
-
-                <?php
-                    }
-                    else
-                    {
-                        while($itemRow = $itemResult->fetch_assoc())
-                        {
-                ?>
-
-                <div id="item-<?= $itemRow["id"] ?>" class="d-flex col-md-12" data-order="<?= $itemRow["item_order"] ?>">
-                    <div class="col-md-<?= $checklist->isPublished() ? 12 : 10 ?> card mt-2 mb-2">
-                        <div class="card-body text-justify d-flex align-items-center">
-                            <i class="fas fa-bars mr-3"></i>
-
-                            <?php
-                                if($itemRow["link"] == NULL) {
-                            ?>
-
-                            <?= $itemRow["text"] ?>
-
-                            <?php
-                                } else {
-                            ?>
-
-                            <a href="<?= $itemRow["link"] ?>" class="link" target="_blank"><?= $itemRow["text"] ?></a>
-
-                            <?php
-                                }
-                            ?>
-
-                        </div>
-                    </div>
-                    <?php if(!$checklist->isPublished()) { ?>
-                        <div id="btnGroup-<?= $itemRow["id"] ?>" class="col-md-2 d-flex justify-content-evenly align-items-center mt-2 mb-2">
-                            <button type="button" id="editBtn-<?= $itemRow["id"] ?>" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#edit-modal" onClick="showItemEditModal(this.id)">
-                                <span>
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                                Edit
-                            </button>
-                            <button type="button" id="<?= $itemRow["id"] ?>" class="btn btn-danger ml-1" onClick="deleteItem(this.id)">
-                                <span>
-                                    <i class="fas fa-trash-alt"></i>
-                                </span>
-                                Delete
-                            </button>
-                        </div>
-                    <?php } ?>
-                </div>
-
-                <?php
-                        }
-                    }
-                ?>
-
-            </div>
-
-            <div class="card p-4 mt-4 mb-4">
-                <h4 class="mb-5">New items</h4>
-                <form class="col-md-12" method="POST" action="../controllers/insert_items.php?c_id=<?= $section->get_checklist_id().'&s_id='.$section->get_id() ?>">
-                    <div class="col-md-12">
-                        <div class="col-md-12 d-flex justify-content-center">
-                            <div id="info-newItems" class="alert alert-info">
-                                <strong>Info:</strong> None new item has been added to this checklist.
-                            </div>
-                        </div>
-                        <div id="item-area" class="row"></div>
-                    </div>
-                    <div class="col-md-12 d-flex justify-content-center mt-3 mb-5">
-                        <button type="button" class="btn btn-danger mr-2" onClick="sectionItemsController(lastNItems - 1)">
-                            <span class="ml-1 mr-2">
-                                <i class="fas fa-minus-circle"></i>
-                            </span>
-                            Item
-                        </button>
-                        <button type="button" class="btn btn-success ml-2" onClick="sectionItemsController(lastNItems + 1)">
-                            <span class="ml-1 mr-2">
-                                <i class="fas fa-plus-circle"></i>
-                            </span>
-                            Item
-                        </button>
-                    </div>
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary">
-                            <span class="ml-1 mr-2">
-                                <i class="fas fa-save"></i>
-                            </span>
-                            Save
-                        </button>
-                    </div>
-                </form>
-            </div>
+      <div class="card mt-2 mb-3">
+        <div class="card-header">
+          <h5>New Items</h5>
         </div>
+        <div class="card-body">
+          <form
+            method="POST"
+            action="../controllers/sectionEditor/insertItemsInChecklist.php?c_id=<?= $section->getChecklistId() ?>&s_id=<?= $section->getId() ?>"
+          >
+            <div id="itemInputs">
+              <div class="row" id="itemInputGroup-1">
+                <div class="form-group col-md-8">
+                  <label>Item 1 - Title</label>
+                  <input type="text" class="form-control" name="itemTitles[]">
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Reference Link</label>
+                  <input type="url" class="form-control" name="referenceLinks[]">
+                  <small class="text-muted">Optional Field</small>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-info mr-2" onClick="itemsManager(lastNItemInputGroups - 1)">
+                <span class="mr-2">
+                  <i class="fas fa-minus"></i>
+                </span>
+                Item
+              </button>
+              <button type="button" class="btn btn-info ml-2" onClick="itemsManager(lastNItemInputGroups + 1)">
+                <span class="mr-2">
+                  <i class="fas fa-plus"></i>
+                </span>
+                Item
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-		<!-- Optional JavaScript -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="../../js/jquery-3.5.1.js"></script>
-        <script src="../../js/popper-base.js"></script>
-        <script src="../../js/bootstrap/bootstrap.js"></script>
+      <div class="col-md-12 d-flex justify-content-center p-3">
+        <button type="submit" class="btn btn-primary" onClick="submitForm()">
+          <span class="ml-1 mr-2">
+            <i class="fas fa-save"></i>
+          </span>
+          Save
+        </button>
+      </div>
+    </div>
                     
-        <!-- Core SortableJS -->
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../../js/jquery-3.5.1.js"></script>
+    <script src="../../js/popper-base.js"></script>
+    <script src="../../js/bootstrap/bootstrap.js"></script>
 
-        <script type="text/javascript">
+    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
-            function filterId(id)
-            {
-                return id.substr(id.indexOf("-") + 1);
-            }
-
-        </script>
-
-        <script type="text/javascript">
-
-            var el = document.getElementById('checklist-itens');
-            var sortable = Sortable.create(el, {
-                onEnd: function () {
-                    var list = document.getElementById('checklist-itens').children;
-                    var size = list.length;
-                    for(i=0; i<size; i++) {
-                        var item = list.item(i);
-                        var id = item.getAttribute("id").replace("item-", "");
-                        var order = item.getAttribute("data-order");
-                        if(order != i+1) {
-                            $.ajax({
-                                type: "POST",
-                                url: "../controllers/update_item.php",
-                                data: {
-                                    id: id,
-                                    item_order: i+1,
-                                },
-                                success: function() {
-                                    item.setAttribute("data-order", i+1);
-                                }
-                            });
-                        }
-                    }
-                }
-            });
-
-        </script>
-
-        <script type="text/javascript">
-
-            var lastItemInEditionMode = "null";
-
-            function editItem(btn_id)
-            {
-                var item_id = filterId(btn_id);
-
-                var text = $("#textItemEdit-input").val();
-
-                var link = null;
-
-                if($("#linkItemEdit-input").val() != "")
-                {
-                    link = $("#linkItemEdit-input").val();
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: "../controllers/update_item.php",
-                    data: {
-                        id: item_id,
-                        text: text,
-                        link: link
-                    },
-                    success: function(response)
-                    {
-                        if(response == 1)
-                        {
-                            alert("Item atualizado.");
-
-                            $("#item-" + item_id).find(".card-body")[0].innerText = text;
-                            $("#item-" + item_id).find("a").attr("href", link);
-
-                            $("#edit-modal").modal("hide");
-
-                            document.location.reload(true);     
-                        }
-                        else
-                        {
-                            alert("Erro.");
-                        }
-                    }
-                });
-            }
-
-            function showItemEditModal(btn_id)
-            {
-                $("#linkItemEdit-input").val("");
-                $("#textItemEdit-input").val("");
-
-                var item_id = filterId(btn_id);
-
-                $("#updateItemBtn-" + lastItemInEditionMode).attr("id", "updateItemBtn-" + item_id);
-                lastItemInEditionMode = item_id;
-
-                var text = $("#item-" + item_id).find(".card-body")[0].innerText;
-                var link = $("#item-" + item_id).find("a");
-
-                $("#textItemEdit-input").val(text);
-                
-                if(link.attr("href") == null)
-                {
-                    $("#linkItemEdit-input").attr("placeholder", "This item doesn't have any link.");
-                }
-                else
-                {
-                    $("#linkItemEdit-input").val(link.attr("href"));
-                }
-            }
-
-            function deleteItem(item_id)
-            {
-                $.ajax({
-                    type: "POST",
-                    url: "../controllers/delete_item.php",
-                    data: { id: item_id },
-                    success: function(response)
-                    {
-                        if(response == 1)
-                        {
-                            alert("Item deletado.");
-
-                            $("#item-" + item_id).fadeOut(350, function() {
-                                $("#item-" + item_id).remove();
-                            });
-
-                            $("#btnGroup-" + item_id).fadeOut(350, function() {
-                                $("#btnGroup-" + item_id).remove();
-                            });
-
-                            document.location.reload(true);    
-                        }
-                        else
-                        {
-                            alert("Erro.");
-                        }
-                    }
-                });
-            }
-
-        </script>
-
-        <script type="text/javascript">
-
-            var lastNItems = 0;
-
-            function sectionItemsController(nItems)
-            {
-                if(nItems > 0)
-                {
-                    $("#info-newItems").fadeOut(350).hide();
-                }
-                else
-                {
-                    $("#info-newItems").fadeIn(350).show();               
-                }
-
-                if(nItems > lastNItems)
-                {
-                    addItem(nItems);
-                }
-                else
-                {
-                    if(nItems >= 0)
-                    {
-                        delItem(nItems);
-                    }
-                }
-            }
-
-            function addItem(nItems)
-            {
-                for(var i = lastNItems + 1; i <= nItems; i++)
-                {
-                    var textInput = $("<div>", {
-                        "id": "itemText-" + i,
-                        "class": "form-group col-md-8",
-                    }).hide().fadeIn(350).append($("<label>", {
-                        "text": "New Item " + i + " - Text",
-                    })).append($("<input>", {
-                        "type": "text",
-                        "name": "text[]",
-                        "class": "form-control",
-                        "placeholder": "Recognition rather than recall.",
-                    }).attr("required", true));
-
-                    var linkInput = $("<div>", {
-                        "id": "itemLink-" + i,
-                        "class": "form-group col-md-4",
-                    }).hide().fadeIn(350).append($("<label>", {
-                        "class": "form-label",
-                        "text": "New Item " + i + " - Link",
-                    })).append($("<small>", {
-                        "class": "text-muted",
-                        "text": " " + "Optional field"
-                    })).append($("<input>", {
-                        "type": "text",
-                        "name": "link[]",
-                        "class": "form-control",
-                        "placeholder": "https://bit.ly/example",
-                    }));
-
-                    lastNItems = nItems;
-
-					$("#item-area").append(textInput);
-					$("#item-area").append(linkInput);
-                }
-            }
-
-            function delItem(nItems)
-            {
-                for(var i = lastNItems; i > nItems; i--)
-                {
-                    $("#itemText-" + i).fadeOut(350, function() {
-                        $(this).remove();
-                    });
-
-                    $("#itemLink-" + i).fadeOut(350, function() {
-                        $(this).remove();
-                    });
-
-                    lastNItems = nItems;
-                }
-            }
-
-        </script>
-	</body>
+    <script src="../../js/pages/sectionEditor/itemsManager.js"></script>
+    <script src="../../js/pages/sectionEditor/editItem.js"></script>
+    <script src="../../js/pages/sectionEditor/deleteItem.js"></script>
+  </body>
 </html>

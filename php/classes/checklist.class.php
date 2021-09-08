@@ -1,6 +1,5 @@
 <?php
-  chdir(dirname(__FILE__));
-  require_once("../dataAccess/checklistDAO.class.php");
+  require_once(__DIR__."/../dataAccess/checklistDAO.class.php");
 
   class Checklist
   {
@@ -123,17 +122,9 @@
           return $result;
       }
 
-      public function publish($conn) {
-          $checklistDAO = new ChecklistDAO;
-
-          $result = $checklistDAO->publish($conn, $this->id);
-
-          if(!$result) {
-              return false;
-          } 
-
-          return true;
-      }
+    public function publish($conn) {
+      return checklistDAO::publish($conn, $this->id);
+    }
 
       public function getNumberOfAnswersBySections($conn, $checklist_id) {
           $checklistDAO = new ChecklistDAO;
