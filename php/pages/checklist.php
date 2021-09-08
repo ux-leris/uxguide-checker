@@ -84,6 +84,9 @@ if (isset($_GET["e_id"])) {
 		<p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
 		<p>Created by <?= $checklist->get_authorName($conn) ?>.</p>
 		<hr>
+		<?php if(isset($_GET["edit"])) { ?>
+			<p><b>Info:</b> The changes will be saved automatically ✅</p>
+		<?php } ?>
 		<form class="col-md-12" method="POST" action="../controllers/insert_answers.php?c_id=<?= $checklist->get_id() ?>&e_id=<?= $evaluation_id ?>">
 			<div class="row">
 				<div class="col-md-12" id="accordion">

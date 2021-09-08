@@ -60,33 +60,6 @@ $labelDAO = new LabelDAO;
     <!-- Navbar -->
     <?php include('../templates/navbar.php'); ?>
 
-    <div id="modal-share" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Share Checklist Result</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>E-mail</label>
-                        <input type="email" id="emailAddress" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onClick="sendChecklistResult()">
-                        <span class="ml-1 mr-2">
-                            <i class="fas fa-paper-plane"></i>
-                        </span>
-                        Send
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="container mt-5 mb-5">
         <div style="display: flex; align-items: center;">
             <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
@@ -98,16 +71,13 @@ $labelDAO = new LabelDAO;
             <?php
             $date = date("d/m/Y", strtotime($evaluation->get_date()));
             $time = date("H:i:s", strtotime($evaluation->get_date()));
+            $time_elapsed = $evaluation->get_time_elapsed();
+            $time_elapsed_converted = sprintf("%02d:%02d:%02d", floor($time_elapsed/3600), ($time_elapsed/60)%60, $time_elapsed%60);
             ?>
 
-            Evaluated by <?= $evaluation->get_authorName($conn) ?> in <?= $date ?> at <?= $time ?>.
+            Evaluated by <?= $evaluation->get_authorName($conn) ?> in <?= $date ?> at <?= $time ?>.<br>
+            Time to evaluate: <?= $time_elapsed_converted ?>.
         </p>
-        <button type="button " class="btn btn-primary" data-toggle="modal" data-target="#modal-share">
-            <span class="ml-1 mr-2">
-                <i class="fas fa-share-alt"></i>
-            </span>
-            Share Result
-        </button>
 
         <?php
         if ($evaluation->get_author() == $_SESSION['USER_ID']) {
