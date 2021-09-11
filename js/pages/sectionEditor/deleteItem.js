@@ -23,7 +23,7 @@ function deleteItem(itemId) {
       const messagePrefix = wasSuccess ? "Success!" : "Warning!";
 
       const messageContainer = document.querySelector(
-        ".itemHasBeenUpdatedMessage"
+        ".responseMessage"
       );
 
       messageContainer.innerHTML = `

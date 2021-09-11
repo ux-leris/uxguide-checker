@@ -49,7 +49,7 @@
                     <span class="mr-2">
                       <i class="fas fa-minus"></i>
                     </span>
-                    Del
+                    Section
                   </button>
                 </div>
                 <div id="nSections" class="d-flex align-items-center justify-content-center">1</div>
@@ -58,7 +58,7 @@
                     <span class="mr-2">
                       <i class="fas fa-plus"></i>
                     </span>
-                    Add
+                    Section
                   </button>
                 </div>
               </div>
@@ -105,7 +105,7 @@
                     <span class="mr-2">
                       <i class="fas fa-minus"></i>
                     </span>
-                    Del
+                    Option
                   </button>
                 </div>
                 <div class="d-flex align-items-center justify-content-center" id="nOptions">2</div>
@@ -114,7 +114,7 @@
                     <span class="mr-2">
                       <i class="fas fa-plus"></i>
                     </span>
-                    Add
+                    Option
                   </button>
                 </div>
               </div>

@@ -45,7 +45,7 @@ function editItem(itemId) {
     const messagePrefix = wasSuccess ? "Success!" : "Warning!";
 
     const messageContainer = document.querySelector(
-      ".itemHasBeenUpdatedMessage"
+      ".responseMessage"
     );
 
     messageContainer.innerHTML = `
@@ -59,7 +59,6 @@ function editItem(itemId) {
 
     if (wasSuccess) {
       const editedItem = document.querySelector(`#item-${itemId} .card-body`);
-      console.log(referenceLink);
       editedItem.innerHTML = `
         <span>
           <i class="fas fa-grip-lines mr-3"></i>

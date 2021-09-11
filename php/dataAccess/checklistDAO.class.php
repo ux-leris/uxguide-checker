@@ -125,19 +125,19 @@
           return $stmt->get_result();
       }
 
-      public function verifyAccess($conn, $user_id, $checklist_id) {
-          $query = "select user_id from access where user_id = ? and checklist_id = ? limit 1";
+    public static function verifyAccess($conn, $userId, $checklistId)
+    {
+        $query = "SELECT user_id FROM access WHERE user_id = ? AND checklist_id = ?"; 
 
-          $stmt = $conn->prepare($query);
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $userId, $checklistId);
 
-          $stmt->bind_param("ss", $user_id, $checklist_id);
-          $stmt->execute();
-          
-          $result = $stmt->get_result();
-          $row = $result->fetch_assoc();
+        $stmt->execute();
+        
+        $stmt->store_result();
 
-          return $row;
-      }
+        return $stmt->num_rows;
+    }
 
     public static function countChecklistItems($conn, $checklistId) {
       $query = "SELECT COUNT(*) AS count FROM checklist_item WHERE checklist_id = ?";

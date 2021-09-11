@@ -57,7 +57,7 @@
     
     <?php require_once("../templates/navbar.php"); ?>
 
-    <div class="itemHasBeenUpdatedMessage"></div>
+    <div class="responseMessage"></div>
 
     <div class="container mt-5">
       <div class="checklist-infos">
