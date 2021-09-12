@@ -1,5 +1,6 @@
 <?php
   require_once("../../classes/database.class.php");
+  require_once("../../classes/label.class.php");
   require_once("../../classes/evaluation.class.php");
   require_once("../../dataAccess/itemDAO.class.php");
 
@@ -29,5 +30,9 @@
   } else {
     $optionId = $_POST["o_id"];
     ItemDAO::updateOptionAnswer($conn, $evaluationId, $itemId, $optionId);
+
+    if (!Label::isJustifiableOption($conn, $optionId)) {
+      ItemDAO::updateJustificationAnswer($conn, $evaluationId, $itemId, NULL);
+    }
   }
 ?>

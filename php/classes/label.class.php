@@ -1,5 +1,5 @@
 <?php
-  require_once("../dataAccess/labelDAO.class.php");
+  require_once(__DIR__."/../dataAccess/labelDAO.class.php");
 
   class Label
   {
@@ -15,6 +15,14 @@
 
           return json_encode($justifiableLabels);
       }
+
+    public static function isJustifiableOption($conn, $optionId)
+    {
+      $result = LabelDAO::isJustifiableOption($conn, $optionId);
+      $row = $result->fetch_assoc();
+
+      return $row["hasJustification"];
+    }
 
     public static function getOptionTitle($conn, $labelId)
     {

@@ -46,12 +46,10 @@
       return $justifiableOptions;
     }
 
-      function loadLabelsOfChecklist($conn, $checklist_id)
-      {
-          $checklistDAO = new ChecklistDAO;
-
-          return $checklistDAO->select_checklistLabels($conn, $checklist_id);
-      }
+    function getItemOptions($conn, $checklistId)
+    {
+        return ChecklistDAO::getItemOptions($conn, $checklistId);
+    }
 
     public function setId($id)
     {

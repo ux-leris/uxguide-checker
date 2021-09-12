@@ -30,7 +30,7 @@
       {
           $itemDAO = new ItemDAO;
 
-          return $itemDAO->select_itemAnswer($conn, $evaluation_id, $item_id);
+          return ItemDAO::getItemAnswer($conn, $evaluation_id, $item_id);
       }
 
       public function set_id($id)

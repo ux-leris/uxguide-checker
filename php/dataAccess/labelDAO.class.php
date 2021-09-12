@@ -26,6 +26,18 @@
       return $row["title"];
     }
 
+    public static function isJustifiableOption($conn, $optionId)
+    {
+      $query = "SELECT hasJustification FROM label WHERE id = ?";
+
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $optionId);
+
+      $stmt->execute();
+
+      return $stmt->get_result();
+    }
+
     public function select_justifiableLabels($conn, $checklist_id)
     {
       $query = "select * from label where checklist_id = ? and hasJustification = true";

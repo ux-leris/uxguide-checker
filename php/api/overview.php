@@ -13,17 +13,14 @@
 
     try
     {
-        $db = new Database;
-        $conn = $db->connect();
+        $conn = Database::connect();
 
         $checklist_id = $_GET["c_id"];
 
-        $checklist = new Checklist;
+        $checklist = new Checklist($conn, $checklist_id);;
         $label = new Label;
         $item = new Item;
         $evaluation = new Evaluation;
-
-        $checklist->loadChecklist($conn, $checklist_id);
 
         if(!$checklist->get_id())
         {
