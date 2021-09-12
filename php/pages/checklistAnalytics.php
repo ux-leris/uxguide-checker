@@ -25,7 +25,7 @@
     $checklist = new Checklist($conn, $checklist_id);
     
     $evaluationDAO = new EvaluationDAO;
-    $evaluationResult = evaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklist_id, $_SESSION["USER_ID"]);
+    $evaluationResult = EvaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklist_id, $_SESSION["USER_ID"]);
 
     $labelDAO = new LabelDAO;
     
@@ -181,23 +181,21 @@
 ?>
 
 <!doctype html>
-<html lang="pt-BR">
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
-		
-		<!-- CSS Local -->
-		<link rel="stylesheet" href="../../css/checklist.css">
-		<link rel="stylesheet" href="../../css/checklistAnalytics.css">
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
 
-		<title><?= $checklist->get_title() ?> checklist</title>
-	</head>
+    <!-- CSS Local -->
+    <link rel="stylesheet" href="../../css/styles/global.css">
+    <link rel="stylesheet" href="../../css/styles/checklistAnalytics.css">
+
+    <title>Checklist Analytics</title>
+  </head>
 
 	<body>
 
@@ -216,17 +214,17 @@
     </div>
 
 		<!-- Navbar -->
-    <?php include('../templates/navbar.php'); ?>
+    <?php require_once("../templates/navbar.php"); ?>
 	
     <div class="analytics-container">
       <div class="page-title">
-        <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>">
+        <a href="./checklistEvaluations.php?c_id=<?= $checklist->getId() ?>">
           <i class="fas fa-chevron-left fa-lg mr-3"></i>
         </a>
         <div class="checklist-infs">
           <h1>Checklist Analytics</h1>
           <div class="checklist-name">
-            <p><?= $checklist->get_title() ?></p>
+            <p><?= $checklist->getTitle() ?></p>
           </div>
         </div>
       </div>

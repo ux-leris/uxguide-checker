@@ -30,7 +30,7 @@
       }
     }
 
-      public function countEvaluations($conn, $checklist_id)
+      public static function countEvaluations($conn, $checklist_id)
       {
           $evaluationDAO = new EvaluationDAO;
           
@@ -40,7 +40,7 @@
           return $evaluationRow["total"];
       }
 
-      public function countAnswersByLabel($conn, $label_id)
+      public static function countAnswersByLabel($conn, $label_id)
       {
           $evaluationDAO = new EvaluationDAO;
           

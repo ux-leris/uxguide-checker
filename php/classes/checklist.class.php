@@ -30,11 +30,13 @@
       return checklistDAO::getChecklistSections($conn, $checklistId);
     }
 
-    public static function getChecklistItems($conn, $checklistId) {
+    public static function getChecklistItems($conn, $checklistId) 
+    {
       return checklistDAO::getChecklistItems($conn, $checklistId);
     }
 
-    public static function getJustifiableOptions($conn, $checklistId) {
+    public static function getJustifiableOptions($conn, $checklistId) 
+    {
       $result = ChecklistDAO::getJustifiableOptions($conn, $checklistId);
 
       $justifiableOptions = array();

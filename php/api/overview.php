@@ -18,11 +18,8 @@
         $checklist_id = $_GET["c_id"];
 
         $checklist = new Checklist($conn, $checklist_id);;
-        $label = new Label;
-        $item = new Item;
-        $evaluation = new Evaluation;
 
-        if(!$checklist->get_id())
+        if(!$checklist->getId())
         {
             http_response_code(404);
             exit();
@@ -30,7 +27,7 @@
 
         $labels = array();
 
-        $labelResult = $item->loadItemLabels($conn, $checklist_id);
+        $labelResult = Item::getItemOptions($conn, $checklist_id);
 
         while($labelRow = $labelResult->fetch_assoc())
             array_push($labels, array("id" => $labelRow["id"], "text" => $labelRow["title"], "hasJustification" => $labelRow["hasJustification"]));
@@ -38,9 +35,9 @@
         $answersByLabel = array();
 
         foreach($labels as $l)
-            array_push($answersByLabel, $evaluation->countAnswersByLabel($conn, $l["id"]));
+            array_push($answersByLabel, Evaluation::countAnswersByLabel($conn, $l["id"]));
 
-        $nEvaluations = $evaluation->countEvaluations($conn, $checklist_id);
+        $nEvaluations = Evaluation::countEvaluations($conn, $checklist_id);
 
         $response = [
             "nEvaluations" => $nEvaluations,
