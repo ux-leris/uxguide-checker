@@ -49,7 +49,7 @@
                     <span class="mr-2">
                       <i class="fas fa-minus"></i>
                     </span>
-                    Del
+                    Section
                   </button>
                 </div>
                 <div id="nSections" class="d-flex align-items-center justify-content-center">1</div>
@@ -58,7 +58,7 @@
                     <span class="mr-2">
                       <i class="fas fa-plus"></i>
                     </span>
-                    Add
+                    Section
                   </button>
                 </div>
               </div>
@@ -84,7 +84,7 @@
               <div id="optionInputs">
                 <div class="form-group">
                   <label>Option 1 - Text</label>
-                  <input type="text" id="optionTitleInput-1" class="form-control" name="itemOptions[]">											
+                  <input type="text" id="optionTitleInput-1" class="form-control" name="optionTitles[]">											
                 </div>
                 <div class="form-group form-check ml-1">
                   <input type="checkbox" id="justificationCheck-1" class="form-check-input" name="needJustification[]" value="0">
@@ -92,7 +92,7 @@
                 </div>
                 <div class="form-group">
                   <label>Option 2 - Text</label>
-                  <input type="text" id="optionTitleInput-2" name="itemOptions[]" class="form-control">											
+                  <input type="text" id="optionTitleInput-2" name="optionTitles[]" class="form-control">											
                 </div>
                 <div class="form-group form-check ml-1">
                   <input type="checkbox" id="justificationCheck-2" class="form-check-input" name="needJustification[]" value="1">
@@ -105,7 +105,7 @@
                     <span class="mr-2">
                       <i class="fas fa-minus"></i>
                     </span>
-                    Del
+                    Option
                   </button>
                 </div>
                 <div class="d-flex align-items-center justify-content-center" id="nOptions">2</div>
@@ -114,7 +114,7 @@
                     <span class="mr-2">
                       <i class="fas fa-plus"></i>
                     </span>
-                    Add
+                    Option
                   </button>
                 </div>
               </div>

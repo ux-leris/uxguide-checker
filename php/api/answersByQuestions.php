@@ -8,18 +8,15 @@
   }
 
   try {
-    $db = new Database;
-    $conn = $db->connect();
+    $conn = Database::connect();
 
     $checklist_id = $_GET["c_id"];
     $section_id = $_GET["section_id"];
     $labelsNumber = $_GET["labels_number"];
 
-    $checklist = new Checklist;
+    $checklist = new Checklist($conn, $checklist_id);
 
-    $checklist->loadChecklist($conn, $checklist_id);
-
-    if(!$checklist->get_id()) {
+    if(!$checklist->getId()) {
       http_response_code(404);
       exit();
     }

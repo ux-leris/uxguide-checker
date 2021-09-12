@@ -1,98 +1,96 @@
 <?php
-    require_once("../dataAccess/evaluationDAO.class.php");
-    require_once("../dataAccess/itemDAO.class.php");
+  require_once(__DIR__."/item.class.php");
 
-    class Evaluation
+  require_once(__DIR__."/../dataAccess/evaluationDAO.class.php");
+  require_once(__DIR__."/../dataAccess/itemDAO.class.php");
+
+  class Evaluation
+  {
+    private $id;
+    private $checklistId;
+    private $date;
+    private $status;
+    private $authorId;
+    private $timeElapsedInSeconds;
+
+    public function __construct($conn, $evaluationId)
     {
-        private $id;
-        private $checklist_id;
-        private $date;
-        private $status;
-        private $author;
-        private $time_elapsed;
+      $evaluationResult = EvaluationDAO::getEvaluationInfos($conn, $evaluationId);
+      $evaluationRow = $evaluationResult->fetch_assoc();
 
-        public function countEvaluations($conn, $checklist_id)
-        {
-            $evaluationDAO = new EvaluationDAO;
-            
-            $evaluationResult = $evaluationDAO->select_checklistEvaluationsQtd($conn, $checklist_id);
-            $evaluationRow = $evaluationResult->fetch_assoc();
-
-            return $evaluationRow["total"];
-        }
-
-        public function countAnswersByLabel($conn, $label_id)
-        {
-            $evaluationDAO = new EvaluationDAO;
-            
-            $evaluationResult = $evaluationDAO->select_answersByLabel($conn, $label_id);
-            $evaluationRow = $evaluationResult->fetch_assoc();
-
-            return $evaluationRow["total"];
-        }
-
-        public function loadEvaluation($conn, $evaluation_id)
-        {
-            $evaluationDAO = new EvaluationDAO;
-            $evaluationResult = $evaluationDAO->select_evaluation($conn, $evaluation_id);
-            $evaluationRow = $evaluationResult->fetch_assoc();
-
-            if($evaluationRow) {
-                $this->id = $evaluationRow["id"];
-                $this->checklist_id = $evaluationRow["checklist_id"];
-                $this->date = $evaluationRow["date"];
-                $this->status = $evaluationRow['status'];
-                $this->author = $evaluationRow['author'];
-                $this->time_elapsed = $evaluationRow['time_elapsed'];
-            } else {
-                $this->id = NULL;
-            }
-        }
-
-        public function insert_evaluation($conn, $checklist_id, $author_id)
-        {
-            $evaluationDAO = new EvaluationDAO;
-
-            $evaluation_id = $evaluationDAO->insert($conn, $checklist_id, $author_id);
-
-            $itemDAO = new ItemDAO;
-            $itemDAO->insert($conn, $evaluation_id, $checklist_id);
-
-            return $evaluation_id;
-        }
-
-        public function get_authorName($conn)
-        {
-            $evaluationDAO = new EvaluationDAO;
-
-            $result = $evaluationDAO->select_authorName($conn, $this->id);
-            $row = $result->fetch_assoc();
-
-            return $row["name"];
-        }
-
-        public function get_id() {
-            return $this->id;
-        }
-
-        public function get_checklist_id() {
-            return $this->checklist_id;
-        }
-
-        public function get_date() {
-            return $this->date;
-        }
-
-        public function get_status() {
-            return $this->status;
-        }
-
-        public function get_author() {
-            return $this->author;
-        }
-
-        public function get_time_elapsed() {
-            return $this->time_elapsed;
-        }
+      if ($evaluationRow) {
+        $this->id = $evaluationRow["id"];
+        $this->checklistId = $evaluationRow["checklist_id"];
+        $this->date = $evaluationRow["date"];
+        $this->status = $evaluationRow['status'];
+        $this->authorId = $evaluationRow['author'];
+        $this->timeElapsedInSeconds = $evaluationRow['time_elapsed'];
+      } else {
+        $this->id = NULL;
+      }
     }
+
+      public static function countEvaluations($conn, $checklist_id)
+      {
+          $evaluationDAO = new EvaluationDAO;
+          
+          $evaluationResult = $evaluationDAO->select_checklistEvaluationsQtd($conn, $checklist_id);
+          $evaluationRow = $evaluationResult->fetch_assoc();
+
+          return $evaluationRow["total"];
+      }
+
+      public static function countAnswersByLabel($conn, $label_id)
+      {
+          $evaluationDAO = new EvaluationDAO;
+          
+          $evaluationResult = $evaluationDAO->select_answersByLabel($conn, $label_id);
+          $evaluationRow = $evaluationResult->fetch_assoc();
+
+          return $evaluationRow["total"];
+      }
+
+    public static function insertEvaluation($conn, $checklistId, $authorId)
+    {
+      $evaluationId = EvaluationDAO::insertEvaluation($conn, $checklistId, $authorId);
+
+      Item::insertItemsToEvaluate($conn, $checklistId, $evaluationId);
+
+      return $evaluationId;
+    }
+
+      public function get_authorName($conn)
+      {
+          $evaluationDAO = new EvaluationDAO;
+
+          $result = $evaluationDAO->select_authorName($conn, $this->id);
+          $row = $result->fetch_assoc();
+
+          return $row["name"];
+      }
+
+    public function getId() {
+      return $this->id;
+    }
+
+    public function getChecklistId() {
+      return $this->checklistId;
+    }
+
+    public function getDate() {
+      return $this->date;
+    }
+
+    public function getStatus() {
+      return $this->status;
+    }
+
+    public function getAuthorId() {
+      return $this->authorId;
+    }
+
+    public function getTimeElapsedInSeconds() {
+      return $this->timeElapsedInSeconds;
+    }
+  }
 ?>

@@ -19,7 +19,7 @@ function addOption(currentNOptionInputs) {
   newInput.innerHTML = `
     <div id="optionTitleInput-${currentNOptionInputs}" class="form-group">
       <label>Option ${currentNOptionInputs} - Title</label>
-      <input type="text" class="form-control" name="itemOptions[]"></input>
+      <input type="text" class="form-control" name="optionTitles[]"></input>
     </div>
     <div id="justificationCheck-${currentNOptionInputs}" class="form-group form-check ml-1">
       <input type="checkbox" class="form-check-input" name="needJustification[]" value="${currentNOptionInputs - 1}"></input>

@@ -13,6 +13,18 @@
       return $stmt->insert_id;
     }
 
+    public static function getJustifiableOptions($conn, $checklistId)
+    {
+      $query = "SELECT id FROM label WHERE checklist_id = ? AND hasJustification = true";
+
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
+
+      $stmt->execute();
+
+      return $stmt->get_result();
+    }
+
     public static function insertSection($conn, $checklistId, $title, $position)
     {
       $query = "INSERT INTO section(checklist_id, title, position) values(?, ?, ?)";
@@ -42,41 +54,53 @@
           $stmt->execute();
       }
 
-      public function select_checklist($conn, $checklist_id)
-      {
-          $query = "select * from checklist where id = ?";
+    public static function getChecklistInfos($conn, $checklistId)
+    {
+      $query = "SELECT * FROM checklist WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
 
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
 
-      public function select_sectionsOfChecklist($conn, $checklist_id)
-      {
-          $query = "select * from section where checklist_id = ?";
+    public static function getChecklistSections($conn, $checklistId)
+    {
+      $query = "SELECT * FROM section WHERE checklist_id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
 
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
 
-      public function select_checklistLabels($conn, $checklist_id)
-      {
-          $query = "select * from label where checklist_id = ?";
+    public static function getChecklistItems($conn, $checklistId)
+    {
+      $query = "SELECT * FROM checklist_item WHERE checklist_id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
 
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
+
+    public static function getItemOptions($conn, $checklistId)
+    {
+      $query = "SELECT * FROM label WHERE checklist_id = ?";
+
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
+      
+      $stmt->execute();
+
+      return $stmt->get_result();
+    }
 
     public static function getUserChecklists($conn, $userId)
     {
@@ -125,39 +149,39 @@
           return $stmt->get_result();
       }
 
-      public function verifyAccess($conn, $user_id, $checklist_id) {
-          $query = "select user_id from access where user_id = ? and checklist_id = ? limit 1";
+    public static function verifyAccess($conn, $userId, $checklistId)
+    {
+        $query = "SELECT user_id FROM access WHERE user_id = ? AND checklist_id = ?"; 
 
-          $stmt = $conn->prepare($query);
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $userId, $checklistId);
 
-          $stmt->bind_param("ss", $user_id, $checklist_id);
-          $stmt->execute();
-          
-          $result = $stmt->get_result();
-          $row = $result->fetch_assoc();
+        $stmt->execute();
+        
+        $stmt->store_result();
 
-          return $row;
-      }
+        return $stmt->num_rows;
+    }
 
-      public function countItems($conn, $checklist_id) {
-          $query = "select count(*) as count from checklist_item where checklist_id= ?";
+    public static function countChecklistItems($conn, $checklistId) {
+      $query = "SELECT COUNT(*) AS count FROM checklist_item WHERE checklist_id = ?";
 
-          $stmt = $conn->prepare($query);
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
+      
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
 
-      public function publish($conn, $checklist_id) {
-          $query = "update checklist set published=1 where id=?";
+    public static function publish($conn, $checklistId) {
+      $query = "UPDATE checklist SET published = 1 WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
-          $stmt->bind_param("s", $checklist_id);
-          $stmt->execute();
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $checklistId);
 
-          return $stmt->affected_rows;
-      }
+      return $stmt->execute();
+    }
 
       public function getNumberOfAnswersBySections($conn, $checklist_id) {
           $query = "

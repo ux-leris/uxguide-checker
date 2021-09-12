@@ -6,7 +6,7 @@
     require_once("../dataAccess/labelDAO.class.php");
     require_once("../dataAccess/chartColors.php");
     require_once("../dataAccess/chartPatterns.php");
-    require_once("../../enviroment.php");
+    require_once("../../environment.php");
 
     session_start();
 
@@ -22,11 +22,10 @@
 
     $checklist_id = $_GET["c_id"];
 
-    $checklist = new Checklist;
-    $checklist->loadChecklist($conn, $checklist_id);
+    $checklist = new Checklist($conn, $checklist_id);
     
     $evaluationDAO = new EvaluationDAO;
-    $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
+    $evaluationResult = EvaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklist_id, $_SESSION["USER_ID"]);
 
     $labelDAO = new LabelDAO;
     
@@ -35,7 +34,7 @@
       exit();
     }
 
-    if(!$checklist->get_id() || $checklist->get_author() != $_SESSION["USER_ID"]) {
+    if(!$checklist->getId() || $checklist->getAuthorId() != $_SESSION["USER_ID"]) {
         header("HTTP/1.0 404 Not Found");
         echo "<h1>404 Not Found</h1>";
         echo "The page that you have requested could not be found.";
@@ -182,23 +181,21 @@
 ?>
 
 <!doctype html>
-<html lang="pt-BR">
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
-		
-		<!-- CSS Local -->
-		<link rel="stylesheet" href="../../css/checklist.css">
-		<link rel="stylesheet" href="../../css/checklistAnalytics.css">
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
 
-		<title><?= $checklist->get_title() ?> checklist</title>
-	</head>
+    <!-- CSS Local -->
+    <link rel="stylesheet" href="../../css/styles/global.css">
+    <link rel="stylesheet" href="../../css/styles/checklistAnalytics.css">
+
+    <title>Checklist Analytics</title>
+  </head>
 
 	<body>
 
@@ -217,17 +214,17 @@
     </div>
 
 		<!-- Navbar -->
-    <?php include('../templates/navbar.php'); ?>
+    <?php require_once("../templates/navbar.php"); ?>
 	
     <div class="analytics-container">
       <div class="page-title">
-        <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>">
+        <a href="./checklistEvaluations.php?c_id=<?= $checklist->getId() ?>">
           <i class="fas fa-chevron-left fa-lg mr-3"></i>
         </a>
         <div class="checklist-infs">
           <h1>Checklist Analytics</h1>
           <div class="checklist-name">
-            <p><?= $checklist->get_title() ?></p>
+            <p><?= $checklist->getTitle() ?></p>
           </div>
         </div>
       </div>

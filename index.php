@@ -6,11 +6,11 @@
 
   if(!isset($_SESSION["USER_ID"])) {
     header("location: ./php/pages/signIn.php");
-  }
-  
-  $conn = Database::connect();
+  } else {
+    $conn = Database::connect();
 
-  $checklistDAO = new ChecklistDAO;
+    $checklistDAO = new ChecklistDAO;
+  }
 ?>
 
 <!doctype html>

@@ -9,22 +9,18 @@
   }
 
   try {
-    $db = new Database;
-    $conn = $db->connect();
+    $conn = Database::connect();
 
     $checklist_id = $_GET["c_id"];
   
-    $checklist = new Checklist;
-    $section = new Section;
+    $checklist = new Checklist($conn, $checklist_id);;
 
-    $checklist->loadChecklist($conn, $checklist_id);
-
-    if(!$checklist->get_id()) {
+    if(!$checklist->getId()) {
       http_response_code(404);
       exit();
     }
 
-    $total_questions = $checklist->countItems($conn);
+    $total_questions = $checklist->countChecklistItems($conn);
 
     $evaluations = $checklist->loadEvaluations($conn);
 
@@ -44,7 +40,7 @@
       }
     }
 
-    $average_time /= $count_avg;
+    if($count_avg != 0) $average_time /= $count_avg;
 
     $response = [
       "total_questions" => $total_questions,
