@@ -1,40 +1,32 @@
 <?php
-require_once("../classes/database.class.php");
-require_once("../classes/checklist.class.php");
-require_once("../classes/section.class.php");
-require_once("../classes/evaluation.class.php");
-require_once("../dataAccess/itemDAO.class.php");
-require_once("../dataAccess/labelDAO.class.php");
+  require_once("../classes/database.class.php");
+  require_once("../classes/checklist.class.php");
+  require_once("../classes/section.class.php");
+  require_once("../classes/evaluation.class.php");
 
-session_start();
+  require_once("../dataAccess/itemDAO.class.php");
+  require_once("../dataAccess/labelDAO.class.php");
 
-if (!isset($_SESSION["USER_ID"])) {
-    header("location: ./login.php");
-}
+  session_start();
 
-$db = new Database;
-$conn = $db->connect();
+  if (!isset($_SESSION["USER_ID"])) {
+    header("location: ./signIn.php");
+  }
 
-$evaluation_id = $_GET["e_id"];
+  $conn = Database::connect();
 
-$evaluation = new Evaluation;
-$evaluation->loadEvaluation($conn, $evaluation_id);
+  $evaluation_id = $_GET["e_id"];
 
-$checklist = new Checklist;
-$checklist->loadChecklist($conn, $evaluation->get_checklist_id());
+  $evaluation = new Evaluation($conn, $evaluation_id);
 
-if(!$evaluation->get_id() || !$checklist->get_id() || ($evaluation->get_author() != $_SESSION["USER_ID"] && $checklist->get_author() != $_SESSION["USER_ID"])) {
-    header("HTTP/1.0 404 Not Found");
-    echo "<h1>404 Not Found</h1>";
-    echo "The page that you have requested could not be found.";
-    exit();
-}
+  $checklist = new Checklist($conn, $evaluation->getChecklistId());
 
-$section = new Section;
-
-$itemDAO = new ItemDAO;
-
-$labelDAO = new LabelDAO;
+  if(!$evaluation->getId() || !$checklist->getId() || ($evaluation->getAuthorId() != $_SESSION["USER_ID"] && $checklist->getAuthorId() != $_SESSION["USER_ID"])) {
+      header("HTTP/1.0 404 Not Found");
+      echo "<h1>404 Not Found</h1>";
+      echo "The page that you have requested could not be found.";
+      exit();
+  }
 ?>
 
 <!doctype html>
@@ -53,7 +45,7 @@ $labelDAO = new LabelDAO;
 
     <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
 
-    <title><?= $checklist->get_title() ?> checklist</title>
+    <title><?= $checklist->getTitle() ?> checklist</title>
 </head>
 
 <body>
@@ -62,27 +54,31 @@ $labelDAO = new LabelDAO;
 
     <div class="container mt-5 mb-5">
         <div style="display: flex; align-items: center;">
-            <a href="./checklistEvaluations.php?c_id=<?= $checklist->get_id() ?>" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
-            <h1><?= $checklist->get_title() ?></h1>
+            <a href="./checklistEvaluations.php?c_id=<?= $checklist->getId() ?>" style="color:#8FAD88;"><i class="fas fa-chevron-left fa-lg mr-3"></i></a>
+            <h1><?= $checklist->getTitle() ?></h1>
         </div>
-        <p class="lead text-muted text-justify"><?= $checklist->get_description() ?></p>
-        <p>
+        <p class="lead text-muted text-justify"><?= $checklist->getDescription() ?></p>
+        <?php
+  $date = date("d/m/Y", strtotime($evaluation->getDate()));
+  $time = date("H:i", strtotime($evaluation->getDate()));
 
-            <?php
-            $date = date("d/m/Y", strtotime($evaluation->get_date()));
-            $time = date("H:i:s", strtotime($evaluation->get_date()));
-            $time_elapsed = $evaluation->get_time_elapsed();
-            $time_elapsed_converted = sprintf("%02d:%02d:%02d", floor($time_elapsed/3600), ($time_elapsed/60)%60, $time_elapsed%60);
-            ?>
+  $timeElapsed = $evaluation->getTimeElapsedInSeconds();
+  $timeElapsedInHours = sprintf("%02dh:%02dm:%02ds", floor($timeElapsed / 3600), ($timeElapsed / 60) % 60, $timeElapsed % 60);
 
-            Evaluated by <?= $evaluation->get_authorName($conn) ?> in <?= $date ?> at <?= $time ?>.<br>
-            Time to evaluate: <?= $time_elapsed_converted ?>.
-        </p>
+  $evaluationAuthor = evaluationDAO::getAuthorName($conn, $evaluation->getId());
+  $author = $evaluationAuthor->fetch_row();
+?>
+
+
+
+<p>Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?></p>
+      <p class="text-muted">Time to evaluate: <?= $timeElapsedInHours ?></p>
+
 
         <?php
-        if ($evaluation->get_author() == $_SESSION['USER_ID']) {
+        if ($evaluation->getAuthorId() == $_SESSION['USER_ID']) {
         ?>
-            <a href="./checklist.php?id=<?= $checklist->get_id() ?>&e_id=<?= $evaluation->get_id() ?>&edit" class="btn btn-primary">
+            <a href="./checklist.php?id=<?= $checklist->getId() ?>&e_id=<?= $evaluation->getId() ?>&edit" class="btn btn-primary">
                 <span class="ml-1 mr-2">
                     <i class="fas fa-edit"></i>
                 </span>
@@ -91,7 +87,7 @@ $labelDAO = new LabelDAO;
         <?php } ?>
 
         <?php
-        $sectionResult = $checklist->loadSectionsOfChecklist($conn, $checklist->get_id());
+        $sectionResult = $checklist->getChecklistSections($conn, $checklist->getId());
 
         while ($sectionRow = $sectionResult->fetch_assoc()) {
         ?>
@@ -104,18 +100,17 @@ $labelDAO = new LabelDAO;
                 <div class="card-body">
 
                     <?php
-                    $section->loadSection($conn, $sectionRow["id"]);
-
-                    $itemResult = $section->loadSectionItems($conn, $section->get_id());
+                    $section = new Section($conn, $sectionRow["id"]);
+                    $itemResult = $section->getSectionItems($conn, $section->getId());
 
                     while ($itemRow = $itemResult->fetch_assoc()) {
 
-                        $itemAnswerResult = $itemDAO->select_itemAnswer($conn, $evaluation->get_id(), $itemRow["id"]);
+                        $itemAnswerResult = ItemDAO::getItemAnswer($conn, $evaluation->getId(), $itemRow["id"]);
 
                         $itemAnswerRow = $itemAnswerResult->fetch_assoc();
 
                         if($itemAnswerRow) {
-                            $labelTitle = $labelDAO->select_labelTitle($conn, $itemAnswerRow["label"]);
+                            $labelTitle = LabelDAO::getOptionTitle($conn, $itemAnswerRow["label"]);
                         } else {
                             $labelTitle = "This question did not belong to the checklist when this evaluation was made.";
                         }
@@ -164,26 +159,6 @@ $labelDAO = new LabelDAO;
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../js/popper-base.js"></script>
     <script src="../../js/bootstrap/bootstrap.js"></script>
-
-    <script type="text/javascript">
-        function sendChecklistResult() {
-            var address = $("#emailAddress").val();
-
-            $.ajax({
-                type: "POST",
-                url: "../controllers/send_checklistResult.php",
-                data: {
-                    emailAddress: address
-                },
-                success: function(response) {
-                    alert("E-mail enviado com sucesso!");
-
-                    $("#modal-share").modal("hide");
-                }
-            })
-        }
-    </script>
-
 </body>
 
 </html>

@@ -25,12 +25,26 @@
       }
     }
 
-      function loadSectionsOfChecklist($conn, $checklist_id)
-      {
-          $checklistDAO = new ChecklistDAO;
+    function getChecklistSections($conn, $checklistId)
+    {
+      return checklistDAO::getChecklistSections($conn, $checklistId);
+    }
 
-          return $checklistDAO->select_sectionsOfChecklist($conn, $checklist_id);
+    public static function getChecklistItems($conn, $checklistId) {
+      return checklistDAO::getChecklistItems($conn, $checklistId);
+    }
+
+    public static function getJustifiableOptions($conn, $checklistId) {
+      $result = ChecklistDAO::getJustifiableOptions($conn, $checklistId);
+
+      $justifiableOptions = array();
+
+      while ($row = $result->fetch_assoc()) {
+        array_push($justifiableOptions, $row["id"]);
       }
+
+      return $justifiableOptions;
+    }
 
       function loadLabelsOfChecklist($conn, $checklist_id)
       {
@@ -98,7 +112,7 @@
       if($this->authorId != $userId) {
         $hasAccess = checklistDAO::verifyAccess($conn, $userId, $this->id);
 
-        if(!$hasAcces) {
+        if(!$hasAccess) {
           return false;
         }
       }

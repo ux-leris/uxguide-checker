@@ -6,7 +6,7 @@
     require_once("../dataAccess/labelDAO.class.php");
     require_once("../dataAccess/chartColors.php");
     require_once("../dataAccess/chartPatterns.php");
-    require_once("../../enviroment.php");
+    require_once("../../environment.php");
 
     session_start();
 
@@ -22,11 +22,10 @@
 
     $checklist_id = $_GET["c_id"];
 
-    $checklist = new Checklist;
-    $checklist->loadChecklist($conn, $checklist_id);
+    $checklist = new Checklist($conn, $checklist_id);
     
     $evaluationDAO = new EvaluationDAO;
-    $evaluationResult = $evaluationDAO->select_evaluationsOfChecklist($conn, $checklist_id, $_SESSION["USER_ID"]);
+    $evaluationResult = evaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklist_id, $_SESSION["USER_ID"]);
 
     $labelDAO = new LabelDAO;
     
@@ -35,7 +34,7 @@
       exit();
     }
 
-    if(!$checklist->get_id() || $checklist->get_author() != $_SESSION["USER_ID"]) {
+    if(!$checklist->getId() || $checklist->getAuthorId() != $_SESSION["USER_ID"]) {
         header("HTTP/1.0 404 Not Found");
         echo "<h1>404 Not Found</h1>";
         echo "The page that you have requested could not be found.";

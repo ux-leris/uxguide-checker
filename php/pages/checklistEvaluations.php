@@ -54,7 +54,16 @@
       </div>
       <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
       <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>
-          
+      
+      <?php if ($checklist->getAuthorId() == $_SESSION["USER_ID"]) {?>
+        <a href="./checklistAnalytics.php?c_id=<?= $checklistId ?>" class="btn btn-primary">
+          <span class="mr-2">
+            <i class="far fa-chart-bar"></i>
+          </span>
+          View Analytics
+        </a>
+      <?php } ?>
+
       <hr>
 
       <h3 class="text-muted mb-3"><?= $checklist->getAuthorId() == $_SESSION["USER_ID"] ? "All Evaluations" : "My Evaluations" ?></h3>

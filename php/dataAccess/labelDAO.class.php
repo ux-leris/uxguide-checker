@@ -11,22 +11,17 @@
       return $stmt->execute();
     }
     
-    public function select_labelTitle($conn, $label_id)
+    public static function getOptionTitle($conn, $labelId)
     {
-      $query = "select * from label where id = ?";
+      $query = "SELECT * FROM label WHERE id = ?";
 
       $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $labelId);
 
-      $stmt->bind_param("s", $label_id);
       $stmt->execute();
 
       $result = $stmt->get_result();
-
       $row = $result->fetch_assoc();
-
-      if(!$row) {
-          return NULL;
-      }
 
       return $row["title"];
     }

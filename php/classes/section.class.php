@@ -24,7 +24,7 @@
       }
     }
 
-    public function getSectionItems($conn, $sectionId)
+    public static function getSectionItems($conn, $sectionId)
     {
       return sectionDAO::getSectionItems($conn, $sectionId);
     }

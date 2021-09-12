@@ -67,7 +67,7 @@
         </div>
       <?php } ?>
 
-      <?php $sectionsResult = $checklist->loadSectionsOfChecklist($conn, $checklist->getId()); ?>
+      <?php $sectionsResult = $checklist->getChecklistSections($conn, $checklist->getId()); ?>
 
       <?php
         while ($sectionRow = $sectionsResult->fetch_assoc()) {

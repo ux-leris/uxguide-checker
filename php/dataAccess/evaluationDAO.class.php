@@ -1,18 +1,17 @@
 <?php
-  require_once("../classes/database.class.php");
-
   class EvaluationDAO
   {
-      public function insert($conn, $checklist_id, $author_id)
-      {
-          $query = "INSERT INTO evaluation(checklist_id, author, status) VALUES(".$checklist_id.", ".$author_id.", FALSE)";
+    public static function insertEvaluation($conn, $checklistId, $authorId)
+    {
+      $query = "INSERT INTO evaluation(checklist_id, author, status, time_elapsed) VALUES(?, ?, FALSE, 0)";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("ss", $checklistId, $authorId);
 
-          $stmt->execute();
+      $stmt->execute();
 
-          return $stmt->insert_id;
-      }
+      return $stmt->insert_id;
+    }
 
       public function insert_evaluation($conn, $checklist_id, $author)
       {
@@ -34,25 +33,25 @@
           $stmt->execute();
       }
 
-      public function update_time($conn, $evaluation_id, $seconds)
-      {
-          $query = "UPDATE evaluation SET time_elapsed = time_elapsed + $seconds WHERE id = ?";
+    public static function updateEvaluationTime($conn, $evaluationId, $timeElapsedInSeconds)
+    {
+      $query = "UPDATE evaluation SET time_elapsed = time_elapsed + ? WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("ss", $timeElapsedInSeconds, $evaluationId);
 
-          $stmt->bind_param("s", $evaluation_id);
-          $stmt->execute();
-      }
+      return $stmt->execute();
+    }
 
-      public function update_evaluation($conn, $evaluation_id)
-      {
-          $query = "UPDATE evaluation SET status = true WHERE id = ?";
+    public static function finishEvaluation($conn, $evaluationId)
+    {
+      $query = "UPDATE evaluation SET status = true WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $evaluationId);
 
-          $stmt->bind_param("s", $evaluation_id);
-          $stmt->execute();
-      }
+      return $stmt->execute();
+    }
 
       public function select_answersByLabel($conn, $label_id)
       {
@@ -66,16 +65,17 @@
           return $stmt->get_result();
       }
 
-      public function select_evaluation($conn, $evaluation_id)
-      {
-          $query = "select * from evaluation where id = ".$evaluation_id;
+    public static function getEvaluationInfos($conn, $evaluationId)
+    {
+      $query = "SELECT * FROM evaluation WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("s", $evaluationId);
 
-          $stmt->execute();
+      $stmt->execute();
 
-          return $stmt->get_result();
-      }
+      return $stmt->get_result();
+    }
 
     public static function getEvaluationsOfChecklistByUser($conn, $checklistId, $userId)
     {
