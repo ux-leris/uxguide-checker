@@ -79,6 +79,18 @@
 
     public static function getEvaluationsOfChecklistByUser($conn, $checklistId, $userId)
     {
+      $query = "SELECT * FROM evaluation WHERE checklist_id = ? AND author = ? ORDER BY date DESC";
+
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("ss", $checklistId, $userId);
+
+      $stmt->execute();
+
+      return $stmt->get_result();
+    }
+
+    public static function getAllFinishedEvaluations($conn, $checklistId, $userId)
+    {
       $query = "SELECT * FROM evaluation WHERE checklist_id = ? AND (status = true or author = ?) ORDER BY date DESC";
 
       $stmt = $conn->prepare($query);

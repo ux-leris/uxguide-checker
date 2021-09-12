@@ -68,7 +68,13 @@
 
       <h3 class="text-muted mb-3"><?= $checklist->getAuthorId() == $_SESSION["USER_ID"] ? "All Evaluations" : "My Evaluations" ?></h3>
 
-      <?php $evaluationResult = evaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklistId, $_SESSION["USER_ID"]); ?>
+      <?php
+        if ($checklist->getAuthorId() == $_SESSION["USER_ID"]) {
+          $evaluationResult = evaluationDAO::getAllFinishedEvaluations($conn, $checklistId, $_SESSION["USER_ID"]);
+        } else {
+          $evaluationResult = evaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklistId, $_SESSION["USER_ID"]);
+        }
+      ?>
 
       <div class="row">
         <?php

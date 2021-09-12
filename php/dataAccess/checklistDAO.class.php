@@ -35,24 +35,25 @@
       return $stmt->execute();
     }
 
-      public function insert_access($conn, $email, $checklist_id)
-      {
-          $query = "select * from user where email = ?";
+    public static function shareChecklist($conn, $email, $checklistId)
+    {
+      $query = "SELECT * FROM user WHERE email = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
 
-          $stmt->bind_param("s", $email);
-          $stmt->execute();
+      $stmt->bind_param("s", $email);
+      $stmt->execute();
 
-          $result = $stmt->get_result();
-          $row = $result->fetch_assoc();
+      $result = $stmt->get_result();
+      $row = $result->fetch_assoc();
 
-          $query = "insert into access(user_id, checklist_id) values(".$row["id"].", ".$checklist_id.")";
+      $query = "INSERT INTO access(user_id, checklist_id) VALUES(?, ?)";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("ss", $row["id"], $checklistId);
 
-          $stmt->execute();
-      }
+      return $stmt->execute();
+    }
 
     public static function getChecklistInfos($conn, $checklistId)
     {
