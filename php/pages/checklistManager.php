@@ -61,7 +61,7 @@
       <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
       <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>
 
-      <?php if ($checklist->getAuthorId() == $_SESSION["USER_ID"]) {?>
+      <?php if ($checklist->getAuthorId() == $_SESSION["USER_ID"] && $checklist->getIsPublished()) {?>
         <button class="btn btn-primary" data-toggle="modal" data-target="#shareChecklist">
           <span class="mr-2">
             <i class="fas fa-share"></i>

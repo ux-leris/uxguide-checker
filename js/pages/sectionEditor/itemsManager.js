@@ -1,31 +1,3 @@
-/*
-
-var el = document.getElementById("checklist-itens");
-var sortable = Sortable.create(el, {
-  onEnd: function () {
-    var list = document.getElementById("checklist-itens").children;
-    var size = list.length;
-    for (i = 0; i < size; i++) {
-      var item = list.item(i);
-      var id = item.getAttribute("id").replace("item-", "");
-      var order = item.getAttribute("data-order");
-      if (order != i + 1) {
-        $.ajax({
-          type: "POST",
-          url: "../controllers/update_item.php",
-          data: {
-            id: id,
-            item_order: i + 1,
-          },
-          success: function () {
-            item.setAttribute("data-order", i + 1);
-          },
-        });
-      }
-    }
-  },
-});*/
-
 let lastNItemInputGroups = 1;
 
 function itemsManager(currentNItemInputGroups) {

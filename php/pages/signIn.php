@@ -26,7 +26,7 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link text-light" href="./signup.php">
+            <a class="nav-link text-light" href="./signUp.php">
               Sign up
             </a>						
           </li>

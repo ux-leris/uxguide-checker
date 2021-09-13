@@ -1,4 +1,4 @@
-<div class="d-flex" data-order="<?= $sectionRow["item_order"] ?>">
+<div class="d-flex" item-position="<?= $sectionRow["item_order"] ?>">
   <div id="item-<?= $sectionRow["id"] ?>" class="card col-md-<?= $checklist->getIsPublished() ? "12" : "10" ?> mt-2 mb-2">
     <div class="card-body text-justify d-flex align-items-center">
       <span>

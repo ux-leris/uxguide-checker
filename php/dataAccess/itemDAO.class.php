@@ -48,16 +48,15 @@
       return $stmt->execute();
     }
 
-      public function update_order($conn, $item_id, $item_order) 
-      {
-          $query = "update checklist_item set item_order = ? where id = ?";
+    public static function updateItemPosition($conn, $itemId, $position) 
+    {
+      $query = "UPDATE checklist_item SET item_order = ? WHERE id = ?";
 
-          $stmt = $conn->prepare($query);
+      $stmt = $conn->prepare($query);
+      $stmt->bind_param("ss", $position, $itemId);
 
-          $stmt->bind_param("ss", $item_order, $item_id);
-
-          return $stmt->execute();
-      }
+      return $stmt->execute();
+    }
 
     public static function updateOptionAnswer($conn, $evaluationId, $itemId, $optionId)
     {

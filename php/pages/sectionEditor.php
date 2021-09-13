@@ -86,11 +86,13 @@
           <p class="text-muted">This checklist doesn't have any items yet.</p>
         </div>
       <?php } else { ?>
-        <?php
-          while($sectionRow = $sectionResult->fetch_assoc()) {
-            require("../templates/sectionEditor/itemCard.php");
-          }
-        ?>
+        <div id="checklistItems">
+          <?php
+            while($sectionRow = $sectionResult->fetch_assoc()) {
+              require("../templates/sectionEditor/itemCard.php");
+            }
+          ?>
+        </div>
       <?php } ?>
 
       <div class="card mt-2 mb-3">
@@ -150,9 +152,11 @@
 
     <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <script src="../../js/pages/sectionEditor/itemsManager.js"></script>
     <script src="../../js/pages/sectionEditor/editItem.js"></script>
     <script src="../../js/pages/sectionEditor/deleteItem.js"></script>
+    <script src="../../js/pages/sectionEditor/dragAndDropItems.js"></script>
   </body>
 </html>
