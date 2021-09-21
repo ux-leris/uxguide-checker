@@ -30,20 +30,13 @@ html,
 body {
   font-size: 16px;
   color: #1e1e31;
-  height: 100%;
-  width: 100vw;
-  max-width: 100vw;
 }
 .analytics-container {
-  width: 100vw;
-  height: 100%;
+  width: 100%;
   padding: 2rem;
-  max-width: 100vw;
 }
 .analytics-data {
   display: grid;
-  height: 100%;
-  max-width: 100%;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1.2fr 1fr;
   grid-gap: 4rem;

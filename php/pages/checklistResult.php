@@ -59,7 +59,7 @@
 
     <div class="container mt-5 mb-5">
       <div class="checklist-infos">
-        <a href="../../index.php">
+        <a href="./checklistEvaluations.php?c_id=<?= $checklist->getId() ?>">
           <i class="fas fa-chevron-left"></i>
         </a>
         <h1 class="text-justify"><?= $checklist->getTitle() ?></h1>

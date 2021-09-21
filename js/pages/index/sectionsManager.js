@@ -4,7 +4,9 @@ let lastNSectionInputs = 1;
 
 function sectionManager(currentNSectionInputs) {
   if (currentNSectionInputs > lastNSectionInputs) {
-    addSection(currentNSectionInputs);
+    if (currentNSectionInputs <= 5) {
+      addSection(currentNSectionInputs);
+    }
   } else {
     if (currentNSectionInputs > 0) {
       delSection(currentNSectionInputs);

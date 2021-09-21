@@ -396,6 +396,8 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer">
     </script>
+
+    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
 	</body>
 </html>
 
