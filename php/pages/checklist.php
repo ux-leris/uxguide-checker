@@ -27,18 +27,18 @@
     $evaluation = new Evaluation($conn, $evaluationId);
     
     if(!$checklist->getId() || !$evaluation->getId() || $evaluation->getAuthorId() != $_SESSION["USER_ID"] || !$checklist->userHasAccess($conn, $_SESSION["USER_ID"])) {
-      header("HTTP/1.0 404 Not Found");
-      echo "<h1>404 Not Found</h1>";
-      echo "The page that you have requested could not be found.";
+      header("HTTP/1.0 401 Unauthorized");
+      echo "<h1>401 Unauthorized</h1>";
+      echo "You don't have permission to access this page.";
       exit();
     }
 
     $initialEvaluation = false;
   } else {
     if(!$checklist->getId() || !$checklist->userHasAccess($conn, $_SESSION["USER_ID"])) {
-      header("HTTP/1.0 404 Not Found");
-      echo "<h1>404 Not Found</h1>";
-      echo "The page that you have requested could not be found.";
+      header("HTTP/1.0 401 Unauthorized");
+      echo "<h1>401 Unauthorized</h1>";
+      echo "You don't have permission to access this page.";
       exit();
     }
 
@@ -69,10 +69,10 @@
 
     <div class="container mt-5 pb-5">
       <div class="checklist-infos">
-        <a href="./checklistManager.php?c_id=<?= $checklist->getId() ?>">
+        <a href="./checklistEvaluations.php?c_id=<?= $checklistId ?>">
           <i class="fas fa-chevron-left"></i>
         </a>
-        <h1 class="text-justify"><?= $checklist->getTitle() ?></h1>
+        <h1 class="text-justify"><?= htmlspecialchars($checklist->getTitle()) ?></h1>
       </div>
       <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
       <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>
@@ -98,7 +98,7 @@
                 <h3>Section <?= $checklistRow["position"] + 1 ?></h3>
               </div>
               <div class="card-body text-justify">
-                <?= $checklistRow["title"] ?>
+                <?= htmlspecialchars($checklistRow["title"]) ?>
               </div>
               <div class="card-footer d-flex justify-content-center">
                 <button type="button" id="toggleSection-<?= $checklistRow["id"] ?>" class="btn btn-primary" data-toggle="collapse" data-target="#section-<?= $checklistRow["id"] ?>">
@@ -133,7 +133,7 @@
                             onChange="getHasJustify(this.id, this.value)" required>
                             
                             <?php $isLoadableOption = !$initialEvaluation && isset($answerRow["label"]); ?>
-                            <?php $selectedOption = $isLoadableOption ? $answerRow["label"] : NULL; ?>
+                            <?php $selectedOption = $isLoadableOption ? htmlspecialchars($answerRow["label"]) : NULL; ?>
 
                             <?php if (!$isLoadableOption) { ?>
                               <option value="" selected disabled>Select</option>
@@ -148,7 +148,7 @@
                                   value="<?= $optionRow["id"] ?>" 
                                   <?= $isSelected ? "selected" : "" ?>
                                 >
-                                  <?= $isSelected ? Label::getOptionTitle($conn, $selectedOption) : $optionRow["title"] ?>
+                                  <?= $isSelected ? Label::getOptionTitle($conn, $selectedOption) : htmlspecialchars($optionRow["title"]) ?>
                                 </option>
 
                             <?php } ?>
@@ -157,9 +157,9 @@
 
                         <div class="col-md-10 d-flex align-items-center">
                           <?php if (!(isset($sectionRow["link"]))) { ?>
-                            <?= $sectionRow["text"] ?>
+                            <?= htmlspecialchars($sectionRow["text"]) ?>
                           <?php } else { ?>
-                            <a href="<?= $sectionRow["link"] ?>" class="link" target="_blank"><?= $sectionRow["text"] ?></a>
+                            <a href="<?= htmlspecialchars($sectionRow["link"]) ?>" class="link" target="_blank"><?= htmlspecialchars($sectionRow["text"]) ?></a>
                           <?php } ?>
                         </div>
                       </div>
@@ -169,7 +169,7 @@
                       <div class="col-md-12">
                         <h5>Justify your selection:</h5>
                         <div class="col-md-12">
-                          <?php $justification = isset($answerRow["justification"]) ? $answerRow["justification"] : NULL ?>
+                          <?php $justification = isset($answerRow["justification"]) ? htmlspecialchars($answerRow["justification"]) : NULL ?>
                           <input 
                             type="text"
                             class="form-control justificationInput"

@@ -19,7 +19,7 @@
       <?php } ?>
 
       <h5>Evaluation <?= $evaluationRow["id"] ?></h5>
-      <p>Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?></p>
+      <p>Evaluated by <?= htmlspecialchars($author[0]) ?> in <?= $date ?> at <?= $time ?></p>
       <p class="text-muted">Time to evaluate: <?= $timeElapsedInHours ?></p>
 
       <div class="d-flex justify-content-start">

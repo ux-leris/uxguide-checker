@@ -15,18 +15,18 @@
     $section = new Section($conn, $sectionId);
 
     if(!$section->getId()) {
-        header("HTTP/1.0 404 Not Found");
-        echo "<h1>404 Not Found</h1>";
-        echo "The page that you have requested could not be found.";
-        exit();
+      header("HTTP/1.0 401 Unauthorized");
+      echo "<h1>401 Unauthorized</h1>";
+      echo "You don't have permission to access this page.";
+      exit();
     }
 
     $checklist = new Checklist($conn, $section->getChecklistId());
 
     if(!$checklist->getId() || $_SESSION["USER_ID"] != $checklist->getAuthorId()) {
-      header("HTTP/1.0 404 Not Found");
-      echo "<h1>404 Not Found</h1>";
-      echo "The page that you have requested could not be found.";
+      header("HTTP/1.0 401 Unauthorized");
+      echo "<h1>401 Unauthorized</h1>";
+      echo "You don't have permission to access this page.";
       exit();
     }
   }
@@ -66,7 +66,7 @@
         </a>
         <h1>Section <?= $section->getPosition() + 1 ?></h1>
       </div>
-      <p class="lead text-justify"><?= $section->getTitle() ?></p>
+      <p class="lead text-justify"><?= htmlspecialchars($section->getTitle()) ?></p>
 
       <hr>
 

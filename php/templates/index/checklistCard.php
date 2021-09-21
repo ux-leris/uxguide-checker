@@ -2,12 +2,12 @@
   <div class="card mt-3 mb-3 shadow">
 
     <div class="card-header">
-      <h5><?= $row["title"] ?></h5>
+      <h5><?= htmlspecialchars($row["title"]) ?></h5>
     </div>
 
     <div class="card-body">
       <p class="text-justify">
-        <?= $row["description"] ?>
+        <?= htmlspecialchars($row["description"]) ?>
       </p>
       <div class="d-flex">
         <div class="mr-auto">

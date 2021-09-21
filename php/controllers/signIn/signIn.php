@@ -19,6 +19,8 @@
 
     header("location: ../../../index.php");
   } else {
+    session_start();
+    $_SESSION["ERROR"] = "Email ou senha inválidos";
     header("location: ../../pages/signIn.php");
   }
 ?>

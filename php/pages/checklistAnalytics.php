@@ -6,7 +6,7 @@
     require_once("../dataAccess/labelDAO.class.php");
     require_once("../dataAccess/chartColors.php");
     require_once("../dataAccess/chartPatterns.php");
-    require_once("../../environment.php");
+    require_once("../../enviroment.php");
 
     session_start();
 
@@ -35,10 +35,10 @@
     }
 
     if(!$checklist->getId() || $checklist->getAuthorId() != $_SESSION["USER_ID"]) {
-        header("HTTP/1.0 404 Not Found");
-        echo "<h1>404 Not Found</h1>";
-        echo "The page that you have requested could not be found.";
-        exit();
+      header("HTTP/1.0 401 Unauthorized");
+      echo "<h1>401 Unauthorized</h1>";
+      echo "You don't have permission to access this page.";
+      exit();
     }
 
     // Get charts datas
@@ -219,12 +219,12 @@
     <div class="analytics-container">
       <div class="page-title">
         <a href="./checklistEvaluations.php?c_id=<?= $checklist->getId() ?>">
-          <i class="fas fa-chevron-left fa-lg mr-3"></i>
+          <i class="fas fa-chevron-left"></i>
         </a>
         <div class="checklist-infs">
           <h1>Checklist Analytics</h1>
           <div class="checklist-name">
-            <p><?= $checklist->getTitle() ?></p>
+            <p><?= htmlspecialchars($checklist->getTitle()) ?></p>
           </div>
         </div>
       </div>
@@ -239,7 +239,7 @@
         </i>
         <ul>
           <?php for($i=0; $i<$sections_count; $i++) { ?>
-            <li><b>Section <?= $i+1 ?></b> - <?= $answersBySections["sections"][$i] ?></li>
+            <li><b>Section <?= $i+1 ?></b> - <?= htmlspecialchars($answersBySections["sections"][$i]) ?></li>
           <?php } ?>
         </ul>
       </section>
@@ -306,7 +306,7 @@
             <tbody>
               <?php $index = 0; foreach($answersByQuestions["questions_answers"] as $key => $value) { ?>
                 <tr>
-                  <td><?= $value["title"] ?></td>
+                  <td><?= htmlspecialchars($value["title"]) ?></td>
                   <td><div style="position: relative; min-width: 0; height: 2.5rem; width: 100%"><canvas id="question-<?= $index ?>"></canvas></div></td>
                   <?php if($hasLabelWithJustification) {
                     $hasJustification = false;
@@ -386,7 +386,9 @@
 		<!-- Optional JavaScript -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS, ChartJS, DataLabels and PatternomalyJS -->
     <script src="../../js/jquery-3.5.1.js"></script>
+    <script src="../../js/bootstrap/bootstrap.js"></script>
     <script src="../../js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/bc2cf3ace6.js" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>

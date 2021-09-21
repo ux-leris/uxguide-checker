@@ -14,18 +14,17 @@ body {
   transition: color .15s ease-out;
 }
 
-.btn-primary,
-.btn-primary:disabled {
+.btn-primary {
   color: white;
   background-color: #007e83;
   border: 0;
 }
 
-.btn-primary:hover {
-  background-color: #007175;
+.btn-primary:disabled {
+  background-color: #6c757d;
 }
 
-.btn-primary:hover:enabled,
+.btn-primary:hover:not(:disabled),
 .btn-primary:focus:enabled {
   background-color: #007175;
 }
