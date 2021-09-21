@@ -21,9 +21,9 @@
   $checklist = new Checklist($conn, $evaluation->getChecklistId());
 
   if(!$evaluation->getId() || !$checklist->getId() || ($evaluation->getAuthorId() != $_SESSION["USER_ID"] && $checklist->getAuthorId() != $_SESSION["USER_ID"])) {
-    header("HTTP/1.0 404 Not Found");
-    echo "<h1>404 Not Found</h1>";
-    echo "The page that you have requested could not be found.";
+    header("HTTP/1.0 401 Unauthorized");
+    echo "<h1>401 Unauthorized</h1>";
+    echo "You don't have permission to access this page.";
     exit();
   }
 
@@ -62,10 +62,10 @@
         <a href="./checklistEvaluations.php?c_id=<?= $checklist->getId() ?>">
           <i class="fas fa-chevron-left"></i>
         </a>
-        <h1 class="text-justify"><?= $checklist->getTitle() ?></h1>
+        <h1 class="text-justify"><?= htmlspecialchars($checklist->getTitle()) ?></h1>
       </div>
-      <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
-      <p class="text-muted">Evaluated by <?= $author[0] ?> in <?= $date ?> at <?= $time ?> with duration of <?= $timeElapsedInHours ?></p>
+      <p class="lead text-justify"><?= htmlspecialchars($checklist->getDescription()) ?></p>
+      <p class="text-muted">Evaluated by <?= htmlspecialchars($author[0]) ?> in <?= $date ?> at <?= $time ?> with duration of <?= $timeElapsedInHours ?></p>
 
       <?php if ($evaluation->getAuthorId() == $_SESSION['USER_ID']) { ?>
         <a href="./checklist.php?id=<?= $checklist->getId() ?>&e_id=<?= $evaluation->getId() ?>&edit" class="btn btn-primary">
@@ -84,7 +84,7 @@
         <div class="card mt-5 mb-5">
           <div class="card-header text-justify">
             <h3 class="text-justify">Section <?= $checklistRow["position"] + 1 ?></h3>
-            <p class="lead text-muted text-justify"><?= $checklistRow["title"] ?></p>
+            <p class="lead text-muted text-justify"><?= htmlspecialchars($checklistRow["title"]) ?></p>
           </div>
 
           <div class="card-body">
@@ -98,7 +98,7 @@
 
                 $labelTitle = (
                   $itemAnswerRow ? 
-                    LabelDAO::getOptionTitle($conn, $itemAnswerRow["label"])
+                    LabelDAO::getOptionTitle($conn, htmlspecialchars($itemAnswerRow["label"]))
                   :
                     "This question didn't belong to the checklist when this evaluation was made"
                 );
@@ -106,14 +106,14 @@
 
               <div class="card mt-2 mb-2">
                 <div class="card-body text-justify">
-                  <h5 class="text-muted"><?= $labelTitle ?></h5>
-                  <?= $sectionRow["text"] ?>
+                  <h5 class="text-muted"><?= htmlspecialchars($labelTitle) ?></h5>
+                  <?= htmlspecialchars($sectionRow["text"]) ?>
                 </div>
 
                 <?php if (isset($itemAnswerRow["justification"])) { ?>
                   <div class="card-footer text-justify">
                     <h5>Justification:</h5>
-                    <?= $itemAnswerRow["justification"] ?>
+                    <?= htmlspecialchars($itemAnswerRow["justification"]) ?>
                   </div>
                 <?php } ?>
               </div>

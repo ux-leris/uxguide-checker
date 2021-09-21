@@ -1,3 +1,13 @@
+<?php 
+  session_start();
+
+  if(isset($_SESSION["USER_ID"])) {
+    header("location: ../../index.php");
+  }
+
+?>
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -46,6 +56,9 @@
             <label>Password</label>
             <input type="password" name="password" class="form-control" required>
           </div>
+          <?php if(isset($_SESSION["ERROR"])) { ?>
+            <p style="color: red"><?= $_SESSION["ERROR"] ?>.</p>
+          <?php } unset($_SESSION["ERROR"]); ?>
           <button type="submit" class="btn btn-success">
             <span>
               <i class="fas fa-sign-in-alt"></i>

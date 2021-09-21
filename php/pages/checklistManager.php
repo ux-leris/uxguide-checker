@@ -15,9 +15,9 @@
     $checklist = new Checklist($conn, $checklistId);
 
     if(!$checklist->getId() || $_SESSION["USER_ID"] != $checklist->getAuthorId()) {
-      header("HTTP/1.0 404 Not Found");
-      echo "<h1>404 Not Found</h1>";
-      echo "The page that you have requested could not be found.";
+      header("HTTP/1.0 401 Unauthorized");
+      echo "<h1>401 Unauthorized</h1>";
+      echo "You don't have permission to access this page.";
       exit();
     }
   }
@@ -56,10 +56,10 @@
         <a href="../../index.php">
           <i class="fas fa-chevron-left"></i>
         </a>
-        <h1 class="text-justify"><?= $checklist->getTitle() ?></h1>
+        <h1 class="text-justify"><?= htmlspecialchars($checklist->getTitle()) ?></h1>
       </div>
-      <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
-      <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>
+      <p class="lead text-justify"><?= htmlspecialchars($checklist->getDescription()) ?></p>
+      <p class="text-muted">Created by <?= htmlspecialchars($checklist->getAuthorName($conn)) ?>.</p>
 
       <?php if ($checklist->getAuthorId() == $_SESSION["USER_ID"] && $checklist->getIsPublished()) {?>
         <button class="btn btn-primary" data-toggle="modal" data-target="#shareChecklist">

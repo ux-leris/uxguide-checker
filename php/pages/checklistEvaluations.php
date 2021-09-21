@@ -16,9 +16,9 @@
   $checklist = new Checklist($conn, $checklistId);
 
   if(!$checklist->getId() || !$checklist->userHasAccess($conn, $_SESSION["USER_ID"])) {
-    header("HTTP/1.0 404 Not Found");
-    echo "<h1>404 Not Found</h1>";
-    echo "The page that you have requested could not be found.";
+    header("HTTP/1.0 401 Unauthorized");
+    echo "<h1>401 Unauthorized</h1>";
+    echo "You don't have permission to access this page.";
     exit();
   }
 
@@ -37,7 +37,7 @@
 
     <!-- CSS Local -->
     <link rel="stylesheet" href="../../css/styles/global.css">
-    <link rel="stylesheet" href="../../css/styles/checklistEvaluations.css">
+    <!-- <link rel="stylesheet" href="../../css/styles/checklistEvaluations.css"> -->
 
     <title>Checklist Evaluations</title>
   </head>
@@ -50,13 +50,13 @@
         <a href="../../index.php">
           <i class="fas fa-chevron-left"></i>
         </a>
-        <h1 class="text-justify"><?= $checklist->getTitle() ?></h1>
+        <h1 class="text-justify"><?= htmlspecialchars($checklist->getTitle()) ?></h1>
       </div>
-      <p class="lead text-justify"><?= $checklist->getDescription() ?></p>
+      <p class="lead text-justify"><?= htmlspecialchars($checklist->getDescription()) ?></p>
       <p class="text-muted">Created by <?= $checklist->getAuthorName($conn) ?>.</p>
       
       <?php if ($checklist->getAuthorId() == $_SESSION["USER_ID"]) {?>
-        <a href="./checklistAnalytics.php?c_id=<?= $checklistId ?>" class="btn btn-primary">
+        <a href="./checklistAnalytics.php?c_id=<?= htmlspecialchars($checklistId) ?>" class="btn btn-primary">
           <span class="mr-2">
             <i class="far fa-chart-bar"></i>
           </span>

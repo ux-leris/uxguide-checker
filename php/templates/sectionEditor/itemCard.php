@@ -6,9 +6,9 @@
       </span>
 
       <?php if(!$sectionRow["link"]) { ?>
-        <?= $sectionRow["text"] ?>
+        <?= htmlspecialchars($sectionRow["text"]) ?>
       <?php } else { ?>
-        <a href="<?= $sectionRow["link"] ?>" class="link" target="_blank"><?= $sectionRow["text"] ?></a>
+        <a href="<?= htmlspecialchars($sectionRow["link"]) ?>" class="link" target="_blank"><?= htmlspecialchars($sectionRow["text"]) ?></a>
       <?php } ?>
 
     </div>
