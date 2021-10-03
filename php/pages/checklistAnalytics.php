@@ -26,8 +26,6 @@
     
     $evaluationDAO = new EvaluationDAO;
     $evaluationResult = EvaluationDAO::getEvaluationsOfChecklistByUser($conn, $checklist_id, $_SESSION["USER_ID"]);
-
-    $labelDAO = new LabelDAO;
     
     if($evaluationResult->num_rows <= 0) {
       echo "<h1 style='height: 100vh; display: flex; justify-content: center; align-items: center;'>Your checklist doensn't have evaluations.<h1>";
@@ -44,20 +42,15 @@
     // Get charts datas
     $curl = initCurl();
 
-    $answersBySections = getAnswersBySectionsData($baseURL, $curl, $checklist_id);
-    $overview = getOverviewData($baseURL, $curl, $checklist_id);
-    $infoNumbers = getBigNumbers($baseURL, $curl, $checklist_id);
+    $analytics = getAnalyticsData($baseURL, $curl, $checklist_id);
+
+    extract($analytics);
 
     $first_section = $answersBySections['sections_ids'][0];
-    $labels_count = sizeof($answersBySections["labels"]);
 
     $answersByQuestions = getAnswersByQuestionsData($baseURL, $curl, $checklist_id, $first_section, $labels_count);
 
     closeCurl($curl);
-
-    $sections_count =  sizeof($answersBySections["sections"]);
-
-    $average_time = formatEvaluationTime($infoNumbers['average_time']);
 
     if($infoNumbers['total_finished_evaluations'] > 0) {
       $last_evaluation_time = $infoNumbers['finished_evaluations'][$infoNumbers['total_finished_evaluations']-1];
@@ -67,20 +60,7 @@
     
     $last_evaluation_time = formatEvaluationTime($last_evaluation_time);
 
-    $numberOfEvaluations = $overview["nEvaluations"];
-    $labels = $overview["labels"];
-    $answersByLabel = $overview["answersByLabel"];
-
-    $hasLabelWithJustification = false;
-    $justifiableLabels = [];
-    $i=0;
-    foreach($labels as $label) {
-      if($label["hasJustification"] == true) {
-        $hasLabelWithJustification = true;
-        array_push($justifiableLabels, $i);
-      }
-      $i++;
-    }
+    $hasLabelWithJustification = sizeof($justifiableLabels) > 0 ? true : false;
     
 ?>
 
@@ -103,9 +83,18 @@
       curl_close($curl);
     }
 
-    function getAnswersBySectionsData($baseURL, $curl, $checklist_id) {
+    function formatEvaluationTime($averageTimeInSeconds) {
+      $minutes = floor($averageTimeInSeconds / 60);
+      $averageTimeInSeconds -= $minutes*60;
+      $seconds = $averageTimeInSeconds;
+      $average_time = sprintf("%02d:%02d", $minutes, $seconds);
+
+      return $average_time;
+    }
+
+    function getAnalyticsData($baseURL, $curl, $checklist_id) {
       // Set the url
-      $url = "$baseURL/php/api/answersBySections.php?c_id=$checklist_id";
+      $url = "$baseURL/php/api/getAnalyticsData.php?c_id=$checklist_id";
       curl_setopt($curl, CURLOPT_URL, $url);
 
       // Get answers by sections
@@ -115,26 +104,10 @@
       $result_answers = str_replace("\xEF\xBB\xBF",'',$result_answers); 
 
       // Decoding
-      $answersBySections = json_decode($result_answers, true);
+      $analyticsData = json_decode($result_answers, true);
 
-      return $answersBySections;
+      return $analyticsData;
     }
-
-    function getOverviewData($baseURL, $curl, $checklist_id) {
-      $url = "$baseURL/php/api/overview.php?c_id=$checklist_id";
-      curl_setopt($curl, CURLOPT_URL, $url);
-  
-      $resultOverview = curl_exec($curl);
-      
-      // Removing UTF-8 Bom 
-      $resultOverview = str_replace("\xEF\xBB\xBF", "", $resultOverview); 
-  
-      // Decoding
-      $overview = json_decode($resultOverview, true);
-
-      return $overview;
-    }
-
 
     function getAnswersByQuestionsData($baseURL, $curl, $checklist_id, $first_section, $labels_count) {
       $url = "$baseURL/php/api/answersByQuestions.php?section_id=$first_section&labels_number=$labels_count&c_id=$checklist_id";
@@ -151,31 +124,6 @@
       $answersByQuestions = json_decode($result_answersByQuestions, true);
 
       return $answersByQuestions;
-    }
-
-    function getBigNumbers($baseURL, $curl, $checklist_id) {
-      $url = "$baseURL/php/api/infoNumbers.php?c_id=$checklist_id";
-      curl_setopt($curl, CURLOPT_URL, $url);
-    
-      // Get info numbers
-      $result_infoNumbers = curl_exec($curl);
-
-      // Removing UTF-8 Bom 
-      $result_infoNumbers = str_replace("\xEF\xBB\xBF",'',$result_infoNumbers); 
-      
-      // Decoding
-      $infoNumbers = json_decode($result_infoNumbers, true);
-
-      return $infoNumbers;
-    }
-
-    function formatEvaluationTime($averageTimeInSeconds) {
-      $minutes = floor($averageTimeInSeconds / 60);
-      $averageTimeInSeconds -= $minutes*60;
-      $seconds = $averageTimeInSeconds;
-      $average_time = sprintf("%02d:%02d", $minutes, $seconds);
-
-      return $average_time;
     }
 
 ?>

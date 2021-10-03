@@ -62,6 +62,12 @@
           </span>
           View Analytics
         </a>
+        <a href="../api/generateSheet.php?c_id=<?= htmlspecialchars($checklistId) ?>" class="btn btn-primary" download>
+          <span class="mr-2">
+            <i class="fas fa-download"></i>
+          </span>
+          Download Analytics
+        </a>
       <?php } ?>
 
       <hr>

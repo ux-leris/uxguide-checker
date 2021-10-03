@@ -25,7 +25,7 @@ body {
 }
 
 .btn-primary:hover:not(:disabled),
-.btn-primary:focus:enabled {
+.btn-primary:focus:not(:disabled) {
   background-color: #007175;
 }
 
