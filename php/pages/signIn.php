@@ -26,7 +26,7 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-light">
       <span class="navbar-brand text-light">
         UX Guide Checker
       </span>

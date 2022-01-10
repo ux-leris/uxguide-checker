@@ -13,6 +13,16 @@
         </a>	
         </li>
     </ul>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link text-light" href="https://www.youtube.com/watch?v=sOpKPIdl3r4" target="_blank">
+              User Guide
+              <span>
+                  <i class="fas fa-info-circle"></i>
+              </span>
+            </a>	
+        </li>
+    </ul>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">
         <a class="nav-link text-light" href="../controllers/index/logOut.php">

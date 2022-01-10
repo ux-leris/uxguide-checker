@@ -61,7 +61,6 @@
     $last_evaluation_time = formatEvaluationTime($last_evaluation_time);
 
     $hasLabelWithJustification = sizeof($justifiableLabels) > 0 ? true : false;
-    
 ?>
 
 <?php 
@@ -91,7 +90,7 @@
 
       return $average_time;
     }
-
+    
     function getAnalyticsData($baseURL, $curl, $checklist_id) {
       // Set the url
       $url = "$baseURL/php/api/getAnalyticsData.php?c_id=$checklist_id";
@@ -778,7 +777,7 @@
 
     $.ajax({
       type: "GET",
-      url: "../controllers/select_justifications.php",
+      url: "../controllers/checklistAnalytics/getJustifications.php",
       data: {
         i_id: questionId
       },

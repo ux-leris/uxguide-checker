@@ -25,7 +25,7 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-light">
       <span class="navbar-brand text-light">
         UX Guide Checker
       </span>
@@ -35,7 +35,7 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link text-light" href="./signin.php">
+            <a class="nav-link text-light" href="./signIn.php">
               Sign in
             </a>						
           </li>
